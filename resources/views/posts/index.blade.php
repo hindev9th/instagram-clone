@@ -12,20 +12,22 @@
                         </div>
                         <div class="col-11 pl-2 d-flex align-items-center justify-content-between font-weight-bold">
                             <div class="d-flex">
-                                <a href="{{ route('profile.index',['user' => $post->user->id]) }}"
+                                <a href="{{ route('profile.index',['user' => $post->user->username]) }}"
                                    class="text-decoration-none text-dark pr-2"><strong>{{$post->user->username}}</strong></a>
                                 <div class="font-weight-normal">{{ $post->created_at }}</div>
                             </div>
                         </div>
                     </div>
                     <div class="border d-flex justify-content-center align-items-center">
-                        <img src="/storage/{{ $post->image }}" class="w-100" style="height: fit-content" alt="">
+                        <a href="{{ route('post.show',['post' => $post->id]) }}">
+                            <img src="/storage/{{ $post->image }}" class="w-100" style="height: fit-content" alt="">
+                        </a>
                     </div>
                     <div class="w-100 p-0 mh-100">
                         <div class="mw-100">
                             <div class="row m-0">
                                 <div class="w-100">
-                                    <a href="{{ route('profile.index',['user' => $post->user->id]) }}"
+                                    <a href="{{ route('profile.index',['user' => $post->user->username]) }}"
                                        class="text-decoration-none text-dark"><strong>{{$post->user->username}}</strong></a>
                                     {{ $post->caption }}
                                 </div>

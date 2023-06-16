@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -85,6 +85,6 @@ class ProfilesController extends Controller
 
         auth()->user()->profile->update($data);
 
-        return redirect(route('profile.index', ['user' => $user->id]));
+        return redirect(route('profile.index', ['user' => $user->username]));
     }
 }

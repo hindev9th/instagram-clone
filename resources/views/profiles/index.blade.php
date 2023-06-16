@@ -21,7 +21,7 @@
                 </div>
                 <div class="row">
                     @can('update',$user->profile)
-                    <a href="{{ route('profile.edit',['user' => $user->id]) }}">{{ __('Edit profile') }}</a>
+                    <a href="{{ route('profile.edit',['user' => $user->username]) }}">{{ __('Edit profile') }}</a>
                     @endcan
                 </div>
                 <div class="row pb-3">

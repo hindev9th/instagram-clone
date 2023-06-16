@@ -13,7 +13,7 @@
                             <img src="{{ $post->user->profile->getImage() }}" class="w-100 rounded-circle img-thumbnail" alt="">
                         </div>
                         <div class="col-11 pl-2 d-flex align-items-center font-weight-bold">
-                            <a href="{{ route('profile.index',['user' => $post->user->id]) }}" class="text-decoration-none text-dark pr-2"><strong>{{$post->user->username}}</strong></a>
+                            <a href="{{ route('profile.index',['user' => $post->user->username]) }}" class="text-decoration-none text-dark pr-2"><strong>{{$post->user->username}}</strong></a>
                             <a href="" class="text-decoration-none pl-2">{{__('Follow')}}</a>
                         </div>
                     </div>
@@ -23,7 +23,7 @@
                                 <img src="{{ '/storage/'.$post->user->profile->image ?? 'https://i0.wp.com/thatnhucuocsong.com.vn/wp-content/uploads/2023/02/Hinh-anh-avatar-Facebook.jpg?ssl=1' }}" class="w-100 rounded-circle img-thumbnail" alt="">
                             </div>
                             <div class="col-11 pl-2">
-                                <a href="{{ route('profile.index',['user' => $post->user->id]) }}" class="text-decoration-none text-dark"><strong>{{$post->user->username}}</strong></a>
+                                <a href="{{ route('profile.index',['user' => $post->user->username]) }}" class="text-decoration-none text-dark"><strong>{{$post->user->username}}</strong></a>
                                 {{ $post->caption }}
                             </div>
                         </div>
