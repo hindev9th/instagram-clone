@@ -12,7 +12,9 @@
                 <div class="row justify-content-between">
                     <div class="d-flex">
                         <h1 class="pr-5">{{ $user->username }}</h1>
+                        @cannot('update',$user->profile)
                         <follow-button user-id="{{ $user->id }}" follows="{{ $follows }}"></follow-button>
+                        @endcan
                     </div>
                     @can('update',$user->profile)
                         <a href="{{ route('post.create') }}" class="pb-2 pt-2">Add new post</a>
