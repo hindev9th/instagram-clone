@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -55,7 +56,7 @@ class ProfilesController extends Controller
      */
     public function edit(User $user)
     {
-        //$this->authorize('update', $user->profile);
+        $this->authorize('update', $user->profile);
         return view('Profiles.edit', compact('user'));
     }
 
@@ -70,7 +71,7 @@ class ProfilesController extends Controller
         $data = \request()->validate([
             'title' => 'required',
             'description' => 'required',
-            'url' => 'url',
+            'url' => '',
             'image' => '',
         ]);
 

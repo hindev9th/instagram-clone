@@ -25,7 +25,7 @@
                     </div>
                     <div class="w-100 p-0 mh-100">
                         <div class="mw-100">
-                            <div class="row m-0">
+                            <div class="row m-0 pt-2 pb-2">
                                 <div class="w-100">
                                     <a href="{{ route('profile.index',['user' => $post->user->username]) }}"
                                        class="text-decoration-none text-dark"><strong>{{$post->user->username}}</strong></a>
@@ -33,17 +33,20 @@
                                 </div>
                             </div>
                             <div class="">
-                                a
                                 <div class=" w-100">
-                                    <form action="#">
+                                    <form action="{{ route('comment.store', ['post' => $post->id]) }}" method="post">
                                         @csrf
 
+                                        <input id="user_id" type="hidden"
+                                               class="form-control border-0 @error('user_id') is-invalid @enderror"
+                                               name="user_id" value="{{ \Illuminate\Support\Facades\Auth::user()->id }}"
+                                               autocomplete="user_id"
+                                               readonly>
                                         <div class="d-flex">
                                             <input id="comment" type="text"
                                                    class="form-control @error('comment') is-invalid @enderror"
-                                                   name="comment" value="{{ old('comment') }}" required
-                                                   placeholder="Add comment"
-                                                   autocomplete="comment" autofocus>
+                                                   name="comment" value="{{ old('comment') }}" required autocomplete="comment"
+                                                   autofocus>
 
                                             @error('comment')
                                             <span class="invalid-feedback" role="alert">
