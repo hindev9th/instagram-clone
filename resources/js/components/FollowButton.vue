@@ -19,7 +19,7 @@
         methods: {
             followUser() {
                 axios.post('/follow/'+this.userId).then(response => {
-                    this.status = response.data.attached.length > 0;
+                    this.status = !this.status;
                 })
                 .catch(errors => {
                     if (errors.response.status === 401){

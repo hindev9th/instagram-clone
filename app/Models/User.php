@@ -39,6 +39,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * create a profile null for new user and send to an email welcome
+     */
     protected static function boot()
     {
         parent::boot();
@@ -52,23 +55,53 @@ class User extends Authenticatable
         });
     }
 
+    /**
+     * a user has a profile
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function profile()
     {
         return $this->hasOne(Profile::class);
     }
 
+    /**
+     * a user belong to many following profile
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function following()
     {
         return $this->belongsToMany(Profile::class);
     }
 
+    /**
+     * a user can have many post
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function posts()
     {
         return $this->hasMany(Post::class)->orderBy('created_at','DESC');
     }
 
+    /**
+     * a user can have many comment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function comments()
     {
         return $this->hasMany(Comments::class);
+    }
+
+    /**
+     * a user belong to many like post
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function likes()
+    {
+        return $this->belongsToMany(Post::class);
     }
 }

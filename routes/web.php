@@ -41,4 +41,8 @@ Route::get('/p/{post}', 'PostsController@show')->name('post.show');
 /**
  * Comments
  */
-Route::post('/post/{post}/comment}','CommentsController@store')->name('comment.store');
+Route::post('/p/{post}/comment}','CommentsController@store')->name('comment.store');
+/**
+ * Likes post
+ */
+Route::post('/p/{post}/like','LikesController@store')->name('like.store');
