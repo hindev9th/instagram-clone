@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Dotenv\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,9 +20,13 @@ class PostsController extends Controller
     {
         $user = auth()->user()->following()->pluck('profiles.user_id');
 
-        $posts = Post::whereIn('user_id',$user)->with('user')->latest()->paginate(2);
+        $posts = Post::whereIn('user_id',$user)->with('user')->latest()->paginate(5);
 
-        return view('posts.index',compact('posts'));
+        $rememberUsers = User::where('id','!=',\auth()->user()->id)
+            ->whereNotIn('id',$user)
+            ->paginate(5);
+
+        return view('posts.index',compact('posts','rememberUsers'));
     }
 
     public function create()

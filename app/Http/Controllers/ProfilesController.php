@@ -44,7 +44,11 @@ class ProfilesController extends Controller
             function () use ($user) {
                 return $user->following->count();
             });
-        return view('profiles.index', compact('user', 'follows','postsCount','followersCount','followingCount'));
+
+        // get data following
+        $usersFollowing = $user->following()->get();
+
+        return view('profiles.index', compact('user','usersFollowing', 'follows','postsCount','followersCount','followingCount'));
     }
 
     /**

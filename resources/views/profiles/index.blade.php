@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <div class="row pb-5 border-bottom">
+        <div class="row pb-5">
             <div class="col-3">
                 <img
                     src=" {{ $user->profile->getImage() }}"
@@ -37,13 +37,13 @@
             </div>
         </div>
 
-        <div class="row justify-content-center">
-            <ul class="nav nav-tabs" role="tablist">
+        <div class="row justify-content-center w-100">
+            <ul class="nav nav-tabs w-100 justify-content-center" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" data-toggle="pill" href="#POSTS">POSTS</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="pill" href="#TAGGED">TAGGED</a>
+                    <a class="nav-link" data-toggle="pill" href="#TAGGED">FOLLOWING</a>
                 </li>
             </ul>
         </div>
@@ -61,8 +61,23 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="TAGGED">
-                <div class="row p-5 align-content-center justify-content-center">
-                    <h1>No Photos</h1>
+                <div class="row p-5 flex-column align-content-center justify-content-center">
+                    @foreach($usersFollowing as $userFollowing)
+                        <div class="d-flex justify-content-between mt-2 mb-3 w-100">
+                            <div class="d-flex">
+                                <a class="mr-2" href="{{ route('profile.index',['user' => $userFollowing->user->username]) }}"><img
+                                        src="{{$userFollowing->getImage()}}" class="rounded-circle border" width="35"
+                                        height="35" alt=""></a>
+                                <div class="d-flex flex-column">
+                                    <a class="text-dark text-decoration-none"
+                                       href="{{ route('profile.index',['user' => $userFollowing->user->username]) }}"><strong>{{ $userFollowing->user->username }}</strong></a>
+                                    <span class="text-black-50" style="font-size: 10px">{{__('Suggested for you')}}</span>
+                                </div>
+                            </div>
+                            <follow-button user-id="{{ $userFollowing->user_id }}"
+                                           follows="{{ (auth()->user()) ? auth()->user()->following->contains($userFollowing->user_id) : false }}"></follow-button>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
