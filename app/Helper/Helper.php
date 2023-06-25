@@ -28,25 +28,40 @@ if (!function_exists('formatDayAgo')){
         $minutes = $second / 60;
         $hour = $minutes / 60;
         $day = $hour / 24;
+        $weeks = $day / 7;
+        $months = $day / 30;
+        $years = $months / 12;
 
         if ($second < 0){
             return $startTime;
         }
 
         if ($second < 60) {
-            return intval($second) . "s";
+            return intval($second) . " seconds ago";
         }
 
         if ($minutes < 60) {
-            return intval($minutes) . "m";
+            return intval($minutes) . " minutes ago";
         }
 
         if ($hour < 24) {
-            return intval($hour) . "h";
+            return intval($hour) . " hours ago";
+        }
+
+        if ($day < 7) {
+            return intval($day) . " dates ago";
         }
 
         if ($day < 30) {
-            return intval($day) . "d";
+            return intval($weeks) . " weeks ago";
+        }
+
+        if ($months < 13) {
+            return intval($months) . " months ago";
+        }
+
+        if ($months > 13) {
+            return intval($years) . " years ago";
         }
 
         return $startTime;

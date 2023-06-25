@@ -15,7 +15,7 @@ class Profile extends Model
      */
     public function getImage()
     {
-        return $this->image ? '/storage/'.$this->image : 'https://i0.wp.com/thatnhucuocsong.com.vn/wp-content/uploads/2023/02/Hinh-anh-avatar-Facebook.jpg?ssl=1';
+        return $this->image ? '/storage/'.$this->image : 'https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg';
     }
 
     /**

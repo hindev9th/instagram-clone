@@ -4,13 +4,13 @@
     <div class="container">
         <div class="row border" style="min-height: 450px;">
             <div class="col-6 border-right d-flex justify-content-center align-items-center">
-                <img src="/storage/{{ $post->image }}" class="w-100" style="height: fit-content" alt="">
+                <img src="{{asset('/storage/'.$post->image)  }}" class="w-100" style="height: fit-content" alt="">
             </div>
             <div class="col-6 p-0 mh-100">
                 <div class="row m-0 mw-100">
                     <div class="row w-100 m-0 border-bottom p-2">
                         <div class="col-1 pr-1 pl-1">
-                            <img src="{{ $post->user->profile->getImage() }}" class="w-100 rounded-circle img-thumbnail"
+                            <img src="{{ asset($post->user->profile->getImage()) }}" class="w-100 rounded-circle img-thumbnail"
                                  alt="">
                         </div>
                         <div class="col-11 pl-2 d-flex align-items-center font-weight-bold">
@@ -22,7 +22,7 @@
                          style="top: 55px; height: calc(100% - 210px);">
                         <div class="row m-0  mb-2">
                             <div class="col-1 pr-1 pl-1">
-                                <img src="{{ $post->user->profile->getImage() }}"
+                                <img src="{{ asset($post->user->profile->getImage()) }}"
                                      class="w-100 rounded-circle img-thumbnail" alt="">
                             </div>
                             <div class="col-11 pl-2">
@@ -37,7 +37,7 @@
                         @foreach($post->comments as $comment)
                             <div class="row m-0 mt-2 mb-2">
                                 <div class="col-1 p-1">
-                                    <img src="{{ $comment->user->profile->getImage() }}"
+                                    <img src="{{ asset($comment->user->profile->getImage()) }}"
                                          class="w-100 rounded-circle img-thumbnail" alt="">
                                 </div>
                                 <div class="col-11 pl-2">
@@ -57,7 +57,7 @@
                             <div class="icon-button d-flex">
                                 <like-Button post-id="{{$post->id}}" like="{{ $like }}"></like-Button>
                                 <a href="#comment"><i class="far fa-comment ml-2" style="color: #212529; font-size: 25px"></i></a>
-                                <a href=""><i class="far fa-paper-plane ml-2" style="color: #212529; font-size: 25px"></i></a>
+                                <share-button text-link="{{ route('post.show',['post' => $post->id]) }}"></share-button>
                             </div>
                             <div class="info-post pt-2 d-flex flex-column">
                                 <strong>{{ formatNumber($post->likes->count()).' '.__('likes') }}</strong>

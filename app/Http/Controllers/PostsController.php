@@ -24,6 +24,7 @@ class PostsController extends Controller
 
         $rememberUsers = User::where('id','!=',\auth()->user()->id)
             ->whereNotIn('id',$user)
+            ->inRandomOrder()
             ->paginate(5);
 
         return view('posts.index',compact('posts','rememberUsers'));

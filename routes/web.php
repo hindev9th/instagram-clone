@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,3 +46,10 @@ Route::post('/p/{post}/comment}','CommentsController@store')->name('comment.stor
  * Likes post
  */
 Route::post('/p/{post}/like','LikesController@store')->name('like.store');
+
+Route::prefix('c')->group(function (){
+    Route::get('','ChatsController@index')->name('chat.index');
+    Route::get('message','ChatsController@fetch')->name('chat.fetch');
+    Route::post('message','ChatsController@send')->name('chat.send');
+});
+

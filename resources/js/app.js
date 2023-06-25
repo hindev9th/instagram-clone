@@ -20,6 +20,13 @@ import Vue from "vue";
 
 Vue.component('follow-button', require('./components/FollowButton.vue').default);
 Vue.component('like-button', require('./components/LikeButton.vue').default);
+Vue.component('share-button', require('./components/Buttons/ShareButton.vue').default);
+Vue.component('share-modal', require('./components/Modals/SharePost.vue').default);
+
+// Chats
+Vue.component('chat', require('./components/Chat/Chat.vue').default);
+Vue.component('chat-message', require('./components/Chat/ChatMessage.vue').default);
+Vue.component('chat-form', require('./components/Chat/ChatForm.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

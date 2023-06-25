@@ -8,7 +8,7 @@
                     <div class="  pt-5 w-100">
                         <div class="row w-100 m-0 pb-2">
                             <div class="col-1 pr-1 pl-1">
-                                <img src="{{ $post->user->profile->getImage() }}"
+                                <img src="{{ asset($post->user->profile->getImage())  }}"
                                      class="w-100 rounded-circle img-thumbnail" alt="">
                             </div>
                             <div class="col-11 pl-2 d-flex align-items-center justify-content-between font-weight-bold">
@@ -22,7 +22,7 @@
                         </div>
                         <div class="border d-flex justify-content-center align-items-center">
                             <a href="{{ route('post.show',['post' => $post->id]) }}">
-                                <img src="/storage/{{ $post->image }}" class="w-100" style="height: fit-content" alt="">
+                                <img src="{{ asset('/storage/'.$post->image)  }}" class="w-100" style="height: fit-content" alt="">
                             </a>
                         </div>
                         <div class="w-100 p-0 mh-100">
@@ -33,12 +33,10 @@
                                                      like="{{ (\auth()->user()) ? \auth()->user()->likes->contains($post->id) : false }}"></like-Button>
                                         <a href="{{ route('post.show',['post' => $post->id]) }}"><i
                                                 class="far fa-comment ml-2" style="color: #212529; font-size: 25px"></i></a>
-                                        <a href=""><i class="far fa-paper-plane ml-2"
-                                                      style="color: #212529; font-size: 25px"></i></a>
+                                        <share-button text-link="{{ route('post.show',['post' => $post->id]) }}"></share-button>
                                     </div>
                                     <div class="info-post pt-2 d-flex flex-column">
                                         <strong>{{ formatNumber($post->likes->count()).' '.__('likes') }}</strong>
-                                        <span>{{formatDayAgo($post->created_at)}}</span>
                                     </div>
                                     <div class="row m-0 pt-2 pb-2">
                                         <div class="w-100">
@@ -94,7 +92,7 @@
                     <div class="d-flex justify-content-between mt-2 mb-3">
                         <div class="d-flex">
                             <a class="mr-2" href="{{ route('profile.index',['user' => $user->username]) }}"><img
-                                    src="{{$user->profile->getImage()}}" class="rounded-circle border" width="35"
+                                    src="{{asset($user->profile->getImage())}}" class="rounded-circle border" width="35"
                                     height="35" alt=""></a>
                             <div class="d-flex flex-column">
                                 <a class="text-dark text-decoration-none"
