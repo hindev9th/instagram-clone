@@ -47,9 +47,13 @@ Route::post('/p/{post}/comment}','CommentsController@store')->name('comment.stor
  */
 Route::post('/p/{post}/like','LikesController@store')->name('like.store');
 
+/**
+ * Chat room
+ */
 Route::prefix('c')->group(function (){
     Route::get('','ChatsController@index')->name('chat.index');
-    Route::get('message','ChatsController@fetch')->name('chat.fetch');
-    Route::post('message','ChatsController@send')->name('chat.send');
+    Route::get('{user}','ChatsController@create')->name('chat.create');
+    Route::get('message/{chat}','MessagesController@index')->name('message.index');
+    Route::post('message/{chat}','MessagesController@store')->name('messages.store');
 });
 

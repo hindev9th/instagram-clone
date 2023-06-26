@@ -26,8 +26,23 @@ class Profile extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * a profile belongs to many users
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function followers()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    /**
+     * a profile can have many chat rooms
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function chats()
+    {
+        return $this->hasMany(Chat::class);
     }
 }

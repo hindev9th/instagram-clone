@@ -15,6 +15,8 @@
                             <h2 class="pr-3">{{ $user->username }}</h2>
                             @cannot('update',$user->profile)
                                 <follow-button user-id="{{ $user->id }}" follows="{{ $follows }}"></follow-button>
+                                <a href="{{ route('chat.create', ['user' => $user->id]) }}"
+                                   class="btn btn-primary ml-2" style="height: fit-content">{{__('Message')}}</a>
                             @endcan
                             @can('update',$user->profile)
                                 <a href="{{ route('profile.edit',['user' => $user->username]) }}"

@@ -6145,7 +6145,7 @@ input.comment:focus {
 }
 
 .card.chat-app {
-  height: 600px;
+  height: 90vh;
 }
 
 .chat-app .people-list {
@@ -6283,7 +6283,7 @@ input.comment:focus {
 
 .chat .chat-history .my-message:after {
   bottom: 100%;
-  left: 30px;
+  left: 15px;
   border: solid transparent;
   content: " ";
   height: 0;
@@ -6302,7 +6302,9 @@ input.comment:focus {
 
 .chat .chat-history .other-message:after {
   border-bottom-color: #e8f1f3;
-  left: 93%;
+  left: 73%;
+  transform: rotate(180deg);
+  top: 100%;
 }
 
 .chat .chat-message {

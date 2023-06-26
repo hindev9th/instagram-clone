@@ -9,7 +9,7 @@
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
 }
 .card.chat-app{
-    height: 600px;
+    height: 90vh;
 }
 .chat-app .people-list {
     width: 280px;
@@ -147,7 +147,7 @@
 
 .chat .chat-history .my-message:after {
     bottom: 100%;
-    left: 30px;
+    left: 15px;
     border: solid transparent;
     content: " ";
     height: 0;
@@ -166,7 +166,9 @@
 
 .chat .chat-history .other-message:after {
     border-bottom-color: #e8f1f3;
-    left: 93%
+    left: 73%;
+    transform: rotate(180deg);
+    top: 100%;
 }
 
 .chat .chat-message {

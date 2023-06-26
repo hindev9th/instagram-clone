@@ -114,4 +114,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class);
     }
+
+    /**
+     * a user can have many chat rooms
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function chats()
+    {
+        return $this->hasMany(Chat::class);
+    }
 }

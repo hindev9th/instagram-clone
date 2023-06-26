@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Events\MessageSent;
+use App\Models\Chat;
 use App\Models\Message;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class ChatsController extends Controller
@@ -15,24 +18,27 @@ class ChatsController extends Controller
 
     public function index()
     {
-        return view('chats.index');
+        $chats = [];
+        $chats1 = auth()->user()->chats()->with('profile.user')->get();
+        $chats2 = auth()->user()->profile->chats()->with('user.profile')->get();
+        $chats = $chats1->merge($chats2);
+
+        return view('chats.index',compact('chats'));
     }
 
 
-    public function fetch()
+    public function create(User $user)
     {
-        return Message::with('user')->get();
-    }
+        $chatExist1 = auth()->user()->chats()->where('profile_id',$user->profile->id)->get();
+        $chatExist2 = auth()->user()->profile->chats()->where('user_id',$user->id)->get();
 
-    public function send()
-    {
-        $user = auth()->user();
-        $message = $user->messages()->create([
-           'message' => \request()->input('message'),
-        ]);
+        if (count($chatExist1) === 0 && count($chatExist2) === 0){
+            $chat = new Chat();
+            $chat->user_id = auth()->user()->id;
+            $chat->profile_id = $user->profile->id;
+            $chat->save();
+        }
 
-        broadcast(new MessageSent($user, $message))->toOthers();
-
-        return ['status' => 'Message sent'];
+        return redirect(route('chat.index'));
     }
 }

@@ -23,4 +23,14 @@ class Message extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * a message belong to chat room
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function chat()
+    {
+        return $this->belongsTo(Chat::class);
+    }
 }

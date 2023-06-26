@@ -60,36 +60,86 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['action', 'user'],
+  props: ['action', 'chats', 'user'],
   data: function data() {
     return {
-      messages: []
+      messages: [],
+      chatsData: JSON.parse(this.chats),
+      userData: JSON.parse(this.user),
+      chat_id: 0,
+      chat: null,
+      isShow: false
     };
   },
-  created: function created() {
-    var _this = this;
-    this.fetchMessages();
-    Echo["private"]('chat').listen('MessageSent', function (e) {
-      _this.messages.push({
-        message: e.message.message,
-        user: e.user
-      });
-    });
-  },
+  created: function created() {},
   methods: {
-    fetchMessages: function fetchMessages() {
-      var _this2 = this;
-      axios.get(this.action).then(function (response) {
-        _this2.messages = response.data;
-      });
-    },
     addMessage: function addMessage(message) {
       this.messages.push(message);
-      axios.post(this.action, message).then(function (response) {
-        console.log(response.data);
+      axios.post(this.action + '/c/message/' + this.chat.id, message).then(function (response) {
+        //this.messages.push(response.data);
       });
+    },
+    fetchMessages: function fetchMessages() {
+      var _this = this;
+      axios.get(this.action + '/c/message/' + this.chat.id).then(function (response) {
+        _this.messages = response.data;
+      });
+    },
+    listenForNewMessage: function listenForNewMessage() {
+      var _this2 = this;
+      Echo["private"]('chat.' + this.chat_id).listen('MessageSent', function (e) {
+        _this2.messages.push({
+          chat: e.message.chat,
+          message: e.message.message,
+          user: e.user
+        });
+      });
+    },
+    showMessage: function showMessage(chat) {
+      this.chat = chat;
+      this.chat_id = chat.id;
+      this.isShow = true;
+      this.fetchMessages();
+      this.listenForNewMessage();
+      console;
+    },
+    getImage: function getImage(image) {
+      return image == null ? 'https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg' : this.action + '/storage/' + image;
+    },
+    update: function update() {
+      console.log('tets');
     }
   }
 });
@@ -117,10 +167,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['user'],
+  props: ['chat', 'user'],
   data: function data() {
     return {
       message: '',
@@ -129,9 +178,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     sendMessage: function sendMessage() {
-      console.log(this.user);
       this.$emit('messagesent', {
-        user: this.userData,
+        chat_id: this.chat.id,
+        user_id: this.userData.id,
         message: this.message
       });
       this.message = '';
@@ -196,9 +245,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['messages', 'user'],
+  props: ['messages', 'user', 'chat', 'action'],
   data: function data() {
     return {
       userData: JSON.parse(this.user)
@@ -208,6 +262,42 @@ __webpack_require__.r(__webpack_exports__);
     autoScrollBottom: function autoScrollBottom() {
       var element = document.getElementById("message-list");
       element.scrollTop = element.scrollHeight;
+    },
+    getImage: function getImage(image) {
+      return image == null ? 'https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg' : this.action + '/storage/' + image;
+    },
+    formatTime: function formatTime(time) {
+      var startTime = new Date(time);
+      var endTime = new Date();
+      var seconds = Math.floor((endTime - startTime) / 1000);
+      var minutes = Math.floor(seconds / 60);
+      var hours = Math.floor(minutes / 60);
+      var days = Math.floor(hours / 24);
+      var weeks = Math.floor(days / 7);
+      var months = Math.floor(days / 30);
+      var years = Math.floor(months / 12);
+      if (seconds < 0) {
+        return startTime.toLocaleString();
+      }
+      if (seconds < 60) {
+        return "".concat(seconds, " seconds ago");
+      }
+      if (minutes < 60) {
+        return "".concat(minutes, " minutes ago");
+      }
+      if (hours < 24) {
+        return "".concat(hours, " hours ago");
+      }
+      if (days < 7) {
+        return "".concat(days, " days ago");
+      }
+      if (days < 30) {
+        return "".concat(weeks, " weeks ago");
+      }
+      if (months < 12) {
+        return "".concat(months, " months ago");
+      }
+      return "".concat(years, " years ago");
     }
   },
   updated: function updated() {
@@ -6874,7 +6964,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.message-list{\n    max-height: calc(100% - 55px);\n    overflow-y: auto;\n    overflow-x: hidden;\n}\n.message-list::-webkit-scrollbar{\n    /*display: none;*/\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.message-list {\n    max-height: calc(100% - 55px);\n    overflow-y: auto;\n    overflow-x: hidden;\n}\n.message-list::-webkit-scrollbar {\n    /*display: none;*/\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -44955,21 +45045,126 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "chat" },
-    [
-      _c("chat-message", { attrs: { messages: _vm.messages, user: _vm.user } }),
+  return _c("div", { staticClass: "card chat-app" }, [
+    _c("div", { staticClass: "people-list", attrs: { id: "plist" } }, [
+      _vm._m(0),
       _vm._v(" "),
-      _c("chat-form", {
-        attrs: { user: _vm.user },
-        on: { messagesent: _vm.addMessage },
-      }),
-    ],
-    1
-  )
+      _c(
+        "ul",
+        { staticClass: "list-unstyled chat-list mt-2 mb-0" },
+        _vm._l(_vm.chatsData, function (chat) {
+          return _c(
+            "li",
+            {
+              class: "clearfix " + (_vm.chat_id === chat.id ? "active" : ""),
+              on: {
+                click: function ($event) {
+                  return _vm.showMessage(chat)
+                },
+              },
+            },
+            [
+              chat.user_id === _vm.userData.id
+                ? _c("div", [
+                    _c("img", {
+                      attrs: {
+                        src: _vm.getImage(chat.profile.image),
+                        alt: "avatar",
+                      },
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "about" }, [
+                      _c("div", { staticClass: "name" }, [
+                        _vm._v(_vm._s(chat.profile.user.username)),
+                      ]),
+                      _vm._v(" "),
+                      _vm._m(1, true),
+                    ]),
+                  ])
+                : _c("div", [
+                    _c("img", {
+                      attrs: {
+                        src: _vm.getImage(chat.user.profile.image),
+                        alt: "avatar",
+                      },
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "about" }, [
+                      _c("div", { staticClass: "name" }, [
+                        _vm._v(_vm._s(chat.user.username)),
+                      ]),
+                      _vm._v(" "),
+                      _vm._m(2, true),
+                    ]),
+                  ]),
+            ]
+          )
+        }),
+        0
+      ),
+    ]),
+    _vm._v(" "),
+    _vm.isShow
+      ? _c(
+          "div",
+          { staticClass: "chat" },
+          [
+            _c("chat-message", {
+              attrs: {
+                messages: _vm.messages,
+                chat: _vm.chat,
+                action: _vm.action,
+                user: _vm.user,
+              },
+            }),
+            _vm._v(" "),
+            _c("chat-form", {
+              attrs: { chat: _vm.chat, user: _vm.user },
+              on: { messagesent: _vm.addMessage },
+            }),
+          ],
+          1
+        )
+      : _vm._e(),
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group" }, [
+      _c("div", { staticClass: "input-group-prepend" }, [
+        _c("span", { staticClass: "input-group-text" }, [
+          _c("i", { staticClass: "fa fa-search" }),
+        ]),
+      ]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "form-control",
+        attrs: { type: "text", placeholder: "Search..." },
+      }),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "status" }, [
+      _c("i", { staticClass: "fa fa-circle online" }),
+      _vm._v(" online "),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "status" }, [
+      _c("i", { staticClass: "fa fa-circle online" }),
+      _vm._v(" online "),
+    ])
+  },
+]
 render._withStripped = true
 
 
@@ -45053,47 +45248,7 @@ var render = function () {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "box-message h-100" }, [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("div", { staticClass: "chat-history h-100" }, [
-      _c(
-        "ul",
-        {
-          staticClass: "m-b-0 message-list h-100",
-          attrs: { id: "message-list" },
-        },
-        _vm._l(_vm.messages, function (message) {
-          return _c("li", { staticClass: "clearfix" }, [
-            message.user.id === _vm.userData.id
-              ? _c("div", [
-                  _vm._m(1, true),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "message my-message" }, [
-                    _vm._v(" " + _vm._s(message.message) + " "),
-                  ]),
-                ])
-              : _c("div", [
-                  _vm._m(2, true),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "message other-message float-right" },
-                    [_vm._v(" " + _vm._s(message.message) + " ")]
-                  ),
-                ]),
-          ])
-        }),
-        0
-      ),
-    ]),
-  ])
-}
-var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "chat-header clearfix" }, [
+    _c("div", { staticClass: "chat-header clearfix" }, [
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "col-lg-6" }, [
           _c(
@@ -45107,8 +45262,13 @@ var staticRenderFns = [
             },
             [
               _c("img", {
+                staticClass: "rounded-circle border",
                 attrs: {
-                  src: "https://bootdey.com/img/Content/avatar/avatar2.png",
+                  src: _vm.getImage(
+                    _vm.chat.user_id === _vm.userData.id
+                      ? _vm.chat.profile.image
+                      : _vm.chat.user.profile.image
+                  ),
                   alt: "avatar",
                 },
               }),
@@ -45116,77 +45276,119 @@ var staticRenderFns = [
           ),
           _vm._v(" "),
           _c("div", { staticClass: "chat-about" }, [
-            _c("h6", { staticClass: "m-b-0" }, [_vm._v("Aiden Chavez")]),
+            _c("h6", { staticClass: "m-b-0" }, [
+              _vm._v(
+                "\n                        " +
+                  _vm._s(
+                    _vm.chat.user_id === _vm.userData.id
+                      ? _vm.chat.profile.user.username
+                      : _vm.chat.user.username
+                  )
+              ),
+            ]),
             _vm._v(" "),
             _c("small", [_vm._v("Last seen: 2 hours ago")]),
           ]),
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "col-lg-6 hidden-sm text-right" }, [
-          _c(
-            "a",
-            {
-              staticClass: "btn btn-outline-secondary",
-              attrs: { href: "javascript:void(0);" },
-            },
-            [_c("i", { staticClass: "fa fa-camera" })]
-          ),
-          _vm._v(" "),
-          _c(
-            "a",
-            {
-              staticClass: "btn btn-outline-primary",
-              attrs: { href: "javascript:void(0);" },
-            },
-            [_c("i", { staticClass: "fa fa-image" })]
-          ),
-          _vm._v(" "),
-          _c(
-            "a",
-            {
-              staticClass: "btn btn-outline-info",
-              attrs: { href: "javascript:void(0);" },
-            },
-            [_c("i", { staticClass: "fa fa-cogs" })]
-          ),
-          _vm._v(" "),
-          _c(
-            "a",
-            {
-              staticClass: "btn btn-outline-warning",
-              attrs: { href: "javascript:void(0);" },
-            },
-            [_c("i", { staticClass: "fa fa-question" })]
-          ),
-        ]),
+        _vm._m(0),
       ]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "message-data" }, [
-      _c("span", { staticClass: "message-data-time" }, [
-        _vm._v("10:12 AM, Today"),
-      ]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "message-data text-right" }, [
-      _c("span", { staticClass: "message-data-time" }, [
-        _vm._v("10:10 AM, Todayss"),
-      ]),
-      _vm._v(" "),
-      _c("img", {
-        attrs: {
-          src: "https://bootdey.com/img/Content/avatar/avatar7.png",
-          alt: "avatar",
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "chat-history h-100" }, [
+      _c(
+        "ul",
+        {
+          staticClass: "m-b-0 message-list h-100",
+          attrs: { id: "message-list" },
         },
-      }),
+        _vm._l(_vm.messages, function (message) {
+          return _c("li", { staticClass: "clearfix" }, [
+            message.user_id === _vm.userData.id
+              ? _c("div", [
+                  _c("div", { staticClass: "message-data text-right" }, [
+                    _c("span", { staticClass: "message-data-time" }, [
+                      _vm._v(_vm._s(_vm.formatTime(message.created_at))),
+                    ]),
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "message other-message float-right" },
+                    [_vm._v(" " + _vm._s(message.message))]
+                  ),
+                ])
+              : _c("div", [
+                  _c("div", { staticClass: "message-data" }, [
+                    _c("img", {
+                      staticClass: "rounded-circle border",
+                      attrs: {
+                        src: _vm.getImage(
+                          _vm.chat.user_id === _vm.userData.id
+                            ? _vm.chat.profile.image
+                            : _vm.chat.user.profile.image
+                        ),
+                        alt: "avatar",
+                      },
+                    }),
+                    _vm._v(" "),
+                    _c("span", { staticClass: "message-data-time" }, [
+                      _vm._v(_vm._s(_vm.formatTime(message.created_at))),
+                    ]),
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "message my-message" }, [
+                    _vm._v(" " + _vm._s(message.message)),
+                  ]),
+                ]),
+          ])
+        }),
+        0
+      ),
+    ]),
+  ])
+}
+var staticRenderFns = [
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-lg-6 hidden-sm text-right" }, [
+      _c(
+        "a",
+        {
+          staticClass: "btn btn-outline-secondary",
+          attrs: { href: "javascript:void(0);" },
+        },
+        [_c("i", { staticClass: "fa fa-camera" })]
+      ),
+      _vm._v(" "),
+      _c(
+        "a",
+        {
+          staticClass: "btn btn-outline-primary",
+          attrs: { href: "javascript:void(0);" },
+        },
+        [_c("i", { staticClass: "fa fa-image" })]
+      ),
+      _vm._v(" "),
+      _c(
+        "a",
+        {
+          staticClass: "btn btn-outline-info",
+          attrs: { href: "javascript:void(0);" },
+        },
+        [_c("i", { staticClass: "fa fa-cogs" })]
+      ),
+      _vm._v(" "),
+      _c(
+        "a",
+        {
+          staticClass: "btn btn-outline-warning",
+          attrs: { href: "javascript:void(0);" },
+        },
+        [_c("i", { staticClass: "fa fa-question" })]
+      ),
     ])
   },
 ]
