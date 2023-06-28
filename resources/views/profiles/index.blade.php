@@ -46,7 +46,10 @@
                     <a class="nav-link active" data-toggle="pill" href="#POSTS">POSTS</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="pill" href="#TAGGED">FOLLOWING</a>
+                    <a class="nav-link" data-toggle="pill" href="#FOLLOWERS">FOLLOWERS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="pill" href="#FOLLOWING">FOLLOWING</a>
                 </li>
             </ul>
         </div>
@@ -66,7 +69,31 @@
                     @endforeach
                 </div>
             </div>
-            <div class="tab-pane fade" id="TAGGED">
+            <div class="tab-pane fade" id="FOLLOWERS">
+                <div class="row p-5 flex-column align-content-center justify-content-center">
+                    @foreach($usersFollowers as $userFollower)
+                        <div class="d-flex justify-content-between mt-2 mb-3 w-100">
+                            <div class="d-flex">
+                                <a class="mr-2"
+                                   href="{{ route('profile.index',['user' => $userFollower->username]) }}"><img
+                                        src="{{asset($userFollower->profile->getImage())}}" class="rounded-circle border"
+                                        width="35"
+                                        height="35" alt=""></a>
+                                <div class="d-flex flex-column">
+                                    <a class="text-dark text-decoration-none"
+                                       href="{{ route('profile.index',['user' => $userFollower->username]) }}"><strong>{{ $userFollower->username }}</strong></a>
+                                </div>
+                            </div>
+                            @cannot('update',$userFollower->profile)
+                            <follow-button user-id="{{ $userFollower->id }}"
+                                           follows="{{ auth()->user()->profile->followers->contains($userFollower->id) }}"></follow-button>
+                            @endcan
+
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            <div class="tab-pane fade" id="FOLLOWING">
                 <div class="row p-5 flex-column align-content-center justify-content-center">
                     @foreach($usersFollowing as $userFollowing)
                         <div class="d-flex justify-content-between mt-2 mb-3 w-100">
@@ -79,12 +106,12 @@
                                 <div class="d-flex flex-column">
                                     <a class="text-dark text-decoration-none"
                                        href="{{ route('profile.index',['user' => $userFollowing->user->username]) }}"><strong>{{ $userFollowing->user->username }}</strong></a>
-                                    <span class="text-black-50"
-                                          style="font-size: 10px">{{__('Suggested for you')}}</span>
                                 </div>
                             </div>
+                            @cannot('update',$userFollowing)
                             <follow-button user-id="{{ $userFollowing->user_id }}"
                                            follows="{{ auth()->user()->following->contains($userFollowing->user_id) }}"></follow-button>
+                            @endcan
                         </div>
                     @endforeach
                 </div>

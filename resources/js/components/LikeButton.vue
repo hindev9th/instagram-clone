@@ -1,7 +1,6 @@
 <template>
-    <div class="">
+    <div class="like-post">
         <i class="fa-heart" :class="iconButton" @click="likePost" style="font-size: 25px"></i>
-<!--        <i class="far" :class="iconButton" @click="likePost" aria-hidden="true"></i>-->
     </div>
 </template>
 
@@ -9,15 +8,27 @@
 export default {
     props: ['postId', 'like'],
     mounted() {
-        console.log('Component mounted.')
+
     },
     methods: {
-        likePost() {
+        likePost(event) {
             axios.post('/p/' + this.postId + '/like').then(response => {
                     this.status = !this.status;
                     console.log(response.data);
                 }
             )
+            this.toggleClass(event);
+        },
+        toggleClass (event) {
+            const target = event.target;
+            target.classList.add("flashing");
+
+            const onAnimationEnd = () => {
+                target.removeEventListener('animationend', onAnimationEnd);
+                target.classList.remove("flashing");
+            };
+
+            target.addEventListener('animationend', onAnimationEnd);
         }
     },
     data: function () {
@@ -34,3 +45,27 @@ export default {
     }
 }
 </script>
+<style>
+    .like-post{
+        cursor: pointer;
+    }
+    .flashing {
+        transform: scale(1);
+        animation: scale .5s;
+    }
+
+    @keyframes scale {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            /*transform: scale(1.5);*/
+        }
+        70%{
+            transform: scale(2);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+</style>
