@@ -13,7 +13,8 @@
                         <img :src="getImage(chat.profile.image)" alt="avatar">
                         <div class="about">
                             <div class="name">{{ chat.profile.user.username }}</div>
-                            <div class="status"> <i class="fa fa-circle online"></i> online </div>
+<!--                            <div class="status"> <i class="fa fa-circle online"></i> online </div>-->
+                            <div class="status"> online </div>
                         </div>
                     </div>
                     <div v-else>
@@ -55,7 +56,7 @@
             addMessage(message) {
                 this.messages.push(message);
 
-                axios.post(this.action + '/c/message/' + this.chat.id, message).then(response => {
+                axios.post(this.action + '/c/message/' + this.chat_id, message).then(response => {
                     //this.messages.push(response.data);
                 });
             },
@@ -70,6 +71,7 @@
                         this.messages.push({
                             chat : e.message.chat,
                             message: e.message.message,
+                            created_at: e.message.created_at,
                             user: e.user
                         });
                     });
@@ -80,7 +82,6 @@
                 this.isShow = true;
                 this.fetchMessages();
                 this.listenForNewMessage();
-                console
             },
 
             getImage(image){

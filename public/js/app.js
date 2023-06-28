@@ -90,6 +90,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['action', 'chats', 'user'],
@@ -107,7 +108,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     addMessage: function addMessage(message) {
       this.messages.push(message);
-      axios.post(this.action + '/c/message/' + this.chat.id, message).then(function (response) {
+      axios.post(this.action + '/c/message/' + this.chat_id, message).then(function (response) {
         //this.messages.push(response.data);
       });
     },
@@ -123,6 +124,7 @@ __webpack_require__.r(__webpack_exports__);
         _this2.messages.push({
           chat: e.message.chat,
           message: e.message.message,
+          created_at: e.message.created_at,
           user: e.user
         });
       });
@@ -133,7 +135,6 @@ __webpack_require__.r(__webpack_exports__);
       this.isShow = true;
       this.fetchMessages();
       this.listenForNewMessage();
-      console;
     },
     getImage: function getImage(image) {
       return image == null ? 'https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg' : this.action + '/storage/' + image;
@@ -178,12 +179,15 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     sendMessage: function sendMessage() {
-      this.$emit('messagesent', {
-        chat_id: this.chat.id,
-        user_id: this.userData.id,
-        message: this.message
-      });
-      this.message = '';
+      if (this.message.length > 0) {
+        this.$emit('messagesent', {
+          chat_id: this.chat.id,
+          user_id: this.userData.id,
+          message: this.message,
+          created_at: Date.now()
+        });
+        this.message = '';
+      }
     }
   }
 });
@@ -45078,7 +45082,9 @@ var render = function () {
                         _vm._v(_vm._s(chat.profile.user.username)),
                       ]),
                       _vm._v(" "),
-                      _vm._m(1, true),
+                      _c("div", { staticClass: "status" }, [
+                        _vm._v(" online "),
+                      ]),
                     ]),
                   ])
                 : _c("div", [
@@ -45094,7 +45100,7 @@ var render = function () {
                         _vm._v(_vm._s(chat.user.username)),
                       ]),
                       _vm._v(" "),
-                      _vm._m(2, true),
+                      _vm._m(1, true),
                     ]),
                   ]),
             ]
@@ -45144,15 +45150,6 @@ var staticRenderFns = [
         staticClass: "form-control",
         attrs: { type: "text", placeholder: "Search..." },
       }),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "status" }, [
-      _c("i", { staticClass: "fa fa-circle online" }),
-      _vm._v(" online "),
     ])
   },
   function () {

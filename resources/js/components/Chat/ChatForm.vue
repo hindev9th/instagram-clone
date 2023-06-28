@@ -19,12 +19,15 @@
         },
         methods : {
             sendMessage(){
-                this.$emit('messagesent', {
-                    chat_id : this.chat.id,
-                    user_id: this.userData.id,
-                    message: this.message
-                });
-                this.message = '';
+                if (this.message.length > 0){
+                    this.$emit('messagesent', {
+                        chat_id : this.chat.id,
+                        user_id: this.userData.id,
+                        message: this.message,
+                        created_at : Date.now()
+                    });
+                    this.message = '';
+                }
             }
         }
     }
