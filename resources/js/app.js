@@ -19,9 +19,11 @@ import Vue from "vue";
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('follow-button', require('./components/FollowButton.vue').default);
-Vue.component('like-button', require('./components/LikeButton.vue').default);
-Vue.component('share-button', require('./components/Buttons/ShareButton.vue').default);
-Vue.component('share-modal', require('./components/Modals/SharePost.vue').default);
+
+// Post
+Vue.component('like-button', require('./components/Posts/Buttons/LikeButton.vue').default);
+Vue.component('share-button', require('./components/Posts/Buttons/ShareButton.vue').default);
+Vue.component('share-modal', require('./components/Posts/Modals/ModalShare.vue').default);
 
 // Chats
 Vue.component('chat', require('./components/Chat/Chat.vue').default);

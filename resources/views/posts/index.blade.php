@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-md-9 d-flex flex-column align-items-center">
+            <div class="col-md-8 d-flex flex-column align-items-center">
                 @foreach($posts as $post)
                     <div class="  pt-5 w-100">
                         <div class="row w-100 m-0 pb-2">
@@ -86,7 +86,7 @@
                     </div>
                 @endforeach
             </div>
-            <div class="remember col-md-3">
+            <div class="remember col-md-4">
                 <h3 class="mt-5">{{__('Suggested for you')}}</h3>
                 @foreach($rememberUsers as $user)
                     <div class="d-flex justify-content-between mt-2 mb-3">

@@ -3,15 +3,15 @@
         <span class="btn-share" @click="showAndHide"><i class="far fa-paper-plane ml-2"></i></span>
         <transition name="fade" mode="out-in">
         <div v-if="isShow">
-            <share-post :text-link="textLink" @close-modal="showAndHide"></share-post>
+            <share-modal :text-link="textLink" @close-modal="showAndHide"></share-modal>
         </div>
         </transition>
     </div>
 </template>
 <script>
-    import SharePost from "../Modals/SharePost";
+    import ModalShare from "../Modals/ModalShare.vue";
     export default {
-        components: {SharePost},
+        components: {ModalShare},
         props : ['textLink'],
         data(){
             return {
