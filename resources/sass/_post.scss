@@ -1,3 +1,26 @@
 input.comment:focus{
     box-shadow: none;
 }
+#caption{
+    resize: none;
+    height: calc(100% - 45px);
+}
+#caption:focus{
+    box-shadow: none;
+}
+.box-new-post{
+    max-height: calc(100% - 45px);
+}
+.box-new-post .custom-file-image-label{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: url('https://flxtable.com/wp-content/plugins/pl-platform/engine/ui/images/image-preview.png') no-repeat;
+    background-size: 100% 100%;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+.box-new-post  #image{
+    width: auto;
+}

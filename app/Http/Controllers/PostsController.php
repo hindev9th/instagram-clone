@@ -20,7 +20,7 @@ class PostsController extends Controller
     {
         $user = auth()->user()->following()->pluck('profiles.user_id');
 
-        $posts = Post::whereIn('user_id',$user)->with('user')->latest()->paginate(5);
+        $posts = Post::whereIn('user_id',$user)->orWhere('user_id',auth()->user()->id)->with('user')->latest()->paginate(5);
 
         $rememberUsers = User::where('id','!=',\auth()->user()->id)
             ->whereNotIn('id',$user)
@@ -56,6 +56,7 @@ class PostsController extends Controller
     public function show(Post $post)
     {
         $like = (\auth()->user()) ? \auth()->user()->likes->contains($post->id) : false;
+
 
         return view('posts.show',compact('post','like'));
     }

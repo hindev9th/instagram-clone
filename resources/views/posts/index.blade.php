@@ -18,6 +18,7 @@
                                     <i class="fas fa-circle pr-2" style="font-size: 5px"></i>
                                     <div class="font-weight-normal">{{formatDayAgo($post->created_at)}}</div>
                                 </div>
+                                <setting-button></setting-button>
                             </div>
                         </div>
                         <div class="border d-flex justify-content-center align-items-center">

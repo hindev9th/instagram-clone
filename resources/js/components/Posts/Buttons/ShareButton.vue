@@ -3,7 +3,7 @@
         <span class="btn-share" @click="showAndHide"><i class="far fa-paper-plane ml-2"></i></span>
         <transition name="fade" mode="out-in">
         <div v-if="isShow">
-            <share-modal :text-link="textLink" @close-modal="showAndHide"></share-modal>
+            <ModalShare :text-link="textLink" @close-modal="showAndHide"></ModalShare>
         </div>
         </transition>
     </div>
