@@ -8,6 +8,7 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 import Vue from "vue";
+window.Bus = new Vue();
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -27,8 +28,6 @@ Vue.component('share-button', require('./components/Posts/Buttons/ShareButton.vu
 
 // Chats
 Vue.component('chat', require('./components/Chat/Chat.vue').default);
-Vue.component('chat-message', require('./components/Chat/ChatMessage.vue').default);
-Vue.component('chat-form', require('./components/Chat/ChatForm.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

@@ -15,5 +15,9 @@ use Illuminate\Support\Facades\Broadcast;
 */
 
 Broadcast::channel('chat.{chat}', function ($user, Chat $chat) {
-    return $chat->user_id === $user->id || $chat->profile_id === $user->profile->id;
+    return $chat->users->where('id',$user->id)->first() != null ;
+});
+
+Broadcast::channel('user.{id}', function ($user, $id) {
+    return (int)$id === (int)$user->id;
 });

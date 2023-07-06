@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\MessageSent;
+use App\Events\NewMessage;
 use App\Models\Chat;
 use App\Models\Message;
 use Illuminate\Http\Request;
@@ -11,20 +11,19 @@ class MessagesController extends Controller
 {
     public function index(Chat $chat)
     {
-        return Message::where('chat_id',$chat->id)->get();
+        return $chat->messages;
     }
 
     public function store(Chat $chat)
     {
         $user = auth()->user();
 
-        $message = new Message();
-        $message->chat_id = $chat->id;
-        $message->user_id = $user->id;
-        $message->message = \request()->input('message');
-        $message->save();
+        $message = $chat->messages()->create([
+            'user_id' => $user->id,
+            'message' => \request('message'),
+        ]);
 
-        broadcast(new MessageSent($chat,$user, $message))->toOthers();
+        broadcast(new NewMessage($message))->toOthers();
 
         return $message;
     }

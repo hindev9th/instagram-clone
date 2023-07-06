@@ -1,0 +1,22 @@
+.hover-dark-20:hover{
+    background: #f3f3f3;
+}
+.hover-dark-20 .active{
+    background: #f3f3f3;
+}
+
+.text-hover-dark-20:hover{
+    color: #f3f3f3;
+}
+.hover-none:hover{
+    background: inherit !important;
+    color: inherit !important;
+    border: inherit !important;
+    box-shadow: inherit !important;
+}
+.focus-none:focus{
+    background: inherit !important;
+    color: inherit !important;
+    box-shadow: inherit !important;
+}
+

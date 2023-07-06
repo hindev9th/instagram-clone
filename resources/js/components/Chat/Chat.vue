@@ -1,100 +1,81 @@
 <template>
     <div class="card chat-app">
-        <div id="plist" class="people-list">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fa fa-search"></i></span>
-                </div>
-                <input type="text" class="form-control" placeholder="Search...">
+        <div id="plist" class="people-list h-100 border-right">
+            <div class="input-group d-flex justify-content-between">
+                <h3>Messages</h3>
+                <NewButton></NewButton>
             </div>
             <ul class="list-unstyled chat-list mt-2 mb-0">
-                <li :class="'clearfix ' + (chat_id === chat.id ? 'active' : '')" @click="showMessage(chat);" v-for="chat in chatsData">
-                    <div v-if="chat.user_id === userData.id">
-                        <img :src="getImage(chat.profile.image)" alt="avatar">
-                        <div class="about">
-                            <div class="name">{{ chat.profile.user.username }}</div>
-<!--                            <div class="status"> <i class="fa fa-circle online"></i> online </div>-->
-                            <div class="status"> online </div>
-                        </div>
+                <li :class="'clearfix d-flex flex-nowrap p-1 pl-2 pr-2 ' + (chat_id === chat.id ? 'active' : '')" @click="showMessage(chat);"
+                    v-for="chat in chatsData">
+                    <div class="avatars border rounded-circle">
+                        <img :src="getImage(chatUser.profile.image)" v-if="chatUser.id !== auth_user.id" v-for="chatUser in chat.users" class="avatar border" alt="avatar">
                     </div>
-                    <div v-else>
-                        <img :src="getImage(chat.user.profile.image)" alt="avatar">
-                        <div class="about">
-                            <div class="name">{{ chat.user.username }}</div>
-                            <div class="status"> <i class="fa fa-circle online"></i> online </div>
-                        </div>
+                    <div class="about">
+                        <div class="name" v-text="chat.name == null ? getNames(chat.users,auth_user) : chat.name"></div>
+                        <!--                            <div class="status"> <i class="fa fa-circle online"></i> online </div>-->
+                        <div class="status">{{ chat.messages.length > 0 ? chat.messages[0].message : '' }}</div>
                     </div>
                 </li>
-
             </ul>
         </div>
-        <div class="chat" v-if="isShow">
-            <chat-message :messages="messages" :chat="chat" :action="action" :user="user"></chat-message>
-            <chat-form :chat="chat" v-on:messagesent="addMessage"
-                       :user="user"></chat-form>
-        </div>
+        <ChatMessage :chat="chat" :user="auth_user" v-if="chat.id === selected_id" v-for="chat in chatsData" :key="chat.id"></ChatMessage>
     </div>
 
 </template>
 <script>
-    export default {
-        props : ['action','chats','user'],
-        data() {
-            return{
-                messages: [],
-                chatsData : JSON.parse(this.chats),
-                userData: JSON.parse(this.user),
-                chat_id : 0,
-                chat : null,
-                isShow : false,
-            }
-        },
-        created() {
+import NewButton from "./NewButton";
+import {getImage,getNames} from "../../functiton";
+import ChatMessage from "./ChatMessage";
 
-        },
-        methods: {
-            addMessage(message) {
-                this.messages.push(message);
-
-                axios.post(this.action + '/c/message/' + this.chat_id, message).then(response => {
-                    //this.messages.push(response.data);
+export default {
+    components: {NewButton,ChatMessage},
+    props: ['chats', 'user'],
+    data() {
+        return {
+            messages: [],
+            chatsData: JSON.parse(this.chats),
+            auth_user: JSON.parse(this.user),
+            chat_id: 0,
+            selected_id : 0,
+        }
+    },
+    created() {
+        Echo.private('user.' + this.auth_user.id)
+            .listen('NewChat', (e) => {
+                this.chatsData.unshift({
+                    'id' : e.id,
+                    'name' : e.name,
+                    'users' : e.users,
                 });
-            },
-            fetchMessages() {
-                axios.get(this.action + '/c/message/' + this.chat.id).then(response => {
-                    this.messages = response.data;
-                });
-            },
-            listenForNewMessage(){
-                Echo.private('chat.' + this.chat_id)
-                    .listen('MessageSent', (e) => {
-                        this.messages.push({
-                            chat : e.message.chat,
-                            message: e.message.message,
-                            created_at: e.message.created_at,
-                            user: e.user
-                        });
-                    });
-            },
-            showMessage(chat){
-                this.chat = chat;
-                this.chat_id = chat.id;
-                this.isShow = true;
-                this.fetchMessages();
-                this.listenForNewMessage();
-            },
+            });
+    },
+    methods: {
+        getImage,
+        getNames,
+        showMessage(chat) {
+            this.selected_id = chat.id;
+        },
 
-            getImage(image){
-                return image == null ? 'https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg' : this.action + '/storage/' + image;
-            },
-            update() {
-                console.log('tets');
-            }
+
+    }
+}
+</script>
+<style >
+.chat {
+    height: calc(100% - 100px);
+}
+.chat-list{
+    .about{
+        width: calc(100% - 20px);
+        .name{
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
-</script>
-<style>
-    .chat{
-        height: calc(100% - 100px);
-    }
+
+}
+
 </style>

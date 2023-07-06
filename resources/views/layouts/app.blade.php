@@ -18,6 +18,14 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.6/dist/vue-multiselect.min.css">
+    <script type="text/javascript">
+        window.Laravel = {!! json_encode([
+            'baseUrl' => url('/'),
+            'csrf_token' => csrf_token(),
+            'auth_token' => "auth()->user()->api_token",
+        ]) !!}
+    </script>
 </head>
 <body>
 <div id="app">

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -18,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email','username', 'password',
+        'name', 'email','username', 'password','api_token'
     ];
 
     /**
@@ -40,6 +41,13 @@ class User extends Authenticatable
     ];
 
     /**
+     * always load attributes of user
+     *
+     * @var string[] $with
+     */
+    protected $with = ['profile'];
+
+    /**
      * create a profile null for new user and send to an email welcome
      */
     protected static function boot()
@@ -51,7 +59,7 @@ class User extends Authenticatable
                 'title' => $user->name,
             ]);
 
-            Mail::to($user->email)->send(new NewUserWelcome());
+//            Mail::to($user->email)->send(new NewUserWelcome());
         });
     }
 
@@ -116,12 +124,12 @@ class User extends Authenticatable
     }
 
     /**
-     * a user can have many chat rooms
+     * a user belong to many chat rooms
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function chats()
     {
-        return $this->hasMany(Chat::class);
+        return $this->belongsToMany(Chat::class)->withTimestamps();
     }
 }

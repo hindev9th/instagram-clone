@@ -14,10 +14,9 @@ export default {
         likePost(event) {
             axios.post('/p/' + this.postId + '/like').then(response => {
                     this.status = !this.status;
-                    console.log(response.data);
+                    this.toggleClass(event);
                 }
             )
-            this.toggleClass(event);
         },
         toggleClass (event) {
             const target = event.target;

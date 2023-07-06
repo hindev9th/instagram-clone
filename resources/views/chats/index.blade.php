@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row clearfix">
             <div class="col-lg-12">
-                <chat action="{{ url('/') }}" user="{{ auth()->user() }}" chats="{{ $chats }}"></chat>
+                <chat user="{{ auth()->user() }}" chats="{{ $chats }}"></chat>
             </div>
         </div>
     </div>

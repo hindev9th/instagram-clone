@@ -52,7 +52,7 @@ Route::post('/p/{post}/like','LikesController@store')->name('like.store');
  */
 Route::prefix('c')->group(function (){
     Route::get('','ChatsController@index')->name('chat.index');
-    Route::get('{user}','ChatsController@create')->name('chat.create');
+    Route::post('','ChatsController@store')->name('chat.store');
     Route::get('message/{chat}','MessagesController@index')->name('message.index');
     Route::post('message/{chat}','MessagesController@store')->name('messages.store');
 });

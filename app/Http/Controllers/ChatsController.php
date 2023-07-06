@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\MessageSent;
+use App\Events\NewChat;
+use App\Events\NewMessage;
 use App\Models\Chat;
 use App\Models\Message;
 use App\Models\User;
@@ -18,27 +19,25 @@ class ChatsController extends Controller
 
     public function index()
     {
-        $chats = [];
-        $chats1 = auth()->user()->chats()->with('profile.user')->get();
-        $chats2 = auth()->user()->profile->chats()->with('user.profile')->get();
-        $chats = $chats1->merge($chats2);
+        $chats = auth()->user()->chats->load(['users','messages']);
 
         return view('chats.index',compact('chats'));
     }
 
 
-    public function create(User $user)
+    public function store()
     {
-        $chatExist1 = auth()->user()->chats()->where('profile_id',$user->profile->id)->get();
-        $chatExist2 = auth()->user()->profile->chats()->where('user_id',$user->id)->get();
+        $chat = Chat::create([
+            'name' => null,
+        ]);
 
-        if (count($chatExist1) === 0 && count($chatExist2) === 0){
-            $chat = new Chat();
-            $chat->user_id = auth()->user()->id;
-            $chat->profile_id = $user->profile->id;
-            $chat->save();
-        }
+        $users = collect(\request('users'));
+        $users->push(auth()->user()->id);
 
-        return redirect(route('chat.index'));
+        $chat->users()->attach($users);
+
+        broadcast(new NewChat($chat))->toOthers();
+
+        return $chat;
     }
 }

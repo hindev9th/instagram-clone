@@ -13,23 +13,9 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessageSent implements ShouldBroadcast
+class NewMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    /**
-     *  Chat room
-     *
-     * @var $chat
-     */
-    public $chat;
-
-    /**
-     * user that sent messgae
-     *
-     * @var $user
-     */
-    public $user;
 
     /**
      * Message detail
@@ -43,10 +29,8 @@ class MessageSent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(Chat $chat,User $user, Message $message)
+    public function __construct(Message $message)
     {
-        $this->chat = $chat;
-        $this->chat = $user;
         $this->message = $message;
     }
 
@@ -59,6 +43,21 @@ class MessageSent implements ShouldBroadcast
     {
         $channel = 'chat.'.$this->message->chat_id;
         return new PrivateChannel($channel);
+    }
+
+    /**
+     * @return array
+     */
+    public function broadcastWith(): array
+    {
+        return [
+            'chat_id' => $this->message->chat_id,
+            'user_id' => $this->message->user_id,
+            'message' => $this->message->message,
+            'created_at' => $this->message->created_at,
+            'updated_at' => $this->message->updated_at,
+            'user' => $this->message->user,
+        ];
     }
 
 }

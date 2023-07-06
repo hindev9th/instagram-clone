@@ -11,7 +11,7 @@ class Chat extends Model
      *
      * @var string[] $fillable
      */
-    protected $fillable = ['chat'];
+    protected $fillable = ['name'];
 
     public function messages()
     {
@@ -19,23 +19,26 @@ class Chat extends Model
     }
 
     /**
-     * a chat room belong to a user
+     * a chat room belong to many users
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class)->withTimestamps();
     }
 
     /**
-     * a chat room belong to a profile
+     * check user_id have in the room
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @param int $user_id
+     * @return bool
      */
-    public function profile()
+    public function hasUser(int $user_id): bool
     {
-        return $this->belongsTo(Profile::class);
+        $user = $this->users()->where('id',$user_id)->first();
+
+        return true;
     }
 
 }
