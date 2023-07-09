@@ -82,6 +82,10 @@
                         </div>
                     </form>
                 </div>
+                <div class="d-flex justify-content-center p-3">
+                    {{__("You already have an account.")}}
+                    <a href="{{ route('login') }}">{{ __('Login') }}</a>
+                </div>
             </div>
         </div>
     </div>

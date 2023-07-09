@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <div class="box-main">
+        <div class="container">
             <form  action="{{ route('profile.update',['user' => $user->username]) }}" enctype="multipart/form-data" method="POST">
                 @csrf
                 @method('PATCH')
@@ -23,7 +24,7 @@
                     <label for="description" class="col-form-label">{{ __('Description') }}</label>
 
                     <input id="description" type="text" class="form-control @error('description') is-invalid @enderror"
-                           name="description" value="{{ old('description') ?? $user->profile->description }}" required autocomplete="description" autofocus>
+                           name="description" value="{{ old('description') ?? $user->profile->description }}" autocomplete="description" autofocus>
 
                     @error('description')
                     <span class="invalid-feedback" role="alert">
@@ -60,6 +61,7 @@
                     <button class="btn btn-primary">Save profile</button>
                 </div>
             </form>
+        </div>
 
     </div>
 @endsection

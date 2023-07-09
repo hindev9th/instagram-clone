@@ -1,0 +1,101 @@
+.menu-app{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    @extend .border-right;
+    ul{
+        padding: 0 10px;
+        .icon-logo{
+            display: none;
+            padding: 20px 8px;
+        }
+        .text-logo{
+            h1{
+                padding: 20px 10px;
+            }
+        }
+    }
+    li{
+        cursor: pointer;
+        margin: 5px 0;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 18px;
+        white-space: nowrap;
+        .active{
+            font-weight: bold;
+            @extend .bg-dark-20;
+        }
+        &:hover{
+            @extend .hover-dark-20;
+        }
+
+        .icon{
+            width: 40px;
+            font-size: 26px;
+        }
+    }
+}
+
+@media (min-width: 1920px) {
+    .menu-app{
+        width: $nav-app-wide-width;
+    }
+}
+@media (min-width: 1264px) and (max-width: 1919px) {
+    .menu-app{
+        width: $nav-app-medium-width;
+    }
+}
+@media (min-width: 768px) and (max-width: 1263px){
+    .menu-app{
+        width: $nav-app-small-width;
+        overflow: hidden;
+        ul{
+            .icon-logo{
+                display: block;
+            }
+            .text-logo{
+                display: none;
+            }
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .menu-app{
+        top: unset;
+        bottom: 0;
+        height: 66px;
+        width: 100%;
+        z-index: 100;
+        background: white;
+        ul{
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            .icon-logo{
+                display: none;
+            }
+            .text-logo{
+                display: none;
+            }
+            .item-text{
+                display: none;
+            }
+            li{
+                line-height: 16px;
+                .icon{
+                    width: auto;
+                }
+                img{
+                    margin-right: 0 !important;
+                }
+            }
+        }
+    }
+}

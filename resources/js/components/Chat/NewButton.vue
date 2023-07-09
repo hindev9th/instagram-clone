@@ -46,7 +46,7 @@
                                 </div>
                             </li>
                             <li class="p-2 border-bottom d-flex align-items-center">
-                                <button id="btn-new-chat" @click="createChatRoom" class="btn btn-primary w-100">Chat</button>
+                                <button id="btn-new-chat" :disabled="selected_id.length === 0" @click="createChatRoom" class="btn btn-primary w-100">Chat</button>
                             </li>
                         </ul>
                     </div>
@@ -74,6 +74,10 @@ export default {
         getImage,
         showModal() {
             this.isShow = !this.isShow;
+            this.selected = []
+            this.selected_id = []
+            this.users = [];
+            this.search = '';
         },
         searchUsers() {
             if (this.search.length > 2) {
@@ -117,7 +121,7 @@ export default {
 
 .close {
     top: 10px;
-    right: 5px;
+    right: 16px;
     font-size: 30px;
 }
 
@@ -129,7 +133,7 @@ export default {
 #tag-users{
     .user{
         cursor: pointer;
-        background: aquamarine;
+        background: #00b9ef;
         border-radius: 12px;
         padding: 5px 20px 5px 10px;
         position: relative;

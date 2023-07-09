@@ -1,9 +1,9 @@
 <template>
-    <div class="chat-message clearfix">
+    <div class="chat-message input-message">
         <div class="input-group mb-0">
             <input type="text" class="form-control" v-model="message" @keyup.enter="sendMessage" placeholder="Enter text here...">
             <div class="input-group-append">
-                <button class="pr-4 pl-4 input-group-text" @click="sendMessage"><i class="fa fa-paper-plane"></i></button>
+                <button class="pr-4 pl-4 input-group-text" v-show="message.length > 0" :disabled="message.length === 0" @click="sendMessage"><i class="fa fa-paper-plane"></i></button>
             </div>
         </div>
     </div>

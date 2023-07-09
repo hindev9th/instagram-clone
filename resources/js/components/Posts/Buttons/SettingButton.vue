@@ -46,10 +46,8 @@
 </template>
 
 <script>
-    import ModalSetting from "../Modals/ModalSetting.vue";
     import $ from 'jquery';
 export default {
-    components: {ModalSetting},
     name: "SettingButton",
     data(){
         return{

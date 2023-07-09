@@ -1,29 +1,33 @@
 <template>
     <div class="chat-message">
         <div class="box-message">
-            <div class="chat-header clearfix">
-                <div class="row">
-                    <div class="col-lg-6 box-name">
-                        <div class="avatars border rounded-circle">
-                            <img :src="getImage(chatUser.profile.image)" v-if="chatUser.id !== user.id"
-                                 v-for="chatUser in chat.users" class="avatar border" alt="avatar">
-                        </div>
-                        <div class="chat-about d-flex align-items-center">
-                            <h4 class="m-b-0 m-0 font-weight-bold">
-                                {{ getNames(chat.users, user) }}</h4>
-                        </div>
+            <div class="chat-header d-flex justify-content-between align-items-center">
+                <div class="close-message" @click="$emit('close-message')">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+                </div>
+                <div class="box-name">
+                    <div class="avatars rounded-circle">
+                        <img :src="getImage(chatUser.profile.image)" v-if="chatUser.id !== user.id"
+                             v-for="chatUser in chat.users" class="img-avatar" alt="avatar">
                     </div>
-                    <div class="col-lg-6 hidden-sm text-right">
-                        <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>
-                        <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
-                        <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
-                        <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
+                    <div class="chat-about d-flex align-items-center">
+                        <h4 class="m-b-0 m-0 font-weight-bold">
+                            {{ getNames(chat.users, user) }}</h4>
                     </div>
                 </div>
+                <div class="hidden-sm text-right">
+                    <!--                        <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>-->
+                    <!--                        <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>-->
+                    <!--                        <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>-->
+                    <a href="javascript:void(0);" class="icon"><i class="fas fa-info-circle"></i></a>
+                </div>
             </div>
-            <div class="chat-history">
+            <div class="chat-history border-0 position-relative">
+                <div class="loading position-absolute w-100 h-100" v-if="isLoading">
+                    <div class="spinner-border text-light"></div>
+                </div>
                 <ul class="m-b-0 m-0 p-3 message-list" id="message-list">
-                    <li class="clearfix" v-for="message in messages">
+                    <li class="" v-for="message in messages">
                         <div v-if="message.user_id === user.id">
                             <div class="message-data text-right">
                                 <span class="message-data-time">{{ formatTime(message.created_at) }}</span>
@@ -34,8 +38,7 @@
                             <div class="message-data d-flex">
                                 <img
                                     :src="getImage( message.user.profile.image)"
-                                    width="35px" height="35px"
-                                    class="rounded-circle border" alt="avatar">
+                                    class="rounded-circle" alt="avatar">
                                 <div class="message-name d-flex flex-column pl-2">
                                     <strong>{{ message.user.name }}</strong>
                                     <span class="message-data-time">{{ formatTime(message.created_at) }}</span>
@@ -50,7 +53,6 @@
             </div>
         </div>
         <ChatForm :chat="chat" :user="user"></ChatForm>
-        {{ mss}}
 
     </div>
 
@@ -65,7 +67,8 @@ export default {
     data() {
         return {
             messages: [],
-            mss : [],
+            mss: [],
+            isLoading : true,
         }
     },
     created() {
@@ -83,8 +86,6 @@ export default {
         })
 
 
-
-
     },
     methods: {
         formatTime,
@@ -99,6 +100,7 @@ export default {
             axios.get(window.Laravel.baseUrl + '/c/message/' + this.chat.id)
                 .then(response => {
                     this.messages = response.data;
+                    this.isLoading = false;
                 })
         }
     },

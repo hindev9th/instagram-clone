@@ -1,17 +1,21 @@
-input.comment:focus{
+input.comment:focus {
     box-shadow: none;
 }
-#caption{
+
+#caption {
     resize: none;
     height: calc(100% - 45px);
 }
-#caption:focus{
+
+#caption:focus {
     box-shadow: none;
 }
-.box-new-post{
+
+.box-new-post {
     max-height: calc(100% - 45px);
 }
-.box-new-post .custom-file-image-label{
+
+.box-new-post .custom-file-image-label {
     position: absolute;
     top: 0;
     left: 0;
@@ -21,6 +25,109 @@ input.comment:focus{
     width: 100%;
     z-index: 1;
 }
-.box-new-post  #image{
+
+.box-new-post #image {
     width: auto;
+}
+.post-home{
+    padding-top: 2rem;
+    .posts{
+        max-width: 470px;
+        width: 100%;
+        .post:not(:first-of-type){
+            padding-top: 3rem;
+        }
+        .header-post{
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+    }
+    .box-user{
+        display: flex;
+        padding-bottom: 1rem;
+        .box-name{
+            .username{
+                font-size: $font-size-base;
+                line-height: 1rem;
+            }
+            .name{
+                line-height: 1rem;
+            }
+        }
+    }
+    .remember{
+        .suggested-users{
+            .user{
+                display: flex;
+                justify-content: space-between;
+            }
+        }
+    }
+}
+
+@media (max-width: 1049px){
+    .post-home{
+        .box-user{
+            display: none;
+        }
+        .box-post{
+            flex-direction: column;
+            .posts{
+                margin: 0 auto;
+            }
+            .remember{
+                max-width: 470px;
+                margin: 0 auto;
+                .suggested-users{
+                    display: flex;
+                    width: 100%;
+                    overflow-y: auto;
+                    .user{
+                        min-width: 130px;
+                        padding: 20px;
+                        flex-direction: column;
+                        border: $border-base;
+                        border-radius: 10px;
+                        align-items: center;
+                    }
+                    .user:not(:first-of-type){
+                        margin-left: 10px;
+                    }
+                    .info{
+                        flex-direction: column;
+                        align-items: center;
+                        padding-bottom: 15px;
+                    }
+                    .avatar{
+                        margin: 0;
+                        min-width: 55px;
+                        min-height: 55px;
+                    }
+                    .name{
+                        align-items: center;
+                    }
+                }
+            }
+        }
+    }
+
+}
+@media (max-width: 767px) {
+
+}
+@media (max-width: 479px) {
+    .post-home.container{
+        padding-right: 0;
+        padding-left: 0;
+        .posts{
+            padding: 0;
+        }
+        .box-interact{
+            padding: 0 15px;
+        }
+        .remember{
+            padding: 0;
+        }
+    }
 }

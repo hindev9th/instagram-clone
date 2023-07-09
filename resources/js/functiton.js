@@ -41,7 +41,7 @@ export function formatTime(time) {
 }
 
 export function getImage(image){
-    image = (image == null) ? 'https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg' : window.Laravel.baseUrl + '/storage/' + image;
+    image = (image == null) ? 'https://hatalandscape.com/public/no-avatar.jpg' : window.Laravel.baseUrl + '/storage/' + image;
     return image;
 }
 

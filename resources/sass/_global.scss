@@ -1,6 +1,12 @@
 .hover-dark-20:hover{
     background: #f3f3f3;
 }
+.bg-dark-20{
+    background: #f3f3f3;
+}
+.text-dark-20{
+    color: #f3f3f3;
+}
 .hover-dark-20 .active{
     background: #f3f3f3;
 }
@@ -18,5 +24,59 @@
     background: inherit !important;
     color: inherit !important;
     box-shadow: inherit !important;
+}
+.avatar{
+    min-width: 40px;
+    width: 40px;
+    min-height: 40px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-right: .5rem;
+    img{
+        width: 100%;
+        height: 100%;
+    }
+}
+.box-main{
+    margin-left: auto;
+    padding-top: 20px;
+
+}
+.loading{
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 500;
+    .spinner-border{
+
+    }
+}
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+@media (min-width: 1920px) {
+    .box-main {
+        width: calc(100% - #{$nav-app-wide-width});
+    }
+}
+
+@media (min-width: 1264px) and (max-width: 1919px) {
+    .box-main {
+        width: calc(100% - #{$nav-app-medium-width});
+    }
+}
+@media (min-width: 768px) and (max-width: 1263px){
+    .box-main {
+        width: calc(100% - #{$nav-app-small-width});
+    }
+}
+@media (max-width: 767px) {
+    .box-main{
+        width: 100%;
+        padding-bottom: $nav-app-small-width;
+    }
 }
 

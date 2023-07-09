@@ -76,9 +76,9 @@ class ProfilesController extends Controller
     {
         $data = \request()->validate([
             'title' => 'required',
-            'description' => 'required',
-            'url' => '',
-            'image' => '',
+            'description' => '',
+            'url' => 'url|nullable',
+            'image' => 'image|nullable',
         ]);
 
         if (\request('image')) {

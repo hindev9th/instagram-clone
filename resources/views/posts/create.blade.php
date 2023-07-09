@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container border shadow-sm" style="border-radius: 15px;height: 75vh;">
+    <div class="box-main">
+        <div class="container border shadow-sm" style="border-radius: 15px;height: 75vh;">
             <form  action="{{ route('post.store') }}" class="h-100" enctype="multipart/form-data" method="POST">
                 @csrf
 
@@ -47,5 +48,7 @@
                 </div>
             </form>
 
+        </div>
     </div>
+
 @endsection

@@ -9,11 +9,34 @@
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
 }
 .card.chat-app{
-    height: 90vh;
+    height: 100%;
+    margin: 0;
     flex-direction: unset;
+    border: none;
+    background-color: $body-bg;
+    box-shadow: unset;
     .chat-message{
         width: 100%;
-        padding: 20px;
+        padding: 0px;
+        transition: 0.5s;
+    }
+    .input-message{
+        padding: 0 20px;
+        .input-group{
+            border-radius: 30px;
+            border: $border-base;
+            overflow: hidden;
+            input{
+                border: none;
+                &:focus{
+                    box-shadow: none;
+                }
+            }
+            button{
+                background: #fff;
+                border: none;
+            }
+        }
     }
     .box-name{
         display: flex;
@@ -30,7 +53,9 @@
     width: 280px;
     left: 0;
     top: 0;
-    padding: 20px;
+    .close{
+        margin-left: -100%;
+    }
 }
 
 .chat-app .chat {
@@ -45,7 +70,7 @@
     transition: .5s
 }
 .people-list .chat-list li {
-    padding: 10px 15px;
+    padding: 10px 20px;
     list-style: none;
     border-radius: 3px
 }
@@ -82,7 +107,13 @@
     color: #999;
     font-size: 13px
 }
-
+.box-message{
+    .chat-header{
+        .icon{
+            font-size: 28px;
+        }
+    }
+}
 .chat-header {
     padding: 15px 20px;
     border-bottom: 2px solid #f4f7f6
@@ -91,7 +122,8 @@
 .chat-header img {
     float: left;
     border-radius: 40px;
-    width: 40px
+    width: 100%;
+    height: 100%;
 }
 
 .chat-header .chat-about {
@@ -104,7 +136,7 @@
 }
 .chat-history {
     border-bottom: 2px solid #fff;
-    height: calc(100% - 57px);
+    height: calc(100% - 76px);
 
     .message-list{
         height: 100%;
@@ -129,8 +161,11 @@
 }
 
 .chat-history .message-data img {
-    border-radius: 40px;
-    width: 40px
+    border-radius: 50%;
+    width: 45px;
+    min-width: 45px;
+    min-height: 45px;
+    height: 45px;
 }
 
 .chat-history .message-data-time {
@@ -233,19 +268,18 @@ li.clearfix{
 }
 .avatars{
     position: relative;
-    width: 35px;
-    min-width: 35px;
-    height: 35px;
-    min-height: 35px;
+    width: 45px;
+    min-width: 45px;
+    height: 45px;
+    min-height: 45px;
     overflow: hidden;
 
-    .avatar{
+    .img-avatar{
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        border: 1px solid #dee2e6;
         border-radius: 50%;
         &:nth-child(2){
             margin-left: 10px;
@@ -259,17 +293,37 @@ li.clearfix{
         }
     }
 }
+.box-main.chat-main{
+    padding: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100%;
+    .clearfix{
+        height: 100%;
+    }
+}
+.close-message{
+    display: none;
+}
 @media only screen and (max-width: 767px) {
+    .box-main.chat-main{
+        height: calc(100% - #{$nav-app-small-width});
+    }
     .chat-app .people-list {
-        height: 465px;
         width: 100%;
         overflow-x: auto;
         background: #fff;
-        left: -400px;
-        display: none
+        margin-left: -100%;
     }
     .chat-app .people-list.open {
-        left: 0
+        margin-left: 0
+    }
+    .chat-app .chat-message{
+        margin-right: -100%;
+    }
+    .chat-app .chat-message.open{
+        margin-right: 0;
     }
     .chat-app .chat {
         margin: 0
@@ -277,30 +331,21 @@ li.clearfix{
     .chat-app .chat .chat-header {
         border-radius: 0.55rem 0.55rem 0 0
     }
-    .chat-app .chat-history {
-        height: 300px;
-        overflow-x: auto
+
+    .close-message{
+        display: block;
     }
+
 }
 
 @media only screen and (min-width: 768px) and (max-width: 992px) {
-    .chat-app .chat-list {
-        height: 650px;
-        overflow-x: auto
-    }
-    .chat-app .chat-history {
-        height: 600px;
-        overflow-x: auto
-    }
+
 }
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-    .chat-app .chat-list {
-        height: 480px;
-        overflow-x: auto
-    }
+
     .chat-app .chat-history {
-        height: calc(100vh - 350px);
+
         overflow-x: auto
     }
 }

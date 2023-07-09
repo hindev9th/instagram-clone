@@ -15,7 +15,7 @@ class Profile extends Model
      */
     public function getImage()
     {
-        return $this->image ? '/storage/'.$this->image : 'https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg';
+        return $this->image ? '/storage/'.$this->image : 'https://hatalandscape.com/public/no-avatar.jpg';
     }
 
     /**

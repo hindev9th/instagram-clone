@@ -66,6 +66,10 @@
                         </div>
                     </form>
                 </div>
+                <div class="d-flex justify-content-center p-3">
+                    {{__("You don't have account.")}}
+                    <a href="{{ route('register') }}">{{ __('Register') }}</a>
+                </div>
             </div>
         </div>
     </div>

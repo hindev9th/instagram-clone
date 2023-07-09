@@ -27,30 +27,36 @@ Route::post('/follow/{user}', 'FollowsController@store');
 /**
  * Profile
  */
-Route::get('/profile/{user:username}', 'ProfilesController@index')->name('profile.index');
-Route::get('/profile/{user:username}/edit', 'ProfilesController@edit')->name('profile.edit');
-Route::patch('/profile/{user:username}', 'ProfilesController@update')->name('profile.update');
+Route::middleware('auth')->prefix('/profile')->group(function (){
+    Route::get('/{user:username}', 'ProfilesController@index')->name('profile.index');
+    Route::get('/{user:username}/edit', 'ProfilesController@edit')->name('profile.edit');
+    Route::patch('/{user:username}', 'ProfilesController@update')->name('profile.update');
+});
 
 /**
  * Post
  */
-Route::get('/', 'PostsController@index')->name('post.index');
-Route::get('/p/create', 'PostsController@create')->name('post.create');
-Route::post('/p', 'PostsController@store')->name('post.store');
-Route::get('/p/{post}', 'PostsController@show')->name('post.show');
-/**
- * Comments
- */
-Route::post('/p/{post}/comment}','CommentsController@store')->name('comment.store');
-/**
- * Likes post
- */
-Route::post('/p/{post}/like','LikesController@store')->name('like.store');
+Route::middleware('auth')->prefix('/')->group(function () {
+    Route::get('/', 'PostsController@index')->name('post.index');
+    Route::get('/p/create', 'PostsController@create')->name('post.create');
+    Route::post('/p', 'PostsController@store')->name('post.store');
+    Route::get('/p/{post}', 'PostsController@show')->name('post.show');
+
+    /**
+     * Comments
+     */
+    Route::post('/p/{post}/comment}','CommentsController@store')->name('comment.store');
+    /**
+     * Likes post
+     */
+    Route::post('/p/{post}/like','LikesController@store')->name('like.store');
+});
+
 
 /**
  * Chat room
  */
-Route::prefix('c')->group(function (){
+Route::middleware('auth')->prefix('c')->group(function (){
     Route::get('','ChatsController@index')->name('chat.index');
     Route::post('','ChatsController@store')->name('chat.store');
     Route::get('message/{chat}','MessagesController@index')->name('message.index');
