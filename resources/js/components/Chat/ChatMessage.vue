@@ -3,7 +3,11 @@
         <div class="box-message">
             <div class="chat-header d-flex justify-content-between align-items-center">
                 <div class="close-message" @click="$emit('close-message')">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="0 0 448 512">
+                        <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <path
+                            d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
                 </div>
                 <div class="box-name">
                     <div class="avatars rounded-circle">
@@ -27,26 +31,19 @@
                     <div class="spinner-border text-light"></div>
                 </div>
                 <ul class="m-b-0 m-0 p-3 message-list" id="message-list">
-                    <li class="" v-for="message in messages">
-                        <div v-if="message.user_id === user.id">
-                            <div class="message-data text-right">
+                    <li :class="{'text-right' : message.user_id === user.id}" v-for="message in messages">
+                        <div :class="'message-data d-flex '+ (message.user_id !== user.id ? '' : 'justify-content-end')">
+                            <img v-if="message.user_id !== user.id"
+                                 :src="getImage( message.user.profile.image)"
+                                 class="rounded-circle" alt="avatar">
+                            <div class="message-name d-flex flex-column pl-2">
+                                <strong v-if="message.user_id !== user.id">{{ message.user.name }}</strong>
                                 <span class="message-data-time">{{ formatTime(message.created_at) }}</span>
                             </div>
-                            <div class="message other-message float-right"> {{ message.message }}</div>
                         </div>
-                        <div v-else>
-                            <div class="message-data d-flex">
-                                <img
-                                    :src="getImage( message.user.profile.image)"
-                                    class="rounded-circle" alt="avatar">
-                                <div class="message-name d-flex flex-column pl-2">
-                                    <strong>{{ message.user.name }}</strong>
-                                    <span class="message-data-time">{{ formatTime(message.created_at) }}</span>
-                                </div>
-                            </div>
-                            <div class="message my-message"> {{ message.message }}</div>
+                        <div :class="'message ' + (message.user_id !== user.id ? 'my-message' : 'other-message') ">
+                            {{ message.message }}
                         </div>
-
                     </li>
 
                 </ul>
@@ -68,7 +65,7 @@ export default {
         return {
             messages: [],
             mss: [],
-            isLoading : true,
+            isLoading: true,
         }
     },
     created() {

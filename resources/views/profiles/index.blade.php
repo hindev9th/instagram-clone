@@ -80,11 +80,12 @@
                                     <div class="d-flex flex-column">
                                         <a class="text-dark text-decoration-none"
                                            href="{{ route('profile.index',['user' => $userFollower->username]) }}"><strong>{{ $userFollower->username }}</strong></a>
+                                        <small>{{$userFollower->name}}</small>
                                     </div>
                                 </div>
                                 @cannot('update',$userFollower->profile)
                                     <follow-button user-id="{{ $userFollower->id }}"
-                                                   follows="{{ auth()->user()->profile->followers->contains($userFollower->id) }}"></follow-button>
+                                                   follows="{{ auth()->user()->following->contains($userFollower->id) }}"></follow-button>
                                 @endcan
 
                             </div>
@@ -104,6 +105,7 @@
                                     <div class="d-flex flex-column">
                                         <a class="text-dark text-decoration-none"
                                            href="{{ route('profile.index',['user' => $userFollowing->user->username]) }}"><strong>{{ $userFollowing->user->username }}</strong></a>
+                                        <small>{{$userFollowing->user->name}}</small>
                                     </div>
                                 </div>
                                 @cannot('update',$userFollowing)

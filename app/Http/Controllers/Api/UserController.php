@@ -20,7 +20,7 @@ class UserController extends Controller
 
     public function search($search)
     {
-        return User::where('name','like','%'.$search.'%')->orWhere('username','like','%'.$search.'%')->orWhere('email','like','%'.$search.'%')->get();
+        return User::select('id,name,username')->where('name','like','%'.$search.'%')->orWhere('username','like','%'.$search.'%')->orWhere('email','like','%'.$search.'%')->get();
     }
     /**
      * Show the form for creating a new resource.
