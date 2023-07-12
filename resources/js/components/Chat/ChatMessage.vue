@@ -45,8 +45,17 @@
                             {{ message.message }}
                         </div>
                     </li>
-
+                    <li class="typing d-flex justify-content-center" v-if="isTyping">
+                        {{typingName}}
+                        typing
+                        <div id="wave">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </li>
                 </ul>
+
             </div>
         </div>
         <ChatForm :chat="chat" :user="user"></ChatForm>
@@ -55,6 +64,7 @@
 
 </template>
 <script>
+import $ from 'jquery';
 import ChatForm from './ChatForm.vue';
 import {formatTime, getImage, getNames} from "../../functiton";
 
@@ -66,14 +76,25 @@ export default {
             messages: [],
             mss: [],
             isLoading: true,
+            typingName: '',
+            isTyping : false,
         }
     },
     created() {
         Echo.private('chat.' + this.chat.id)
             .listen('NewMessage', (e) => {
-                this.messages.push(e
-                )
+                this.messages.push(e)
             })
+            .listenForWhisper('typing', (e) =>{
+                this.isTyping = e.typing;
+                this.typingName = e.name;
+
+                setTimeout( () => {
+                    this.isTyping = false;
+                }, 1000)
+            })
+
+
     },
     mounted() {
         this.fetchMessages();
@@ -81,7 +102,6 @@ export default {
         Bus.$on('NewMessage', (message) => {
             this.messages.push(message);
         })
-
 
     },
     methods: {
@@ -99,7 +119,8 @@ export default {
                     this.messages = response.data;
                     this.isLoading = false;
                 })
-        }
+        },
+
     },
     updated() {
         this.autoScrollBottom();
@@ -114,5 +135,36 @@ export default {
 
 .message-list::-webkit-scrollbar {
     /*display: none;*/
+}
+#wave {
+    position:relative;
+    text-align:center;
+.dot {
+    display:inline-block;
+    width: 3px;
+    height: 3px;
+    border-radius:50%;
+    margin-right:3px;
+    background:#303131;
+    animation: wave 1.3s linear infinite;
+
+&:nth-child(2) {
+     animation-delay: -1.1s;
+ }
+
+&:nth-child(3) {
+     animation-delay: -0.9s;
+ }
+}
+}
+
+@keyframes wave {
+    0%, 60%, 100% {
+        transform: initial;
+    }
+
+    30% {
+        transform: translateY(-10px);
+    }
 }
 </style>

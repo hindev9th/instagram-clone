@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export function formatTime(time) {
     const startTime = new Date(time);
     const endTime = new Date();
@@ -53,4 +55,25 @@ export function getNames(users,auth_user) {
         }
     }
     return names.join(', ');
+}
+
+export function showNotify(message){
+    var html = `
+                  <div class="toast m-4" data-autohide="false" style="width: 250px;position: fixed; top: 0; right: 0;">
+                    <div class="toast-header">
+                      <strong class="mr-auto">Notification</strong>
+                      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="toast-body">
+                      ${message}
+                    </div>
+                  </div>`
+    $('body').append(html);
+    $('.toast').toast('show');
+    setTimeout(function (){
+        $('.toast').toast('hide');
+    },5000);
+    return true;
 }

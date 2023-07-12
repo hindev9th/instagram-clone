@@ -41,7 +41,7 @@ Route::middleware('auth')->prefix('/')->group(function () {
     Route::get('/p/create', 'PostsController@create')->name('post.create');
     Route::post('/p', 'PostsController@store')->name('post.store');
     Route::get('/p/{post}', 'PostsController@show')->name('post.show');
-
+    Route::delete('/p/d/{post}','PostsController@destroy')->name('post.destroy');
     /**
      * Comments
      */

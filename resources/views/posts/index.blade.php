@@ -19,7 +19,7 @@
                                         <i class="fas fa-circle pr-2" style="font-size: 5px"></i>
                                         <div class="font-weight-normal">{{formatDayAgo($post->created_at)}}</div>
                                     </div>
-                                    <setting-button></setting-button>
+                                    <setting-button post="{{ $post }}" text-link="{{ route('post.show',['post'=> $post->id]) }}" profile-link="{{route('profile.index',['user' => Auth::user()->username])}}"></setting-button>
                                 </div>
                             </div>
                             <div class="border rounded-lg overflow-hidden d-flex justify-content-center align-items-center">

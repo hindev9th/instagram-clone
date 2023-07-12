@@ -12,10 +12,13 @@
                         <ul class="list-unstyled text-center m-0">
                             <li class="hover-dark-20 p-2 border-bottom font-weight-bold text-danger" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#modal-confirm"  @click="showModalConfirm();"  >Delete</li>
                             <li class="hover-dark-20 p-2 border-bottom">Edit</li>
-                            <li class="hover-dark-20 p-2 border-bottom">Go to post</li>
-                            <li class="hover-dark-20 p-2 border-bottom">Share to...</li>
-                            <li class="hover-dark-20 p-2 border-bottom">Copy link</li>
-                            <li class="hover-dark-20 p-2 border-bottom">About this account</li>
+                            <li class="hover-dark-20 p-2 border-bottom" @click="gotoPost">Go to post</li>
+                            <li class="hover-dark-20 p-2 border-bottom" @click="showModalShare" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#modal-share">Share to...</li>
+                            <li class="hover-dark-20 p-2 border-bottom" @click="copyText">
+                                Copy link
+                                <input type="hidden" :value="textLink" id="link-copy">
+                            </li>
+                            <li class="hover-dark-20 p-2 border-bottom" @click="aboutThisAccount">About this account</li>
                             <li class="hover-dark-20 p-2 border-bottom" @click="showModal" data-dismiss="modal">Cancel</li>
                         </ul>
                     </div>
@@ -35,27 +38,35 @@
                     </button>
                     <div class="modal-body p-0">
                         <ul class="list-unstyled text-center m-0">
-                            <li class="hover-dark-20 p-2 border-bottom text-danger font-weight-bold">Delete</li>
+                            <li class="hover-dark-20 p-2 border-bottom text-danger font-weight-bold" @click="deletePost">Delete</li>
                             <li class="hover-dark-20 p-2 border-bottom" @click="hideModalConfirm" data-dismiss="modal">Cancel</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
+        <ModalShare v-if="isShowShare" :text-link="textLink" @close-modal="hideModalShare"></ModalShare>
     </div>
 </template>
 
 <script>
     import $ from 'jquery';
+    import ModalShare from "../Modals/ModalShare";
+    import {showNotify} from "../../../functiton";
 export default {
+    components : {ModalShare},
     name: "SettingButton",
+    props: ['post','textLink','profileLink'],
     data(){
         return{
             isShow : false,
+            isShowShare : false,
             isShowConfirm : false,
+            postData : JSON.parse(this.post),
         }
     },
     methods: {
+        showNotify,
         showModal() {
             this.isShow = !this.isShow;
         },
@@ -68,6 +79,53 @@ export default {
         hideModalConfirm(){
             this.isShowConfirm = !this.isShowConfirm;
             this.isShow = !this.isShow;
+        },
+        showModalShare() {
+            $('#modal-setting').modal('hide');
+
+            this.isShowShare = !this.isShowShare;
+            $('#modal-share').modal('show');
+        },
+        hideModalShare(){
+            this.isShowShare = !this.isShowShare;
+            this.isShow = !this.isShow;
+        },
+        copyText() {
+            let testingCodeToCopy = document.querySelector('#link-copy')
+            testingCodeToCopy.setAttribute('type', 'text')
+            testingCodeToCopy.select()
+
+            try {
+                var successful = document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+                this.showNotify('Copy link ' + msg);
+                this.isShow = !this.isShow;
+                $('#modal-setting').modal('hide');
+            } catch (err) {
+                this.showNotify('Oops, unable to copy');
+                this.isShow = !this.isShow;
+                $('#modal-setting').modal('hide');
+            }
+            testingCodeToCopy.setAttribute('type', 'hidden')
+        },
+        gotoPost(){
+            window.location = this.textLink;
+        },
+        aboutThisAccount(){
+            window.location = this.profileLink;
+        },
+        deletePost(){
+            axios.delete(window.Laravel.baseUrl + '/p/d/' + this.postData.id)
+            .then(response => {
+                console.log(response.data)
+                this.hideModalConfirm();
+                $('#modal-confirm').modal('hide');
+                this.showNotify('Delete post success.');
+            })
+            .catch(error => {
+                console.log('error')
+                this.showNotify('Error! cannot delete post.');
+            })
         }
     },
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="chat-message input-message">
         <div class="input-group mb-0">
-            <input type="text" class="form-control" :readonly="isSending" v-model="message" @keyup.enter="sendMessage"
+            <input type="text" class="form-control" :readonly="isSending" v-model="message" @keydown="typing" @keyup.enter="sendMessage"
                    placeholder="Enter text here...">
             <div class="input-group-append" :style="(isSending ? bgColor : '')">
                 <button class="pr-4 pl-4 input-group-text" v-show="message.length > 0 && !isSending" :disabled="message.length === 0"
@@ -40,6 +40,16 @@ export default {
                     this.isSending = false;
                 })
             }
+        },
+        typing(){
+            let channel = Echo.private('chat.' + this.chat.id)
+
+            setTimeout( () => {
+                channel.whisper('typing', {
+                    name : this.user.username,
+                    typing: true,
+                })
+            }, 300)
         }
     }
 }

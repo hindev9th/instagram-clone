@@ -8,11 +8,11 @@
                     <img src="{{asset('/storage/'.$post->image)  }}" class="w-100" style="height: fit-content" alt="">
                 </div>
                 <div class="col-6 p-0 mh-100">
-                    <div class="row m-0 mw-100">
-                        <div class="container w-100 row m-0 border-bottom position-relative">
-                            <div class="box-user p-2 row w-100">
-                                <div class="col-1 pr-1 pl-1">
-                                    <img src="{{ asset($post->user->profile->getImage()) }}" width="35px" class="border rounded-circle"
+                    <div class="d-flex flex-column mw-100">
+                        <div class="d-flex border-bottom position-relative">
+                            <div class="box-user d-flex w-100">
+                                <div class="pr-1 pl-2">
+                                    <img src="{{ asset($post->user->profile->getImage()) }}" class="avatar rounded-circle"
                                          alt="">
                                 </div>
                                 <div class="col-11 pl-2 d-flex align-items-center font-weight-bold">
@@ -20,15 +20,14 @@
                                        class="text-decoration-none text-dark pr-2"><strong>{{$post->user->username}}</strong></a>
                                 </div>
                             </div>
-                            <setting-button></setting-button>
+                            <setting-button post="{{ $post }}" text-link="{{ route('post.show',['post'=> $post->id]) }}" profile-link="{{route('profile.index',['user' => Auth::user()->username])}}"></setting-button>
                         </div>
-                        <div class="row m-0 p-2 overflow-auto mh-100 position-absolute flex-column flex-nowrap"
+                        <div class="d-flex w-100 p-2 overflow-auto mh-100 position-absolute flex-column flex-nowrap"
                              style="top: 55px; height: calc(100% - 210px);">
-                            <div class="d-flex  mb-2">
-                                <div class="pr-1 pl-1">
+                            <div class="d-flex mb-2">
+                                <div class="pr-1">
                                     <img src="{{ asset($post->user->profile->getImage()) }}"
-                                         width="35px"
-                                         class="border rounded-circle" alt="">
+                                         class="avatar rounded-circle" alt="">
                                 </div>
                                 <div class="pl-2">
                                     <a href="{{ route('profile.index',['user' => $post->user->username]) }}"
@@ -40,12 +39,12 @@
                                 </div>
                             </div>
                             @foreach($post->comments as $comment)
-                                <div class="row m-0 mt-2 mb-2">
-                                    <div class="col-1 p-1">
+                                <div class="d-flex mt-2 mb-2">
+                                    <div class="pr-1">
                                         <img src="{{ asset($comment->user->profile->getImage()) }}"
-                                             class="w-100 rounded-circle img-thumbnail" alt="">
+                                             class="avatar rounded-circle" alt="">
                                     </div>
-                                    <div class="col-11 pl-2">
+                                    <div class="pl-2">
                                         <a href="{{ route('profile.index',['user' => $comment->user->username]) }}"
                                            class="text-decoration-none text-dark"><strong>{{$comment->user->username}}</strong></a>
                                         {{ $comment->comment }}

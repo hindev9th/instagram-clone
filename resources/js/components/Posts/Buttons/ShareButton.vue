@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span class="btn-share" @click="showAndHide"><i class="far fa-paper-plane ml-2"></i></span>
+        <span class="btn-share" @click="showAndHide" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#modal-share"><i class="far fa-paper-plane ml-2"></i></span>
         <transition name="fade" mode="out-in">
         <div v-if="isShow">
             <ModalShare :text-link="textLink" @close-modal="showAndHide"></ModalShare>

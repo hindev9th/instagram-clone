@@ -61,12 +61,10 @@
 
                     </li>
                 </a>
-                <a href="{{ route('post.create') }}" class="text-dark text-decoration-none">
-                    <li class="">
-                        <i class="far fa-plus-square icon"></i>
-                        <span class="item-text">Create</span>
-                    </li>
-                </a>
+                <li class="" data-toggle="modal"  data-backdrop="static" data-keyboard="false" data-target="#modal-new-post">
+                    <i class="far fa-plus-square icon"></i>
+                    <span class="item-text">Create</span>
+                </li>
 
                 <a href="{{ route('profile.index',['user'=> Auth::user()->username]) }}" class="text-dark text-decoration-none">
                     <li class="d-flex">
@@ -76,6 +74,9 @@
                 </a>
             </ul>
         </div>
+
+        <new-post-modal user="{{Auth::user()}}"></new-post-modal>
+        <new-chat-modal></new-chat-modal>
     @endguest
 
     <main >

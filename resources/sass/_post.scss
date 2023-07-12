@@ -20,7 +20,7 @@ input.comment:focus {
     top: 0;
     left: 0;
     background: url('https://flxtable.com/wp-content/plugins/pl-platform/engine/ui/images/image-preview.png') no-repeat;
-    background-size: 100% 100%;
+    background-size: 100% 100% !important;
     height: 100%;
     width: 100%;
     z-index: 1;
