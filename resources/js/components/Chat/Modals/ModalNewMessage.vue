@@ -43,8 +43,10 @@
                             </div>
                         </li>
                         <li class="p-2 border-bottom d-flex align-items-center">
-                            <button id="btn-new-chat" :disabled="selected_id.length === 0" @click="createChatRoom"
-                                    class="btn btn-primary w-100">Chat
+                            <button id="btn-new-chat" :disabled="selected_id.length === 0 || isLoading" @click="createChatRoom"
+                                    class="btn btn-primary w-100">
+                                <span class="spinner-border mr-1 spinner-border-sm" v-if="isLoading" role="status" aria-hidden="true"></span>
+                                {{ isLoading ?'Loading...' : 'Chat'}}
                             </button>
                         </li>
                     </ul>
@@ -56,7 +58,7 @@
 
 <script>
 import {getImage} from "../../../functiton";
-
+import {showNotify} from "../../../functiton";
 export default {
     name: "ModalNewMessage",
     data() {
@@ -64,10 +66,12 @@ export default {
             selected: [],
             selected_id: [],
             search: '',
+            isLoading: false,
             users: [],
         }
     },
     methods: {
+        showNotify,
         getImage,
         clearModal() {
             this.selected = []
@@ -85,14 +89,22 @@ export default {
 
         },
         createChatRoom() {
+            this.isLoading = true;
             axios.post(window.Laravel.baseUrl + '/c', {
                 users: this.selected_id
             }).then(response => {
+                console.log(response.data);
+                Bus.$emit('NewChatRoom',response.data);
                 $('#modal-new').modal('hide');
                 this.selected = []
                 this.selected_id = []
                 this.users = [];
                 this.search = '';
+                this.isLoading = false;
+                showNotify('Create chat room success.');
+            }).catch(e => {
+                this.isLoading = false;
+                showNotify('Error! Cannot create chat room.');
             })
         },
         addTagUser(user) {

@@ -19,7 +19,7 @@ class ChatsController extends Controller
 
     public function index()
     {
-        $chats = auth()->user()->chats->load(['users','messages']);
+        $chats = auth()->user()->chats()->with('users')->latest('created_at')->get();
 
         return view('chats.index',compact('chats'));
     }
@@ -38,6 +38,6 @@ class ChatsController extends Controller
 
         broadcast(new NewChat($chat))->toOthers();
 
-        return $chat;
+        return $chat->load('users');
     }
 }

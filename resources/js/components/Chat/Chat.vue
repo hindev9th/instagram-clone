@@ -16,7 +16,6 @@
                     <div class="about">
                         <div class="name" v-text="chat.name == null ? getNames(chat.users,auth_user) : chat.name"></div>
                         <!--                            <div class="status"> <i class="fa fa-circle online"></i> online </div>-->
-                        <div class="status">{{ chat.messages.length > 0 ? chat.messages[0].message : '' }}</div>
                     </div>
                 </li>
             </ul>
@@ -53,6 +52,11 @@ export default {
                 });
             });
     },
+    mounted() {
+      Bus.$on('NewChatRoom', (chat) => {
+          this.chatsData.unshift(chat);
+      })
+    },
     methods: {
         getImage,
         getNames,
@@ -73,8 +77,8 @@ export default {
 }
 
 .chat-list {
-    height: calc(100% - 25px);
-    overflow-x: auto;
+    height: calc(100% - 87px);
+    overflow-y: auto;
 .about {
     width: calc(100% - 20px);
 

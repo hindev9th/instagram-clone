@@ -42,7 +42,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 
@@ -70,6 +69,12 @@ __webpack_require__.r(__webpack_exports__);
         'name': e.name,
         'users': e.users
       });
+    });
+  },
+  mounted: function mounted() {
+    var _this2 = this;
+    Bus.$on('NewChatRoom', function (chat) {
+      _this2.chatsData.unshift(chat);
     });
   },
   methods: {
@@ -363,6 +368,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -372,10 +380,12 @@ __webpack_require__.r(__webpack_exports__);
       selected: [],
       selected_id: [],
       search: '',
+      isLoading: false,
       users: []
     };
   },
   methods: {
+    showNotify: _functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify,
     getImage: _functiton__WEBPACK_IMPORTED_MODULE_0__.getImage,
     clearModal: function clearModal() {
       this.selected = [];
@@ -393,14 +403,22 @@ __webpack_require__.r(__webpack_exports__);
     },
     createChatRoom: function createChatRoom() {
       var _this2 = this;
+      this.isLoading = true;
       axios.post(window.Laravel.baseUrl + '/c', {
         users: this.selected_id
       }).then(function (response) {
+        console.log(response.data);
+        Bus.$emit('NewChatRoom', response.data);
         $('#modal-new').modal('hide');
         _this2.selected = [];
         _this2.selected_id = [];
         _this2.users = [];
         _this2.search = '';
+        _this2.isLoading = false;
+        (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)('Create chat room success.');
+      })["catch"](function (e) {
+        _this2.isLoading = false;
+        (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)('Error! Cannot create chat room.');
       });
     },
     addTagUser: function addTagUser(user) {
@@ -7429,7 +7447,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.chat {\n    height: calc(100% - 100px);\n}\n.chat-list {\n    height: calc(100% - 25px);\n    overflow-x: auto;\n.about {\n    width: calc(100% - 20px);\n.name {\n    white-space: nowrap;\n    max-width: 100%;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n}\n}\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.chat {\n    height: calc(100% - 100px);\n}\n.chat-list {\n    height: calc(100% - 87px);\n    overflow-y: auto;\n.about {\n    width: calc(100% - 20px);\n.name {\n    white-space: nowrap;\n    max-width: 100%;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n}\n}\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -46217,16 +46235,6 @@ var render = function () {
                         ),
                       },
                     }),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "status" }, [
-                      _vm._v(
-                        _vm._s(
-                          chat.messages.length > 0
-                            ? chat.messages[0].message
-                            : ""
-                        )
-                      ),
-                    ]),
                   ]),
                 ]
               )
@@ -46820,11 +46828,25 @@ var render = function () {
                         staticClass: "btn btn-primary w-100",
                         attrs: {
                           id: "btn-new-chat",
-                          disabled: _vm.selected_id.length === 0,
+                          disabled:
+                            _vm.selected_id.length === 0 || _vm.isLoading,
                         },
                         on: { click: _vm.createChatRoom },
                       },
-                      [_vm._v("Chat\n                        ")]
+                      [
+                        _vm.isLoading
+                          ? _c("span", {
+                              staticClass:
+                                "spinner-border mr-1 spinner-border-sm",
+                              attrs: { role: "status", "aria-hidden": "true" },
+                            })
+                          : _vm._e(),
+                        _vm._v(
+                          "\n                            " +
+                            _vm._s(_vm.isLoading ? "Loading..." : "Chat") +
+                            "\n                        "
+                        ),
+                      ]
                     ),
                   ]
                 ),
