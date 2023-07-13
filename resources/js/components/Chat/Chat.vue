@@ -20,6 +20,13 @@
                 </li>
             </ul>
         </div>
+        <div class="chat-messge non-message w-100 flex-column justify-content-center align-items-center" v-if="selected_id === 0">
+            <i class="far fa-comment-dots icon" style="font-size: 40px"></i>
+            <h4 class="font-weight-bold">Your messages</h4>
+            <span>Send private messages to your friend or group</span>
+            <button class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-keyboard="false"
+                    data-target="#modal-new">Send message</button>
+        </div>
         <ChatMessage :chat="chat" :user="auth_user" :class="{'open' : (chat.id === selected_id)}" @close-message="closeMessage" v-if="chat.id === selected_id" v-for="chat in chatsData"
                      :key="chat.id"></ChatMessage>
     </div>
@@ -55,6 +62,7 @@ export default {
     mounted() {
       Bus.$on('NewChatRoom', (chat) => {
           this.chatsData.unshift(chat);
+          this.selected_id = chat.id;
       })
     },
     methods: {
@@ -92,5 +100,12 @@ export default {
 }
 
 }
-
+.non-message{
+    display: flex;
+}
+@media (max-width: 767px) {
+    .non-message{
+        display: none;
+    }
+}
 </style>

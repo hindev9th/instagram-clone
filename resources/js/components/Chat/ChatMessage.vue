@@ -1,7 +1,7 @@
 <template>
     <div class="chat-message">
         <div class="box-message">
-            <div class="chat-header d-flex justify-content-between align-items-center">
+            <div class="chat-header border-bottom d-flex justify-content-between align-items-center">
                 <div class="close-message" @click="$emit('close-message')">
                     <svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="0 0 448 512">
                         <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
@@ -20,10 +20,7 @@
                     </div>
                 </div>
                 <div class="hidden-sm text-right">
-                    <!--                        <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>-->
-                    <!--                        <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>-->
-                    <!--                        <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>-->
-                    <a href="javascript:void(0);" class="icon"><i class="fas fa-info-circle"></i></a>
+                    <a href="javascript:void(0);" @click="showAndHideInfo" class="icon"><i class="fas fa-info-circle"></i></a>
                 </div>
             </div>
             <div class="chat-history border-0 position-relative">
@@ -31,6 +28,19 @@
                     <div class="spinner-border text-light"></div>
                 </div>
                 <ul class="m-b-0 m-0 p-3 message-list" id="message-list">
+                    <li class="p-5 d-flex justify-content-center align-items-center" v-if="messages.length === 0">
+                        <div class="box-name flex-column w-100 align-items-center">
+                            <div class="avatars rounded-circle" style="min-width: 100px;min-height: 100px">
+                                <img :src="getImage(chatUser.profile.image)" v-if="chatUser.id !== user.id"
+                                     v-for="chatUser in chat.users" class="img-avatar" alt="avatar">
+                            </div>
+                            <div class="chat-about p-2 d-flex align-items-center">
+                                <h4 class="m-b-0 m-0 font-weight-bold">
+                                    {{ getNames(chat.users, user) }}</h4>
+                            </div>
+                            <a href="#input-message" class="btn btn-primary">Start chat</a>
+                        </div>
+                    </li>
                     <li :class="{'text-right' : message.user_id === user.id}" v-for="message in messages">
                         <div :class="'message-data d-flex '+ (message.user_id !== user.id ? '' : 'justify-content-end')">
                             <img v-if="message.user_id !== user.id"
@@ -59,17 +69,18 @@
             </div>
         </div>
         <ChatForm :chat="chat" :user="user"></ChatForm>
-
+        <info-slide :user="user" :chat="chat" :class="{'show':isShowInfo}" @close-info="showAndHideInfo"></info-slide>
     </div>
 
 </template>
 <script>
 import $ from 'jquery';
 import ChatForm from './ChatForm.vue';
+import InfoSlide from "./Slides/InfoSlide";
 import {formatTime, getImage, getNames} from "../../functiton";
 
 export default {
-    components: {ChatForm},
+    components: {ChatForm,InfoSlide},
     props: ['user', 'chat'],
     data() {
         return {
@@ -78,6 +89,7 @@ export default {
             isLoading: true,
             typingName: '',
             isTyping : false,
+            isShowInfo : false,
         }
     },
     created() {
@@ -108,6 +120,9 @@ export default {
         formatTime,
         getImage,
         getNames,
+        showAndHideInfo(){
+            this.isShowInfo = !this.isShowInfo;
+        },
         autoScrollBottom() {
             var element = document.getElementById("message-list");
             element.scrollTop = element.scrollHeight;

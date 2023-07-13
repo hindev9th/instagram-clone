@@ -282,13 +282,13 @@ li.clearfix{
         height: 100%;
         border-radius: 50%;
         &:nth-child(2){
-            margin-left: 10px;
-            margin-top: 12px;
+            margin-left: 30%;
+            margin-top: 35%;
             z-index: 1;
         }
         &:nth-child(3){
-            margin-left: -12px;
-            margin-top: 12px;
+            margin-left: -30%;
+            margin-top: 35%;
             z-index: 1;
         }
     }

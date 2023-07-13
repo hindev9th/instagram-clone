@@ -40,4 +40,19 @@ class ChatsController extends Controller
 
         return $chat->load('users');
     }
+
+    /**
+     * update name of chat room
+     *
+     * @param Request $request
+     * @param Chat $chat
+     * @return Chat
+     */
+    public function update(Request $request,Chat $chat){
+        $chat->update([
+            'name' => $request->post('name'),
+        ]);
+
+        return $chat;
+    }
 }
