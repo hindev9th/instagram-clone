@@ -80,6 +80,7 @@ export default {
 }
 </script>
 <style>
+
 .chat {
     height: calc(100% - 100px);
 }
@@ -106,6 +107,23 @@ export default {
 @media (max-width: 767px) {
     .non-message{
         display: none;
+    }
+}
+
+@media (min-width: 768px) {
+    .menu-app {
+        width: 66px;
+        overflow: hidden;
+    }
+    .menu-app ul .text-logo {
+        display: none;
+    }
+    .menu-app ul .icon-logo {
+        display: block;
+    }
+
+    .chat-main {
+        width: calc(100% - 66px);
     }
 }
 </style>

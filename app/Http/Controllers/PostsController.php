@@ -29,28 +29,17 @@ class PostsController extends Controller
 
         return view('posts.index',compact('posts','rememberUsers'));
     }
-
-    public function create()
+    
+    public function store(Request $request)
     {
-        return view('posts.create');
-    }
+        $imagePath = $request['image']->store('/uploads','public');
 
-    public function store()
-    {
-        $data = \request()->validate([
-            'caption' => ['required','string'],
-            'image' => ['required','image'],
-        ]);
-
-        $imagePath = \request('image')->store('/uploads','public');
-
-        auth()->user()->posts()->create([
-            'caption' => $data['caption'],
+        $post = auth()->user()->posts()->create([
+            'caption' => $request['caption'],
             'image' => $imagePath,
         ]);
 
-        return redirect('/profile/'.\auth()->user()->username);
-
+        return $post;
     }
 
     public function show(Post $post)

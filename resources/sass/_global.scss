@@ -66,6 +66,20 @@ html, body {
     max-width: 100%;
     overflow-x: hidden;
 }
+.modal-dialog.modal-xxl {
+    max-width: 80%;
+}
+
+.prevent-select {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+@media (min-width: 992px) {
+    .modal-dialog.modal-xxl {
+        max-width: 1000px;
+    }
+}
 @media (min-width: 1920px) {
     .box-main {
         width: calc(100% - #{$nav-app-wide-width});
@@ -87,5 +101,6 @@ html, body {
         width: 100%;
         padding-bottom: $nav-app-small-width;
     }
+
 }
 

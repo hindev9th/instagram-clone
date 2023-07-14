@@ -46,7 +46,7 @@
                             <button id="btn-new-chat" :disabled="selected_id.length === 0 || isLoading" @click="createChatRoom"
                                     class="btn btn-primary w-100">
                                 <span class="spinner-border mr-1 spinner-border-sm" v-if="isLoading" role="status" aria-hidden="true"></span>
-                                {{ isLoading ?'Loading...' : 'Chat'}}
+                                {{ isLoading ?'Creating...' : 'Chat'}}
                             </button>
                         </li>
                     </ul>

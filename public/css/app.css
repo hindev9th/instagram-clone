@@ -6718,6 +6718,25 @@ body {
   overflow-x: hidden;
 }
 
+.modal-dialog.modal-xxl {
+  max-width: 80%;
+}
+
+.prevent-select {
+  -webkit-user-select: none;
+  /* Safari */
+  /* IE 10 and IE 11 */
+  -moz-user-select: none;
+       user-select: none;
+  /* Standard syntax */
+}
+
+@media (min-width: 992px) {
+  .modal-dialog.modal-xxl {
+    max-width: 1000px;
+  }
+}
+
 @media (min-width: 1920px) {
   .box-main {
     width: calc(100% - 335px);

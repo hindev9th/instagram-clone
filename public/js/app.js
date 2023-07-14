@@ -865,6 +865,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _functiton__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../functiton */ "./resources/js/functiton.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_1__);
 //
 //
 //
@@ -910,6 +912,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -918,7 +927,11 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       auth_user: JSON.parse(this.user),
-      url: ''
+      url: '',
+      file: null,
+      inputCaption: '',
+      isLoading: false,
+      baseUrl: window.Laravel.baseUrl
     };
   },
   methods: {
@@ -926,6 +939,26 @@ __webpack_require__.r(__webpack_exports__);
     onFileChange: function onFileChange(e) {
       var file = e.target.files[0];
       this.url = URL.createObjectURL(file);
+      this.file = file;
+    },
+    sharePost: function sharePost(e) {
+      var _this = this;
+      e.preventDefault();
+      this.isLoading = true;
+      var formData = new FormData();
+      formData.append('image', this.file);
+      formData.append('caption', this.inputCaption);
+      var config = {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      };
+      axios.post(this.baseUrl + '/p', formData, config).then(function (res) {
+        _this.isLoading = false;
+        jquery__WEBPACK_IMPORTED_MODULE_1___default()('#modal-new-post').modal('hide');
+      })["catch"](function (e) {
+        _this.isLoading = false;
+      });
     }
   }
 });
@@ -7537,7 +7570,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.chat {\n    height: calc(100% - 100px);\n}\n.chat-list {\n    height: calc(100% - 87px);\n    overflow-y: auto;\n.about {\n    width: calc(100% - 20px);\n.name {\n    white-space: nowrap;\n    max-width: 100%;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n}\n}\n.non-message{\n    display: flex;\n}\n@media (max-width: 767px) {\n.non-message{\n        display: none;\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.chat {\n    height: calc(100% - 100px);\n}\n.chat-list {\n    height: calc(100% - 87px);\n    overflow-y: auto;\n.about {\n    width: calc(100% - 20px);\n.name {\n    white-space: nowrap;\n    max-width: 100%;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n}\n}\n.non-message{\n    display: flex;\n}\n@media (max-width: 767px) {\n.non-message{\n        display: none;\n}\n}\n@media (min-width: 768px) {\n.menu-app {\n        width: 66px;\n        overflow: hidden;\n}\n.menu-app ul .text-logo {\n        display: none;\n}\n.menu-app ul .icon-logo {\n        display: block;\n}\n.chat-main {\n        width: calc(100% - 66px);\n}\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -7729,7 +7762,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.box-image[data-v-059a0236] {\n    width: 100vh;\n    height: 60vh;\n}\n.close-new-modal-post[data-v-059a0236]{\n    cursor: pointer;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.box-image[data-v-059a0236] {\n    width: 100vh;\n    height: 60vh;\n}\n.close-new-modal-post[data-v-059a0236] {\n    cursor: pointer;\n}\n@media (max-width: 767px) {\n.box-image[data-v-059a0236] {\n        height: 45vh;\n}\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -47193,7 +47226,7 @@ var render = function () {
                           : _vm._e(),
                         _vm._v(
                           "\n                            " +
-                            _vm._s(_vm.isLoading ? "Loading..." : "Chat") +
+                            _vm._s(_vm.isLoading ? "Creating..." : "Chat") +
                             "\n                        "
                         ),
                       ]
@@ -47851,76 +47884,154 @@ var render = function () {
       _c(
         "div",
         {
-          staticClass: "modal-dialog modal-dialog-centered modal-lg",
+          staticClass: "modal-dialog modal-dialog-centered modal-xxl",
           attrs: { role: "document" },
         },
         [
           _c("div", { staticClass: "modal-content overflow-hidden border-0" }, [
-            _c("div", { staticClass: "modal-body p-0" }, [
-              _vm._m(0),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "box-new-post row m-0 w-100 d-flex h-100" },
-                [
+            _c(
+              "form",
+              {
+                attrs: {
+                  action: "#",
+                  method: "post",
+                  enctype: "multipart/form-data",
+                },
+                on: { submit: _vm.sharePost },
+              },
+              [
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "modal-header d-flex justify-content-between align-items-center",
+                  },
+                  [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c("strong", [_vm._v("Add new post")]),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass:
+                          "btn text-primary font-weight-bold focus-none",
+                        attrs: { disabled: _vm.isLoading },
+                      },
+                      [
+                        _vm.isLoading
+                          ? _c("span", {
+                              staticClass:
+                                "spinner-border mr-1 spinner-border-sm",
+                              attrs: { role: "status", "aria-hidden": "true" },
+                            })
+                          : _vm._e(),
+                        _vm._v(
+                          "\n                    " +
+                            _vm._s(_vm.isLoading ? "Sharing..." : "Share") +
+                            "\n                "
+                        ),
+                      ]
+                    ),
+                  ]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body p-0" }, [
                   _c(
                     "div",
-                    {
-                      staticClass:
-                        "box-image d-flex col-md-8 align-items-center justify-content-center border-right",
-                    },
+                    { staticClass: "box-new-post row m-0 w-100 d-flex h-100" },
                     [
-                      _c("label", {
-                        staticClass: "col-form-label custom-file-image-label",
-                        style: { background: "url(" + _vm.url + ") no-repeat" },
-                        attrs: { for: "image" },
-                      }),
-                      _vm._v(" "),
-                      _c("input", {
-                        staticClass: "form-control-file",
-                        attrs: {
-                          id: "image",
-                          type: "file",
-                          name: "image",
-                          value: "",
-                          required: "",
-                          autocomplete: "image",
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "box-image d-flex col-md-8 align-items-center justify-content-center border-right",
                         },
-                        on: { change: _vm.onFileChange },
-                      }),
+                        [
+                          _c("label", {
+                            staticClass:
+                              "col-form-label custom-file-image-label",
+                            style: {
+                              background:
+                                _vm.url === ""
+                                  ? ""
+                                  : "url(" + _vm.url + ") no-repeat",
+                            },
+                            attrs: { for: "image" },
+                          }),
+                          _vm._v(" "),
+                          _c("input", {
+                            staticClass: "form-control-file",
+                            attrs: {
+                              id: "image",
+                              accept: "image/*",
+                              disabled: _vm.isLoading,
+                              type: "file",
+                              name: "image",
+                              required: "",
+                              autocomplete: "image",
+                            },
+                            on: { change: _vm.onFileChange },
+                          }),
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4 box-content" }, [
+                        _c("div", { staticClass: "box-user pt-2 pb-2" }, [
+                          _c("img", {
+                            staticClass: "avatar rounded-circle",
+                            attrs: {
+                              src: _vm.getImage(_vm.auth_user.profile.image),
+                              alt: "",
+                            },
+                          }),
+                          _vm._v(" "),
+                          _c("strong", [
+                            _vm._v(_vm._s(_vm.auth_user.username)),
+                          ]),
+                        ]),
+                        _vm._v(" "),
+                        _c("textarea", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.inputCaption,
+                              expression: "inputCaption",
+                            },
+                          ],
+                          staticClass:
+                            "form-control p-0 border-0 bg-transparent",
+                          attrs: {
+                            id: "caption",
+                            type: "text",
+                            rows: "10",
+                            name: "caption",
+                            readonly: _vm.isLoading,
+                            required: "",
+                            autocomplete: "caption",
+                            placeholder: "Write a caption...",
+                            autofocus: "",
+                          },
+                          domProps: { value: _vm.inputCaption },
+                          on: {
+                            input: function ($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.inputCaption = $event.target.value
+                            },
+                          },
+                        }),
+                      ]),
                     ]
                   ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col-md-4 box-content" }, [
-                    _c("div", { staticClass: "box-user pt-2 pb-2" }, [
-                      _c("img", {
-                        staticClass: "avatar rounded-circle",
-                        attrs: {
-                          src: _vm.getImage(_vm.auth_user.profile.image),
-                          alt: "",
-                        },
-                      }),
-                      _vm._v(" "),
-                      _c("strong", [_vm._v(_vm._s(_vm.auth_user.username))]),
-                    ]),
-                    _vm._v(" "),
-                    _c("textarea", {
-                      staticClass: "form-control p-0 border-0 bg-transparent",
-                      attrs: {
-                        id: "caption",
-                        type: "text",
-                        rows: "10",
-                        name: "caption",
-                        required: "",
-                        autocomplete: "caption",
-                        placeholder: "Write a caption...",
-                        autofocus: "",
-                      },
-                    }),
-                  ]),
-                ]
-              ),
-            ]),
+                ]),
+                _vm._v(
+                  "\n                " + _vm._s(_vm.url) + "\n            "
+                ),
+              ]
+            ),
           ]),
         ]
       ),
@@ -47933,28 +48044,13 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c(
-      "div",
+      "span",
       {
         staticClass:
-          "title d-flex justify-content-between align-items-center pt-1 pb-1 border-bottom",
+          "close-new-modal-post prevent-select pl-3 text-danger text-decoration-none",
+        attrs: { "data-dismiss": "modal" },
       },
-      [
-        _c(
-          "span",
-          {
-            staticClass:
-              "close-new-modal-post pl-3 text-danger text-decoration-none",
-            attrs: { "data-dismiss": "modal" },
-          },
-          [_c("strong", [_vm._v("\n                        Close")])]
-        ),
-        _vm._v(" "),
-        _c("strong", [_vm._v("Add new post")]),
-        _vm._v(" "),
-        _c("button", { staticClass: "btn text-primary font-weight-bold" }, [
-          _vm._v("Share"),
-        ]),
-      ]
+      [_c("strong", [_vm._v("\n                        Close")])]
     )
   },
 ]
