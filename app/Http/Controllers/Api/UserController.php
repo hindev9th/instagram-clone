@@ -18,6 +18,11 @@ class UserController extends Controller
         //
     }
 
+    public function suggested()
+    {
+
+    }
+
     public function search($search)
     {
         $data = User::select('id','name','username')

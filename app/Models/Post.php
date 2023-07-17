@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Post extends Model
 {
 
-    protected $guarded = [];
+    protected $fillable = ['user_id','caption','image'];
+
+    protected $with = ['user'];
 
     /**
      * a post belong to a user
@@ -16,7 +18,7 @@ class Post extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->select('id','name','username');
     }
 
     /**

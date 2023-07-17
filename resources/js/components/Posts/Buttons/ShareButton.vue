@@ -1,9 +1,9 @@
 <template>
     <div>
-        <span class="btn-share" @click="showAndHide" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#modal-share"><i class="far fa-paper-plane ml-2"></i></span>
+        <span class="btn-share" @click="showAndHide" data-toggle="modal" data-backdrop="static" data-keyboard="false" :data-target="`#modal-share-${post.id}`"><i class="far fa-paper-plane ml-2"></i></span>
         <transition name="fade" mode="out-in">
         <div v-if="isShow">
-            <ModalShare :text-link="textLink" @close-modal="showAndHide"></ModalShare>
+            <ModalShare :post="post" @close-modal="showAndHide"></ModalShare>
         </div>
         </transition>
     </div>
@@ -12,7 +12,7 @@
     import ModalShare from "../Modals/ModalShare.vue";
     export default {
         components: {ModalShare},
-        props : ['textLink'],
+        props : ['post'],
         data(){
             return {
                 isShow : false,

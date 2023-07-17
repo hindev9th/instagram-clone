@@ -1,8 +1,8 @@
 <template>
     <div class="setting">
-        <span class="btn-setting" @click="showModal" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#modal-setting"> <i class="fas fa-ellipsis-h"></i></span>
+        <span class="btn-setting" @click="showModal" data-toggle="modal" data-backdrop="static" data-keyboard="false" :data-target="`#modal-setting-${post.id}`"> <i class="fas fa-ellipsis-h"></i></span>
 
-        <div class="modal fade" v-if="isShow" id="modal-setting" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" v-if="" :id="`modal-setting-${post.id}`" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-md" role="document">
                 <div class="modal-content overflow-hidden border-0">
                     <button type="button" @click="showModal" class="close position-fixed" data-dismiss="modal" aria-label="Close">
@@ -10,23 +10,30 @@
                     </button>
                     <div class="modal-body p-0">
                         <ul class="list-unstyled text-center m-0">
-                            <li class="hover-dark-20 p-2 border-bottom font-weight-bold text-danger" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#modal-confirm"  @click="showModalConfirm();"  >Delete</li>
-                            <li class="hover-dark-20 p-2 border-bottom">Edit</li>
+                            <li class="hover-dark-20 p-2 border-bottom font-weight-bold text-danger"
+                                v-show="post.user_id === user.id" data-toggle="modal" data-backdrop="static"
+                                data-keyboard="false" :data-target="`#modal-confirm-${post.id}`" @click="showModalConfirm();">Delete
+                            </li>
+                            <li class="hover-dark-20 p-2 border-bottom" v-if="post.user_id === user.id">Edit</li>
                             <li class="hover-dark-20 p-2 border-bottom" @click="gotoPost">Go to post</li>
-                            <li class="hover-dark-20 p-2 border-bottom" @click="showModalShare" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#modal-share">Share to...</li>
+                            <li class="hover-dark-20 p-2 border-bottom" @click="showModalShare" data-toggle="modal"
+                                data-backdrop="static" data-keyboard="false" :data-target="`#modal-share-${post.id}`">Share to...
+                            </li>
                             <li class="hover-dark-20 p-2 border-bottom" @click="copyText">
                                 Copy link
-                                <input type="hidden" :value="textLink" id="link-copy">
+                                <input type="hidden" :value="baseUrl + '/p/' + post.id" id="link-copy">
                             </li>
-                            <li class="hover-dark-20 p-2 border-bottom" @click="aboutThisAccount">About this account</li>
-                            <li class="hover-dark-20 p-2 border-bottom" @click="showModal" data-dismiss="modal">Cancel</li>
+                            <li class="hover-dark-20 p-2 border-bottom" @click="aboutThisAccount">About this account
+                            </li>
+                            <li class="hover-dark-20 p-2 border-bottom" @click="showModal" data-dismiss="modal">Cancel
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="modal fade" v-if="isShowConfirm" id="modal-confirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" v-if="isShowConfirm" :id="`modal-confirm-${post.id}`" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-md" role="document">
                 <div class="modal-content overflow-hidden border-0">
                     <div class="modal-header d-flex flex-column align-items-center">
@@ -45,7 +52,7 @@
                 </div>
             </div>
         </div>
-        <ModalShare v-if="isShowShare" :text-link="textLink" @close-modal="hideModalShare"></ModalShare>
+        <ModalShare v-if="isShowShare" :post="post" @close-modal="hideModalShare"></ModalShare>
     </div>
 </template>
 
@@ -56,13 +63,13 @@
 export default {
     components : {ModalShare},
     name: "SettingButton",
-    props: ['post','textLink','profileLink'],
+    props: ['post','user'],
     data(){
         return{
             isShow : false,
             isShowShare : false,
             isShowConfirm : false,
-            postData : JSON.parse(this.post),
+            baseUrl : window.Laravel.baseUrl,
         }
     },
     methods: {
@@ -71,20 +78,20 @@ export default {
             this.isShow = !this.isShow;
         },
         showModalConfirm() {
-            $('#modal-setting').modal('hide');
+            $('#modal-setting-'+this.post.id).modal('hide');
 
             this.isShowConfirm = !this.isShowConfirm;
-            $('#modal-confirm').modal('show');
+            $('#modal-confirm-'+this.post.id).modal('show');
         },
         hideModalConfirm(){
             this.isShowConfirm = !this.isShowConfirm;
             this.isShow = !this.isShow;
         },
         showModalShare() {
-            $('#modal-setting').modal('hide');
+            $('#modal-setting-'+this.post.id).modal('hide');
 
             this.isShowShare = !this.isShowShare;
-            $('#modal-share').modal('show');
+            $('#modal-share-'+this.post.id).modal('show');
         },
         hideModalShare(){
             this.isShowShare = !this.isShowShare;
@@ -100,26 +107,27 @@ export default {
                 var msg = successful ? 'successful' : 'unsuccessful';
                 this.showNotify('Copy link ' + msg);
                 this.isShow = !this.isShow;
-                $('#modal-setting').modal('hide');
+                $('#modal-setting-'+this.post.id).modal('hide');
             } catch (err) {
                 this.showNotify('Oops, unable to copy');
                 this.isShow = !this.isShow;
-                $('#modal-setting').modal('hide');
+                $('#modal-setting-'+this.post.id).modal('hide');
             }
             testingCodeToCopy.setAttribute('type', 'hidden')
         },
         gotoPost(){
-            window.location = this.textLink;
+            window.location = this.baseUrl + '/p/' + this.post.id;
         },
         aboutThisAccount(){
-            window.location = this.profileLink;
+            window.location = this.baseUrl + '/profile/' + this.post.user.username;
         },
         deletePost(){
-            axios.delete(window.Laravel.baseUrl + '/p/d/' + this.postData.id)
+            axios.delete(window.Laravel.baseUrl + '/p/' + this.post.id)
             .then(response => {
-                console.log(response.data)
+                Bus.$emit('delete-post',this.post);
                 this.hideModalConfirm();
-                $('#modal-confirm').modal('hide');
+                $('#modal-confirm-'+this.post.id).modal('hide');
+                $('.modal-backdrop').remove();
                 this.showNotify('Delete post success.');
             })
             .catch(error => {
@@ -133,11 +141,7 @@ export default {
 
 <style>
     .setting{
-        position: absolute;
-        right: 20px;
-        display: flex;
-        align-items: center;
-        height: 100%;
+        padding-right: 5px;
     }
     .btn-setting{
         cursor: pointer;
@@ -164,5 +168,9 @@ export default {
         border: unset !important;
           }
     }
-
+    @media (max-width: 479px) {
+        .setting{
+            padding-right: 20px;
+        }
+    }
 </style>

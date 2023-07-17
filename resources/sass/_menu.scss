@@ -99,3 +99,16 @@
         }
     }
 }
+
+@media (min-width: 768px) {
+    .menu-app.small {
+        width: 66px;
+        overflow: hidden;
+    }
+    .menu-app.small ul .text-logo {
+        display: none;
+    }
+    .menu-app.small ul .icon-logo {
+        display: block;
+    }
+}

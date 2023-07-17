@@ -25,7 +25,7 @@ class Chat extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(User::class)->withTimestamps();
+        return $this->belongsToMany(User::class)->select('id','name','username')->withTimestamps();
     }
 
     /**
@@ -38,7 +38,7 @@ class Chat extends Model
     {
         $user = $this->users()->where('id',$user_id)->first();
 
-        return true;
+        return $user != null;
     }
 
 }

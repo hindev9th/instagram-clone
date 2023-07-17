@@ -7,11 +7,24 @@ use Illuminate\Http\Request;
 
 class LikesController extends Controller
 {
-    public function __construct()
+
+    /**
+     * check user liked post
+     *
+     * @param Post $post
+     * @return mixed
+     */
+    public function check(Post $post)
     {
-        $this->middleware('auth');
+        return auth()->user()->likes->contains($post->id);
     }
 
+    /**
+     * toggle like and unlike
+     *
+     * @param Post $post
+     * @return mixed
+     */
     public function store(Post $post)
     {
         return auth()->user()->likes()->toggle($post);

@@ -77,3 +77,7 @@ export function showNotify(message){
     },5000);
     return true;
 }
+
+export function formatNumber(number) {
+    return number.toLocaleString('en-US');
+}

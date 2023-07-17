@@ -36,6 +36,7 @@
 import NewButton from "./NewButton";
 import {getImage, getNames} from "../../functiton";
 import ChatMessage from "./ChatMessage";
+import $ from 'jquery';
 
 export default {
     components: {NewButton, ChatMessage},
@@ -58,6 +59,8 @@ export default {
                     'users': e.users,
                 });
             });
+
+        $('.menu-app').addClass('small');
     },
     mounted() {
       Bus.$on('NewChatRoom', (chat) => {
@@ -111,17 +114,6 @@ export default {
 }
 
 @media (min-width: 768px) {
-    .menu-app {
-        width: 66px;
-        overflow: hidden;
-    }
-    .menu-app ul .text-logo {
-        display: none;
-    }
-    .menu-app ul .icon-logo {
-        display: block;
-    }
-
     .chat-main {
         width: calc(100% - 66px);
     }

@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comments extends Model
 {
-    protected $guarded = [];
+    protected $fillable = ['post_id','user_id','comment'];
+
+    protected $with = ['user'];
 
     public function post()
     {
@@ -15,6 +17,6 @@ class Comments extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->select('id','name','username');
     }
 }

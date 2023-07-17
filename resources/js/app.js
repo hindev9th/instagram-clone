@@ -22,10 +22,9 @@ window.Bus = new Vue();
 Vue.component('follow-button', require('./components/FollowButton.vue').default);
 
 // Post
-Vue.component('like-button', require('./components/Posts/Buttons/LikeButton.vue').default);
-Vue.component('setting-button', require('./components/Posts/Buttons/SettingButton.vue').default);
-Vue.component('share-button', require('./components/Posts/Buttons/ShareButton.vue').default);
 Vue.component('new-post-modal', require('./components/Posts/Modals/ModalNewPost.vue').default);
+Vue.component('posts-list', require('./components/Posts/PostsList.vue').default);
+Vue.component('post-show', require('./components/Posts/PostShow.vue').default);
 
 // Chats
 Vue.component('chat', require('./components/Chat/Chat.vue').default);

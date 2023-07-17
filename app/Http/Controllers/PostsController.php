@@ -11,25 +11,21 @@ use Illuminate\Support\Facades\Auth;
 class PostsController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index()
     {
-        $user = auth()->user()->following()->pluck('profiles.user_id');
+        $user = auth()->user();
+        $userId = auth()->user()->following()->pluck('profiles.user_id')->push($user->id);
 
-        $posts = Post::whereIn('user_id',$user)->orWhere('user_id',auth()->user()->id)->with('user')->latest()->paginate(5);
-
-        $rememberUsers = User::where('id','!=',\auth()->user()->id)
-            ->whereNotIn('id',$user)
-            ->inRandomOrder()
+        $posts = Post::whereIn('user_id',$userId)
+            ->with('comments','likes')
+            ->latest()
             ->paginate(5);
 
-        return view('posts.index',compact('posts','rememberUsers'));
+        return $posts;
     }
-    
+
+
+
     public function store(Request $request)
     {
         $imagePath = $request['image']->store('/uploads','public');
@@ -39,14 +35,13 @@ class PostsController extends Controller
             'image' => $imagePath,
         ]);
 
-        return $post;
+        return $post->load('user','comments','likes');
     }
 
     public function show(Post $post)
     {
         $like = (\auth()->user()) ? \auth()->user()->likes->contains($post->id) : false;
-
-
+        $post = $post->load('comments','likes');
         return view('posts.show',compact('post','like'));
     }
 

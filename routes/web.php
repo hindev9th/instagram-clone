@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,11 +14,13 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/qr-code', function (\Illuminate\Http\Request $request) {
+    return QrCode::size(500)->style('round')->format('png')->generate($request['link']);
+});
 
 Auth::routes();
 
-
+Route::middleware('auth')->get('/','HomeController@index')->name('home.index');
 /**
  * Follow
  */
@@ -36,19 +38,20 @@ Route::middleware('auth')->prefix('/profile')->group(function (){
 /**
  * Post
  */
-Route::middleware('auth')->prefix('/')->group(function () {
+Route::middleware('auth')->prefix('/p')->group(function () {
     Route::get('/', 'PostsController@index')->name('post.index');
-    Route::post('/p', 'PostsController@store')->name('post.store');
-    Route::get('/p/{post}', 'PostsController@show')->name('post.show');
-    Route::delete('/p/d/{post}','PostsController@destroy')->name('post.destroy');
+    Route::post('/', 'PostsController@store')->name('post.store');
+    Route::get('/{post}', 'PostsController@show')->name('post.show');
+    Route::delete('/{post}','PostsController@destroy')->name('post.destroy');
     /**
      * Comments
      */
-    Route::post('/p/{post}/comment}','CommentsController@store')->name('comment.store');
+    Route::post('/{post}/comment','CommentsController@store')->name('comment.store');
     /**
      * Likes post
      */
-    Route::post('/p/{post}/like','LikesController@store')->name('like.store');
+    Route::get('/{post}/like','LikesController@check')->name('like.check');
+    Route::post('/{post}/like','LikesController@store')->name('like.store');
 });
 
 
