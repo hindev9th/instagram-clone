@@ -29,6 +29,11 @@
                             </form>
                         </div>
                     </div>
+                    <div class="title-sug-user d-flex justify-content-between">
+                        <span class="mt-2">{{__('Suggested for you')}}</span>
+                        <show-user-button action="{{route('user.index')}}" title="{{__('Suggested for you')}}" text="{{__('See All')}}"></show-user-button>
+                    </div>
+                    <sug-users></sug-users>
                 </div>
             </div>
         </div>

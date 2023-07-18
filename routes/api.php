@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\CommentsController;
 use App\Http\Controllers\Api\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,11 +14,11 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::middleware('auth:api')->prefix('/')->group(function (){
+    Route::get('/user',[UserController::class,'index'])->name('user.index');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user()->with('profile')->where('api_token',$request->user()->api_token)->first();
+
 });
-
 Route::get('/p/{post}/comment',[CommentsController::class,'index']);
 Route::post('/p/{post}/comment',[CommentsController::class,'store']);
 Route::get('/user/s/{search}',[UserController::class,'search']);

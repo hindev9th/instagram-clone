@@ -21,6 +21,9 @@ class PostsController extends Controller
             ->latest()
             ->paginate(5);
 
+        $posts->each(function ($post) use ($user) {
+            $post->isLiked = $user->likes->contains($post->id);
+        });
         return $posts;
     }
 
@@ -40,9 +43,9 @@ class PostsController extends Controller
 
     public function show(Post $post)
     {
-        $like = (\auth()->user()) ? \auth()->user()->likes->contains($post->id) : false;
         $post = $post->load('comments','likes');
-        return view('posts.show',compact('post','like'));
+        $post->isLiked = auth()->user()->likes->contains($post->id);
+        return view('posts.show',compact('post'));
     }
 
     public function destroy(Post $post)

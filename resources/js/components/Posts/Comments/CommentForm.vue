@@ -1,5 +1,5 @@
 <template>
-    <div class="pb-3 border-bottom">
+    <div class="box-comment-form">
         <div class="pt-1 w-100">
             <form method="post" @submit.prevent="addComment">
                 <div class="d-flex">
@@ -10,7 +10,7 @@
                            :readonly="isSending"
                            autocomplete="comment"
                            placeholder="Add a comment"
-                           autofocus style="background-color: #f8fafc">
+                           style="background-color: #f8fafc">
 
 
                     <button class="btn " v-if="comment.length > 0" :disabled="isSending">Post</button>

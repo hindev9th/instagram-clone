@@ -18,7 +18,7 @@ class ProfilesController extends Controller
     public function index(User $user)
     {
         // check follow return : true | false
-        $follows = (auth()->user()) ? auth()->user()->following->contains($user->id) : false;
+        $follows = auth()->user()->following->contains($user->id);
 
         // set cache posts count (key,time,function)
         $postsCount = Cache::remember(

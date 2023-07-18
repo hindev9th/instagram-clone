@@ -15,23 +15,22 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $user = auth()->user();
+
+        $userId = auth()->user()->following()->pluck('profiles.user_id')->push($user->id);
+
+        $users = User::whereNotIn('id', $userId)
+            ->inRandomOrder()
+            ->paginate(5);
+
+        $users->each(function ($user) use ($userId) {
+            $user->isFollowing = auth()->user()->following->contains($user->id);
+        });
+
+        return $users;
     }
 
-    public function suggested()
-    {
 
-    }
-
-    public function search($search)
-    {
-        $data = User::select('id','name','username')
-            ->where('name', 'like', '%' . $search . '%')
-            ->orWhere('username', 'like', '%' . $search . '%')
-            ->orWhere('email', 'like', '%' . $search . '%')
-            ->get();
-        return $data;
-    }
 
     /**
      * Show the form for creating a new resource.

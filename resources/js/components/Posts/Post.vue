@@ -45,7 +45,7 @@
                        class="text-black-50 text-decoration-none">
                         View all {{ formatNumber(comments) }} comments
                     </a>
-                    <CommentForm :post="post" :user="user" ></CommentForm>
+                    <CommentForm :post="post" :user="user" class="border-bottom pb-3"></CommentForm>
                 </div>
             </div>
         </div>

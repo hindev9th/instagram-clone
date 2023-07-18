@@ -1,5 +1,5 @@
 <template>
-    <div class="box-comments d-flex w-100 p-2 overflow-auto mh-100 position-absolute flex-column flex-nowrap">
+    <div class="box-comments d-flex w-100 mt-2 pl-2 pr-2 overflow-auto mh-100 position-absolute flex-column flex-nowrap">
         <div class="d-flex mb-2">
             <div class="pr-1">
                 <img :src="getImage(post.user.profile.image)"
@@ -15,6 +15,7 @@
             </div>
         </div>
         <Comment :comment="comment" :user="user" v-for="comment in comments" :key="comment.id"></Comment>
+        <button class="btn btn-outline-secondary m-5" @click="showMore" v-if="isShowMore">Show more</button>
     </div>
 </template>
 
@@ -30,6 +31,8 @@ export default {
             comments : [],
             isLoading : false,
             base_url : window.Laravel.baseUrl,
+            page : 1,
+            isShowMore: false,
         }
     },
     created() {
@@ -47,16 +50,29 @@ export default {
             axios.get(`${this.base_url}/api/p/${this.post.id}/comment`)
             .then(res =>{
                 this.comments = res.data.data;
+                this.isShowMore = res.data.data.length > 4;
                 this.isLoading = false;
             })
             .catch(e =>{
                 this.isLoading = false;
             })
+        },
+        showMore(){
+            this.page++;
+            axios.get(`${this.base_url}/api/p/${this.post.id}/comment?page=${this.page}`)
+                .then(res =>{
+                    res.data.data.forEach(e => this.comments.push(e));
+                    this.isShowMore = res.data.data.length > 4;
+                })
+                .catch(e =>{
+                })
         }
     }
 }
 </script>
 
-<style scoped>
-
+<style >
+ .box-comments .comment:last-child{
+     padding-bottom: 25px;
+ }
 </style>

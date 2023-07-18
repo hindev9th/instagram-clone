@@ -19,18 +19,19 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.6/dist/vue-multiselect.min.css">
+    @auth
     <script type="text/javascript">
         window.Laravel = {!! json_encode([
             'baseUrl' => url('/'),
             'csrf_token' => csrf_token(),
-            'auth_token' => "auth()->user()->api_token",
+            'api_token' => auth()->user()->api_token,
         ]) !!}
     </script>
+    @endauth
 </head>
 <body>
 <div id="app">
-    @guest
-    @else
+    @auth
         <div class="menu-app">
             <ul class="list-unstyled">
                 <a href="{{ url('/') }}" class="icon-logo">
@@ -77,7 +78,7 @@
 
         <new-post-modal user="{{Auth::user()}}"></new-post-modal>
         <new-chat-modal></new-chat-modal>
-    @endguest
+    @endauth
 
     <main >
         @yield('content')

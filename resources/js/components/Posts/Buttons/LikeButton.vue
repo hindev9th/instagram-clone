@@ -8,10 +8,7 @@
 export default {
     props: ['post', 'user'],
     mounted() {
-
-    },
-    created() {
-      this.checkLiked();
+        this.status = this.post.isLiked;
     },
     data: function () {
         return {
@@ -21,22 +18,13 @@ export default {
         }
     },
     methods: {
-        checkLiked(){
-            for (var index in this.post.likes){
-                if (this.post.likes[index].id === this.user.id){
-                    this.status = true;
-                    break;
-                }
-            }
-        },
         likePost(event) {
+            this.toggleClass(event);
+            this.status = !this.status;
             axios.post(window.Laravel.baseUrl + '/p/' + this.post.id + '/like').then(response => {
-                console.log(response.data)
-                    this.status = !this.status;
-                    this.toggleClass(event);
-                    this.status ? this.$emit('add-like') : this.$emit('minus-like')
+                    response.data.attached.length ? this.$emit('add-like') : this.$emit('minus-like');
                 }
-            )
+            );
         },
         toggleClass (event) {
             const target = event.target;
@@ -64,7 +52,7 @@ export default {
     }
     .flashing {
         transform: scale(1);
-        animation: scale .5s;
+        animation: scale .3s;
     }
 
     @keyframes scale {
@@ -72,10 +60,7 @@ export default {
             transform: scale(1);
         }
         50% {
-            /*transform: scale(1.5);*/
-        }
-        70%{
-            transform: scale(2);
+            transform: scale(1.5);
         }
         100% {
             transform: scale(1);

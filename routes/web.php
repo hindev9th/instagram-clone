@@ -14,9 +14,6 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/qr-code', function (\Illuminate\Http\Request $request) {
-    return QrCode::size(500)->style('round')->format('png')->generate($request['link']);
-});
 
 Auth::routes();
 

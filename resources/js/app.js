@@ -29,6 +29,10 @@ Vue.component('post-show', require('./components/Posts/PostShow.vue').default);
 // Chats
 Vue.component('chat', require('./components/Chat/Chat.vue').default);
 Vue.component('new-chat-modal', require('./components/Chat/Modals/ModalNewMessage.vue').default);
+
+// User
+Vue.component('sug-users', require('./components/User/SuggestedUsers.vue').default);
+Vue.component('show-user-button', require('./components/User/Buttons/ShowUserButton.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

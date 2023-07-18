@@ -60,13 +60,14 @@ export default {
                 });
             });
 
-        $('.menu-app').addClass('small');
     },
     mounted() {
       Bus.$on('NewChatRoom', (chat) => {
           this.chatsData.unshift(chat);
           this.selected_id = chat.id;
       })
+        $('.menu-app').addClass('small');
+
     },
     methods: {
         getImage,

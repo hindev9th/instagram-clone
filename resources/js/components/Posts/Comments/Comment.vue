@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex mt-2 mb-2">
+    <div class="comment d-flex mt-2 mb-2">
         <div class="pr-1">
             <img :src="getImage(comment.user.profile.image)"
                  class="avatar rounded-circle" alt="">
