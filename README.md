@@ -46,3 +46,8 @@ npm i
 
 npm run dev
 ````
+Fake 20 rows of user and post table in db
+(Note :Before running, you have to copy the image to the "storage/app/public" folder.)
+````
+php artisan db:seed
+````
