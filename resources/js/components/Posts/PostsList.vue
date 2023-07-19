@@ -39,7 +39,7 @@ export default {
                 .then(res => {
                     this.isLoading = false;
                     this.posts = res.data.data;
-                    res.data.data.length > 4 ? this.isShowLoadMore = true : this.isShowLoadMore = false;
+                    this.isShowLoadMore = res.data.data.length < res.data.total;
                 })
                 .catch(e => {
                     this.isLoading = false;
@@ -50,7 +50,7 @@ export default {
             axios.get(this.base_url + '/p?page=' + this.page)
                 .then(res => {
                     res.data.data.forEach(e => this.posts.push(e));
-                    this.isShowLoadMore = res.data.data.length > 4 ;
+                    this.isShowLoadMore = this.posts.length < res.data.total;
                 })
                 .catch(e =>{
             })

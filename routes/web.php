@@ -21,7 +21,7 @@ Route::middleware('auth')->get('/','HomeController@index')->name('home.index');
 /**
  * Follow
  */
-Route::post('/follow/{user}', 'FollowsController@store');
+
 
 /**
  * Profile

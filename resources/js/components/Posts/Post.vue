@@ -32,7 +32,9 @@
                         <ShareButton :post="post"></ShareButton>
                     </div>
                     <div class="info-post pt-2 d-flex flex-column">
-                        <strong>{{ formatNumber(likes) }} likes</strong>
+                        <strong class="d-flex">{{ formatNumber(likes) }} &nbsp
+                            <ShowUserButton :action="`${base_url}/api/p/${post.id}/likes`" title="Likes" text="Likes"></ShowUserButton>
+                        </strong>
                     </div>
                     <div class="row m-0 pt-2 pb-2">
                         <div class="w-100">
@@ -58,8 +60,9 @@ import LikeButton from "./Buttons/LikeButton";
 import SettingButton from "./Buttons/SettingButton";
 import CommentForm from "./Comments/CommentForm";
 import ShareButton from "./Buttons/ShareButton";
+import ShowUserButton from "../User/Buttons/ShowUserButton";
 export default {
-    components: {LikeButton,SettingButton,CommentForm,ShareButton},
+    components: {LikeButton,SettingButton,CommentForm,ShareButton,ShowUserButton},
     name: "Post",
     props: ['post','user'],
     data() {

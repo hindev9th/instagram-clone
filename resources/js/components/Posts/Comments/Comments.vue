@@ -2,11 +2,13 @@
     <div class="box-comments d-flex w-100 mt-2 pl-2 pr-2 overflow-auto mh-100 position-absolute flex-column flex-nowrap">
         <div class="d-flex mb-2">
             <div class="pr-1">
-                <img :src="getImage(post.user.profile.image)"
-                     class="avatar rounded-circle" alt="">
+                <a :href="auth_data.baseUrl + '/profile/' + post.user.username">
+                    <img :src="getImage(post.user.profile.image)"
+                         class="avatar rounded-circle" alt="">
+                </a>
             </div>
             <div class="pl-2">
-                <a :href="base_url + '/profile/' + post.user.username"
+                <a :href="auth_data.baseUrl + '/profile/' + post.user.username"
                    class="text-decoration-none text-dark"><strong>{{post.user.username}}</strong></a>
                 {{ post.caption }}
                 <div class="time">
@@ -30,7 +32,7 @@ export default {
         return{
             comments : [],
             isLoading : false,
-            base_url : window.Laravel.baseUrl,
+            auth_data : window.Laravel,
             page : 1,
             isShowMore: false,
         }
@@ -47,10 +49,10 @@ export default {
         getImage,formatTime,
         fetchComments(){
             this.isLoading = true;
-            axios.get(`${this.base_url}/api/p/${this.post.id}/comment`)
+            axios.get(`${this.auth_data.baseUrl}/api/p/${this.post.id}/comments?api_token=${this.auth_data.api_token}`)
             .then(res =>{
                 this.comments = res.data.data;
-                this.isShowMore = res.data.data.length > 4;
+                this.isShowMore = res.data.data.length < res.data.total;
                 this.isLoading = false;
             })
             .catch(e =>{
@@ -59,10 +61,10 @@ export default {
         },
         showMore(){
             this.page++;
-            axios.get(`${this.base_url}/api/p/${this.post.id}/comment?page=${this.page}`)
+            axios.get(`${this.auth_data.baseUrl}/api/p/${this.post.id}/comments?api_token=${this.auth_data.api_token}&page=${this.page}`)
                 .then(res =>{
                     res.data.data.forEach(e => this.comments.push(e));
-                    this.isShowMore = res.data.data.length > 4;
+                    this.isShowMore = this.comments.length < res.data.total;
                 })
                 .catch(e =>{
                 })

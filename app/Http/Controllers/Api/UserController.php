@@ -30,7 +30,16 @@ class UserController extends Controller
         return $users;
     }
 
-
+    public function search($search)
+    {
+        $user = auth()->user();
+        return User::select('id', 'name', 'username')
+            ->where('id', '!=', $user->id)
+            ->where('name', 'like', '%' . $search . '%')
+            ->orWhere('username', 'like', '%' . $search . '%')
+            ->orWhere('email', 'like', '%' . $search . '%')
+            ->get();
+    }
 
     /**
      * Show the form for creating a new resource.

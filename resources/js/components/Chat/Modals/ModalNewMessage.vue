@@ -68,6 +68,7 @@ export default {
             search: '',
             isLoading: false,
             users: [],
+            auth_data : window.Laravel,
         }
     },
     methods: {
@@ -81,7 +82,7 @@ export default {
         },
         searchUsers() {
             if (this.search.length > 2) {
-                axios.get(window.Laravel.baseUrl + '/api/user/s/' + this.search)
+                axios.get(`${this.auth_data.baseUrl}/api/user/s/${this.search}?api_token=${this.auth_data.api_token}`)
                     .then(response => {
                         this.users = response.data;
                     })
@@ -90,10 +91,10 @@ export default {
         },
         createChatRoom() {
             this.isLoading = true;
-            axios.post(window.Laravel.baseUrl + '/c', {
+            axios.post(`${this.auth_data.baseUrl}/c`, {
+                _token: this.auth_data.csrf_token,
                 users: this.selected_id
             }).then(response => {
-                console.log(response.data);
                 Bus.$emit('NewChatRoom',response.data);
                 $('#modal-new').modal('hide');
                 this.selected = []

@@ -15,13 +15,16 @@ export default {
             status: false,
             notLike: 'far',
             isLike: 'fas text-danger',
+            auth_data: window.Laravel,
         }
     },
     methods: {
         likePost(event) {
             this.toggleClass(event);
             this.status = !this.status;
-            axios.post(window.Laravel.baseUrl + '/p/' + this.post.id + '/like').then(response => {
+            axios.post(`${this.auth_data.baseUrl}/api/p/${this.post.id}/likes?api_token=${this.auth_data.api_token}`,{
+                _token : this.auth_data.csrf_token,
+            }).then(response => {
                     response.data.attached.length ? this.$emit('add-like') : this.$emit('minus-like');
                 }
             );

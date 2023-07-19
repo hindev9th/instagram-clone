@@ -27,19 +27,19 @@ export default {
     data(){
         return{
             comment : '',
-            base_url : window.Laravel.baseUrl,
+            auth_data : window.Laravel,
             isSending : false,
         }
     },
     methods:{
         addComment(){
             let data = new FormData();
-            data.append('_token',window.Laravel.csrf_token);
+            data.append('_token',this.auth_data.csrf_token);
             data.append('user_id',this.user.id);
             data.append('comment',this.comment);
 
             this.isSending = true
-            axios.post(this.base_url + '/api/p/' + this.post.id + '/comment',data)
+            axios.post(`${this.auth_data.baseUrl}/api/p/${this.post.id}/comments?api_token=${this.auth_data.api_token}`,data)
                 .then(res =>{
                     Bus.$emit('NewComment',res.data);
                     this.comment = '';

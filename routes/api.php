@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\CommentsController;
+use App\Http\Controllers\Api\LikesController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\FollowsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,10 +17,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::middleware('auth:api')->prefix('/')->group(function (){
-    Route::get('/user',[UserController::class,'index'])->name('user.index');
 
+    // User
+    Route::prefix('/user')->group(function (){
+        Route::get('/',[UserController::class,'index'])->name('user.index');
+        Route::get('/s/{search}',[UserController::class,'search']);
+
+    });
+
+    // Follow
+    Route::prefix('/follow')->group(function (){
+        Route::post('/{user}', [FollowsController::class,'store'])->name('follow.store');
+        Route::get('/{user}/followers',[FollowsController::class,'followers'])->name('follow.followers');
+        Route::get('/{user}/following',[FollowsController::class,'following'])->name('follow.following');
+    });
+
+    // Post
+    Route::prefix('/p')->group(function (){
+
+
+        // Comments post
+        Route::get('/{post}/comments',[CommentsController::class,'index']);
+        Route::post('/{post}/comments',[CommentsController::class,'store']);
+
+        // Likes post
+        Route::get('/{post}/likes',[LikesController::class,'index'])->name('likes.index');
+        Route::post('/{post}/likes',[LikesController::class,'store'])->name('likes.store');
+    });
 
 });
-Route::get('/p/{post}/comment',[CommentsController::class,'index']);
-Route::post('/p/{post}/comment',[CommentsController::class,'store']);
-Route::get('/user/s/{search}',[UserController::class,'search']);
+
+

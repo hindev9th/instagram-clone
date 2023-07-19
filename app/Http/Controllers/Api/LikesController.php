@@ -1,12 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
 class LikesController extends Controller
 {
+    public function index(Post $post)
+    {
+        $users = $post->likes()->paginate(5);
+        $users->each(function ($user){
+            $user->isFollowing = auth()->user()->following->contains($user->id);
+        });
+        return $users;
+    }
 
     /**
      * check user liked post

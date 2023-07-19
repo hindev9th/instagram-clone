@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
-    protected $guarded = [];
+    protected $fillable = ['user_id','title','description','url','image'];
+
 
     /**
      * get image profile
@@ -23,7 +24,7 @@ class Profile extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->select('id','name','username');
     }
 
     /**

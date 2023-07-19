@@ -410,7 +410,8 @@ __webpack_require__.r(__webpack_exports__);
       selected_id: [],
       search: '',
       isLoading: false,
-      users: []
+      users: [],
+      auth_data: window.Laravel
     };
   },
   methods: {
@@ -425,7 +426,7 @@ __webpack_require__.r(__webpack_exports__);
     searchUsers: function searchUsers() {
       var _this = this;
       if (this.search.length > 2) {
-        axios.get(window.Laravel.baseUrl + '/api/user/s/' + this.search).then(function (response) {
+        axios.get("".concat(this.auth_data.baseUrl, "/api/user/s/").concat(this.search, "?api_token=").concat(this.auth_data.api_token)).then(function (response) {
           _this.users = response.data;
         });
       }
@@ -433,10 +434,10 @@ __webpack_require__.r(__webpack_exports__);
     createChatRoom: function createChatRoom() {
       var _this2 = this;
       this.isLoading = true;
-      axios.post(window.Laravel.baseUrl + '/c', {
+      axios.post("".concat(this.auth_data.baseUrl, "/c"), {
+        _token: this.auth_data.csrf_token,
         users: this.selected_id
       }).then(function (response) {
-        console.log(response.data);
         Bus.$emit('NewChatRoom', response.data);
         $('#modal-new').modal('hide');
         _this2.selected = [];
@@ -581,18 +582,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['userId', 'follows'],
-  mounted: function mounted() {
-    console.log('vue js');
-  },
+  mounted: function mounted() {},
   data: function data() {
     return {
-      status: this.follows
+      status: this.follows,
+      auth_data: window.Laravel
     };
   },
   methods: {
     followUser: function followUser() {
       var _this = this;
-      axios.post('/follow/' + this.userId).then(function (response) {
+      axios.post("".concat(this.auth_data.baseUrl, "/api/follow/").concat(this.userId, "?api_token=").concat(this.auth_data.api_token), {
+        _token: this.auth_data.csrf_token
+      }).then(function (response) {
         _this.status = !_this.status;
       })["catch"](function (errors) {
         if (errors.response.status === 401) {
@@ -637,7 +639,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       status: false,
       notLike: 'far',
-      isLike: 'fas text-danger'
+      isLike: 'fas text-danger',
+      auth_data: window.Laravel
     };
   },
   methods: {
@@ -645,7 +648,9 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
       this.toggleClass(event);
       this.status = !this.status;
-      axios.post(window.Laravel.baseUrl + '/p/' + this.post.id + '/like').then(function (response) {
+      axios.post("".concat(this.auth_data.baseUrl, "/api/p/").concat(this.post.id, "/likes?api_token=").concat(this.auth_data.api_token), {
+        _token: this.auth_data.csrf_token
+      }).then(function (response) {
         response.data.attached.length ? _this.$emit('add-like') : _this.$emit('minus-like');
       });
     },
@@ -954,7 +959,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       comment: '',
-      base_url: window.Laravel.baseUrl,
+      auth_data: window.Laravel,
       isSending: false
     };
   },
@@ -962,11 +967,11 @@ __webpack_require__.r(__webpack_exports__);
     addComment: function addComment() {
       var _this = this;
       var data = new FormData();
-      data.append('_token', window.Laravel.csrf_token);
+      data.append('_token', this.auth_data.csrf_token);
       data.append('user_id', this.user.id);
       data.append('comment', this.comment);
       this.isSending = true;
-      axios.post(this.base_url + '/api/p/' + this.post.id + '/comment', data).then(function (res) {
+      axios.post("".concat(this.auth_data.baseUrl, "/api/p/").concat(this.post.id, "/comments?api_token=").concat(this.auth_data.api_token), data).then(function (res) {
         Bus.$emit('NewComment', res.data);
         _this.comment = '';
         _this.isSending = false;
@@ -1013,6 +1018,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -1026,7 +1033,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       comments: [],
       isLoading: false,
-      base_url: window.Laravel.baseUrl,
+      auth_data: window.Laravel,
       page: 1,
       isShowMore: false
     };
@@ -1046,9 +1053,9 @@ __webpack_require__.r(__webpack_exports__);
     fetchComments: function fetchComments() {
       var _this2 = this;
       this.isLoading = true;
-      axios.get("".concat(this.base_url, "/api/p/").concat(this.post.id, "/comment")).then(function (res) {
+      axios.get("".concat(this.auth_data.baseUrl, "/api/p/").concat(this.post.id, "/comments?api_token=").concat(this.auth_data.api_token)).then(function (res) {
         _this2.comments = res.data.data;
-        _this2.isShowMore = res.data.data.length > 4;
+        _this2.isShowMore = res.data.data.length < res.data.total;
         _this2.isLoading = false;
       })["catch"](function (e) {
         _this2.isLoading = false;
@@ -1057,11 +1064,11 @@ __webpack_require__.r(__webpack_exports__);
     showMore: function showMore() {
       var _this3 = this;
       this.page++;
-      axios.get("".concat(this.base_url, "/api/p/").concat(this.post.id, "/comment?page=").concat(this.page)).then(function (res) {
+      axios.get("".concat(this.auth_data.baseUrl, "/api/p/").concat(this.post.id, "/comments?api_token=").concat(this.auth_data.api_token, "&page=").concat(this.page)).then(function (res) {
         res.data.data.forEach(function (e) {
           return _this3.comments.push(e);
         });
-        _this3.isShowMore = res.data.data.length > 4;
+        _this3.isShowMore = _this3.comments.length < res.data.total;
       })["catch"](function (e) {});
     }
   }
@@ -1363,6 +1370,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Buttons_SettingButton__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Buttons/SettingButton */ "./resources/js/components/Posts/Buttons/SettingButton.vue");
 /* harmony import */ var _Comments_CommentForm__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Comments/CommentForm */ "./resources/js/components/Posts/Comments/CommentForm.vue");
 /* harmony import */ var _Buttons_ShareButton__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Buttons/ShareButton */ "./resources/js/components/Posts/Buttons/ShareButton.vue");
+/* harmony import */ var _User_Buttons_ShowUserButton__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../User/Buttons/ShowUserButton */ "./resources/js/components/User/Buttons/ShowUserButton.vue");
 //
 //
 //
@@ -1417,6 +1425,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+
 
 
 
@@ -1428,7 +1439,8 @@ __webpack_require__.r(__webpack_exports__);
     LikeButton: _Buttons_LikeButton__WEBPACK_IMPORTED_MODULE_1__["default"],
     SettingButton: _Buttons_SettingButton__WEBPACK_IMPORTED_MODULE_2__["default"],
     CommentForm: _Comments_CommentForm__WEBPACK_IMPORTED_MODULE_3__["default"],
-    ShareButton: _Buttons_ShareButton__WEBPACK_IMPORTED_MODULE_4__["default"]
+    ShareButton: _Buttons_ShareButton__WEBPACK_IMPORTED_MODULE_4__["default"],
+    ShowUserButton: _User_Buttons_ShowUserButton__WEBPACK_IMPORTED_MODULE_5__["default"]
   },
   name: "Post",
   props: ['post', 'user'],
@@ -1636,7 +1648,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.get(this.base_url + '/p').then(function (res) {
         _this2.isLoading = false;
         _this2.posts = res.data.data;
-        res.data.data.length > 4 ? _this2.isShowLoadMore = true : _this2.isShowLoadMore = false;
+        _this2.isShowLoadMore = res.data.data.length < res.data.total;
       })["catch"](function (e) {
         _this2.isLoading = false;
       });
@@ -1648,7 +1660,7 @@ __webpack_require__.r(__webpack_exports__);
         res.data.data.forEach(function (e) {
           return _this3.posts.push(e);
         });
-        _this3.isShowLoadMore = res.data.data.length > 4;
+        _this3.isShowLoadMore = _this3.posts.length < res.data.total;
       })["catch"](function (e) {});
     },
     deletePost: function deletePost(removePost) {
@@ -1773,7 +1785,7 @@ __webpack_require__.r(__webpack_exports__);
             return _this.users.push(e);
           });
         }
-        _this.isShowMore = res.data.data.length > 4;
+        _this.isShowMore = _this.users.length < res.data.total;
       })["catch"](function (e) {});
     }
   }
@@ -1861,6 +1873,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -1868,7 +1881,7 @@ __webpack_require__.r(__webpack_exports__);
   props: ['user'],
   data: function data() {
     return {
-      base_url: window.Laravel.baseUrl
+      auth_data: window.Laravel
     };
   },
   methods: {
@@ -51881,155 +51894,169 @@ var render = function () {
         [_c("i", { staticClass: "fas fa-ellipsis-h" })]
       ),
       _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "modal fade",
-          attrs: {
-            id: "modal-setting-" + _vm.post.id,
-            tabindex: "-1",
-            role: "dialog",
-            "aria-labelledby": "exampleModalCenterTitle",
-            "aria-hidden": "true",
-          },
-        },
-        [
-          _c(
+      _vm.isShow
+        ? _c(
             "div",
             {
-              staticClass: "modal-dialog modal-dialog-centered modal-md",
-              attrs: { role: "document" },
+              staticClass: "modal fade",
+              attrs: {
+                id: "modal-setting-" + _vm.post.id,
+                tabindex: "-1",
+                role: "dialog",
+                "aria-labelledby": "exampleModalCenterTitle",
+                "aria-hidden": "true",
+              },
             },
             [
               _c(
                 "div",
-                { staticClass: "modal-content overflow-hidden border-0" },
+                {
+                  staticClass: "modal-dialog modal-dialog-centered modal-md",
+                  attrs: { role: "document" },
+                },
                 [
                   _c(
-                    "button",
-                    {
-                      staticClass: "close position-fixed",
-                      attrs: {
-                        type: "button",
-                        "data-dismiss": "modal",
-                        "aria-label": "Close",
-                      },
-                      on: { click: _vm.showModal },
-                    },
+                    "div",
+                    { staticClass: "modal-content overflow-hidden border-0" },
                     [
-                      _c("span", { attrs: { "aria-hidden": "true" } }, [
-                        _vm._v("×"),
-                      ]),
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "modal-body p-0" }, [
-                    _c("ul", { staticClass: "list-unstyled text-center m-0" }, [
                       _c(
-                        "li",
+                        "button",
                         {
-                          directives: [
-                            {
-                              name: "show",
-                              rawName: "v-show",
-                              value: _vm.post.user_id === _vm.user.id,
-                              expression: "post.user_id === user.id",
-                            },
-                          ],
-                          staticClass:
-                            "hover-dark-20 p-2 border-bottom font-weight-bold text-danger",
+                          staticClass: "close position-fixed",
                           attrs: {
-                            "data-toggle": "modal",
-                            "data-backdrop": "static",
-                            "data-keyboard": "false",
-                            "data-target": "#modal-confirm-" + _vm.post.id,
+                            type: "button",
+                            "data-dismiss": "modal",
+                            "aria-label": "Close",
                           },
-                          on: {
-                            click: function ($event) {
-                              return _vm.showModalConfirm()
-                            },
-                          },
-                        },
-                        [_vm._v("Delete\n                        ")]
-                      ),
-                      _vm._v(" "),
-                      _vm.post.user_id === _vm.user.id
-                        ? _c(
-                            "li",
-                            { staticClass: "hover-dark-20 p-2 border-bottom" },
-                            [_vm._v("Edit")]
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _c(
-                        "li",
-                        {
-                          staticClass: "hover-dark-20 p-2 border-bottom",
-                          on: { click: _vm.gotoPost },
-                        },
-                        [_vm._v("Go to post")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "li",
-                        {
-                          staticClass: "hover-dark-20 p-2 border-bottom",
-                          attrs: {
-                            "data-toggle": "modal",
-                            "data-backdrop": "static",
-                            "data-keyboard": "false",
-                            "data-target": "#modal-share-" + _vm.post.id,
-                          },
-                          on: { click: _vm.showModalShare },
-                        },
-                        [_vm._v("Share to...\n                        ")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "li",
-                        {
-                          staticClass: "hover-dark-20 p-2 border-bottom",
-                          on: { click: _vm.copyText },
+                          on: { click: _vm.showModal },
                         },
                         [
-                          _vm._v(
-                            "\n                            Copy link\n                            "
-                          ),
-                          _c("input", {
-                            attrs: { type: "hidden", id: "link-copy" },
-                            domProps: {
-                              value: _vm.baseUrl + "/p/" + _vm.post.id,
-                            },
-                          }),
+                          _c("span", { attrs: { "aria-hidden": "true" } }, [
+                            _vm._v("×"),
+                          ]),
                         ]
                       ),
                       _vm._v(" "),
-                      _c(
-                        "li",
-                        {
-                          staticClass: "hover-dark-20 p-2 border-bottom",
-                          on: { click: _vm.aboutThisAccount },
-                        },
-                        [_vm._v("About this account\n                        ")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "li",
-                        {
-                          staticClass: "hover-dark-20 p-2 border-bottom",
-                          attrs: { "data-dismiss": "modal" },
-                          on: { click: _vm.showModal },
-                        },
-                        [_vm._v("Cancel\n                        ")]
-                      ),
-                    ]),
-                  ]),
+                      _c("div", { staticClass: "modal-body p-0" }, [
+                        _c(
+                          "ul",
+                          { staticClass: "list-unstyled text-center m-0" },
+                          [
+                            _c(
+                              "li",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: _vm.post.user_id === _vm.user.id,
+                                    expression: "post.user_id === user.id",
+                                  },
+                                ],
+                                staticClass:
+                                  "hover-dark-20 p-2 border-bottom font-weight-bold text-danger",
+                                attrs: {
+                                  "data-toggle": "modal",
+                                  "data-backdrop": "static",
+                                  "data-keyboard": "false",
+                                  "data-target":
+                                    "#modal-confirm-" + _vm.post.id,
+                                },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.showModalConfirm()
+                                  },
+                                },
+                              },
+                              [_vm._v("Delete\n                        ")]
+                            ),
+                            _vm._v(" "),
+                            _vm.post.user_id === _vm.user.id
+                              ? _c(
+                                  "li",
+                                  {
+                                    staticClass:
+                                      "hover-dark-20 p-2 border-bottom",
+                                  },
+                                  [_vm._v("Edit")]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _c(
+                              "li",
+                              {
+                                staticClass: "hover-dark-20 p-2 border-bottom",
+                                on: { click: _vm.gotoPost },
+                              },
+                              [_vm._v("Go to post")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "li",
+                              {
+                                staticClass: "hover-dark-20 p-2 border-bottom",
+                                attrs: {
+                                  "data-toggle": "modal",
+                                  "data-backdrop": "static",
+                                  "data-keyboard": "false",
+                                  "data-target": "#modal-share-" + _vm.post.id,
+                                },
+                                on: { click: _vm.showModalShare },
+                              },
+                              [_vm._v("Share to...\n                        ")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "li",
+                              {
+                                staticClass: "hover-dark-20 p-2 border-bottom",
+                                on: { click: _vm.copyText },
+                              },
+                              [
+                                _vm._v(
+                                  "\n                            Copy link\n                            "
+                                ),
+                                _c("input", {
+                                  attrs: { type: "hidden", id: "link-copy" },
+                                  domProps: {
+                                    value: _vm.baseUrl + "/p/" + _vm.post.id,
+                                  },
+                                }),
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "li",
+                              {
+                                staticClass: "hover-dark-20 p-2 border-bottom",
+                                on: { click: _vm.aboutThisAccount },
+                              },
+                              [
+                                _vm._v(
+                                  "About this account\n                        "
+                                ),
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "li",
+                              {
+                                staticClass: "hover-dark-20 p-2 border-bottom",
+                                attrs: { "data-dismiss": "modal" },
+                                on: { click: _vm.showModal },
+                              },
+                              [_vm._v("Cancel\n                        ")]
+                            ),
+                          ]
+                        ),
+                      ]),
+                    ]
+                  ),
                 ]
               ),
             ]
-          ),
-        ]
-      ),
+          )
+        : _vm._e(),
       _vm._v(" "),
       _vm.isShowConfirm
         ? _c(
@@ -52362,10 +52389,24 @@ var render = function () {
     [
       _c("div", { staticClass: "d-flex mb-2" }, [
         _c("div", { staticClass: "pr-1" }, [
-          _c("img", {
-            staticClass: "avatar rounded-circle",
-            attrs: { src: _vm.getImage(_vm.post.user.profile.image), alt: "" },
-          }),
+          _c(
+            "a",
+            {
+              attrs: {
+                href:
+                  _vm.auth_data.baseUrl + "/profile/" + _vm.post.user.username,
+              },
+            },
+            [
+              _c("img", {
+                staticClass: "avatar rounded-circle",
+                attrs: {
+                  src: _vm.getImage(_vm.post.user.profile.image),
+                  alt: "",
+                },
+              }),
+            ]
+          ),
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "pl-2" }, [
@@ -52374,7 +52415,8 @@ var render = function () {
             {
               staticClass: "text-decoration-none text-dark",
               attrs: {
-                href: _vm.base_url + "/profile/" + _vm.post.user.username,
+                href:
+                  _vm.auth_data.baseUrl + "/profile/" + _vm.post.user.username,
               },
             },
             [_c("strong", [_vm._v(_vm._s(_vm.post.user.username))])]
@@ -53010,9 +53052,24 @@ var render = function () {
             ),
             _vm._v(" "),
             _c("div", { staticClass: "info-post pt-2 d-flex flex-column" }, [
-              _c("strong", [
-                _vm._v(_vm._s(_vm.formatNumber(_vm.likes)) + " likes"),
-              ]),
+              _c(
+                "strong",
+                { staticClass: "d-flex" },
+                [
+                  _vm._v(
+                    _vm._s(_vm.formatNumber(_vm.likes)) +
+                      "  \n                        "
+                  ),
+                  _c("ShowUserButton", {
+                    attrs: {
+                      action: _vm.base_url + "/api/p/" + _vm.post.id + "/likes",
+                      title: "Likes",
+                      text: "Likes",
+                    },
+                  }),
+                ],
+                1
+              ),
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "row m-0 pt-2 pb-2" }, [
@@ -53572,7 +53629,9 @@ var render = function () {
             "a",
             {
               staticClass: "mr-2",
-              attrs: { href: _vm.base_url + "/profile/" + _vm.user.username },
+              attrs: {
+                href: _vm.auth_data.baseUrl + "/profile/" + _vm.user.username,
+              },
             },
             [
               _c("img", {
@@ -53587,7 +53646,9 @@ var render = function () {
             "a",
             {
               staticClass: "text-dark text-decoration-none",
-              attrs: { href: _vm.base_url + "/profile/" + _vm.user.username },
+              attrs: {
+                href: _vm.auth_data.baseUrl + "/profile/" + _vm.user.username,
+              },
             },
             [_c("strong", [_vm._v(_vm._s(_vm.user.username))])]
           ),
@@ -53603,10 +53664,12 @@ var render = function () {
         ]),
       ]),
       _vm._v(" "),
-      _c("follow-button", {
-        staticClass: "text-primary",
-        attrs: { "user-id": _vm.user.id, follows: _vm.user.isFollowing },
-      }),
+      _vm.user.api_token !== _vm.auth_data.api_token
+        ? _c("follow-button", {
+            staticClass: "text-primary",
+            attrs: { "user-id": _vm.user.id, follows: _vm.user.isFollowing },
+          })
+        : _vm._e(),
     ],
     1
   )

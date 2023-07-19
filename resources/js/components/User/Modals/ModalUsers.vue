@@ -49,7 +49,7 @@ export default {
                 }else {
                     res.data.data.forEach(e => this.users.push(e));
                 }
-                this.isShowMore = res.data.data.length > 4;
+                this.isShowMore = this.users.length < res.data.total;
             })
             .catch(e =>{
 

@@ -2,7 +2,7 @@
     <div class="setting">
         <span class="btn-setting" @click="showModal" data-toggle="modal" data-backdrop="static" data-keyboard="false" :data-target="`#modal-setting-${post.id}`"> <i class="fas fa-ellipsis-h"></i></span>
 
-        <div class="modal fade" v-if="" :id="`modal-setting-${post.id}`" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" v-if="isShow" :id="`modal-setting-${post.id}`" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-md" role="document">
                 <div class="modal-content overflow-hidden border-0">
                     <button type="button" @click="showModal" class="close position-fixed" data-dismiss="modal" aria-label="Close">
