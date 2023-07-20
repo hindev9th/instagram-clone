@@ -1,7 +1,7 @@
 <template>
 
     <div class="post-show">
-        <div class="box-user-post top border-bottom position-relative pt-2 pb-2 pr-2 pl-0">
+        <div class="box-user-post top position-relative pt-2 pb-2 pr-2 pl-0">
             <div class="box-user d-flex">
                 <div class="pr-1 pl-2">
                     <img :src="getImage(postData.user.profile.image)" class="avatar rounded-circle"
@@ -16,7 +16,7 @@
             </div>
             <SettingButton :post="postData" :user="auth_user"></SettingButton>
         </div>
-        <div class="box-post">
+        <div class="box-post w-100">
             <div class="img-post d-flex justify-content-center align-items-center">
                 <img :src="'/storage/'+postData.image" class="w-100" style="height: fit-content" alt="">
             </div>
@@ -46,7 +46,9 @@
                                 <ShareButton :post="postData"></ShareButton>
                             </div>
                             <div class="info-post pt-2 d-flex flex-column">
-                                <strong>{{ formatNumber(likes) }} likes</strong>
+                                <strong class="d-flex">{{ formatNumber(likes) }} &nbsp
+                                    <ShowUserButton :action="`${base_url}/api/p/${postData.id}/likes`" title="Likes" text="Likes"></ShowUserButton>
+                                </strong>
                                 <span>{{ formatTime(postData.created_at) }}</span>
                             </div>
                         </div>
@@ -66,9 +68,10 @@ import Comments from "./Comments/Comments";
 import LikeButton from "./Buttons/LikeButton";
 import SettingButton from "./Buttons/SettingButton";
 import ShareButton from "./Buttons/ShareButton";
+import ShowUserButton from "../User/Buttons/ShowUserButton";
 import {getImage,formatNumber,formatTime} from "../../functiton";
 export default {
-    components: {CommentForm,Comments,LikeButton,SettingButton,ShareButton},
+    components: {CommentForm,Comments,LikeButton,SettingButton,ShareButton,ShowUserButton},
     name: "PostShow",
     props:['user','post'],
     data(){
@@ -76,6 +79,7 @@ export default {
             postData : JSON.parse(this.post),
             auth_user : JSON.parse(this.user),
             base_url : window.Laravel.baseUrl,
+
             likes : 0,
         }
     },
@@ -84,12 +88,6 @@ export default {
     },
     methods:{
         getImage,formatNumber,formatTime,
-        fetchComments(){
-            axios.get(this.base_url+'/api/comments/'+this.post.id)
-            .then(res => {
-
-            })
-        },
         addLike(){
             this.likes++;
         },

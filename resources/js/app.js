@@ -19,7 +19,10 @@ window.Bus = new Vue();
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('follow-button', require('./components/FollowButton.vue').default);
+// Menu
+Vue.component('search-slide-button', require('./components/User/Buttons/SearchButton.vue').default);
+Vue.component('search-slide', require('./components/User/Slides/SearchSlide.vue').default);
+
 
 // Post
 Vue.component('new-post-modal', require('./components/Posts/Modals/ModalNewPost.vue').default);
@@ -33,6 +36,8 @@ Vue.component('new-chat-modal', require('./components/Chat/Modals/ModalNewMessag
 // User
 Vue.component('sug-users', require('./components/User/SuggestedUsers.vue').default);
 Vue.component('show-user-button', require('./components/User/Buttons/ShowUserButton.vue').default);
+Vue.component('follow-button', require('./components/FollowButton.vue').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

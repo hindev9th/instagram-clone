@@ -15,7 +15,7 @@
                             <div class="d-flex">
                                 <h2 class="pr-3">{{ $user->username }}</h2>
                                 @cannot('update',$user->profile)
-                                    <follow-button user-id="{{ $user->id }}" follows="{{ $follows }}" class="btn-primary text-right"></follow-button>
+                                    <follow-button user-id="{{ $user->id }}" follows="{{ $follows }}" class="btn btn-primary text-right"></follow-button>
                                     <a href="{{ route('chat.index') }}"
                                        class="btn btn-primary ml-2" style="height: fit-content">{{__('Message')}}</a>
                                 @endcan

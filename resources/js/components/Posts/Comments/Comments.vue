@@ -17,7 +17,7 @@
             </div>
         </div>
         <Comment :comment="comment" :user="user" v-for="comment in comments" :key="comment.id"></Comment>
-        <button class="btn btn-outline-secondary m-5" @click="showMore" v-if="isShowMore">Show more</button>
+        <span class="text-primary prevent-select cursor-pointer text-center m-3" @click="showMore" v-if="isShowMore">Show more</span>
     </div>
 </template>
 

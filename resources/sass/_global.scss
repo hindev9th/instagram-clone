@@ -4,6 +4,9 @@ body{
         display: none;
     }
 }
+.bg-base{
+    background: $body-bg !important;
+}
 .hover-dark-20:hover{
     background: #f3f3f3;
 }
@@ -29,6 +32,7 @@ body{
 .focus-none:focus{
     background: inherit !important;
     color: inherit !important;
+    border-color: #ced4da !important;
     box-shadow: inherit !important;
 
 }

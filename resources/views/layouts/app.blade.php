@@ -34,6 +34,7 @@
 <div id="app">
     @auth
         <div class="menu-app">
+            <search-slide></search-slide>
             <ul class="list-unstyled">
                 <a href="{{ url('/') }}" class="icon-logo">
                     <svg
@@ -52,10 +53,7 @@
                         <span class="item-text">Home</span>
                     </li>
                 </a>
-                <li class="">
-                    <i class="fa fa-search icon"></i>
-                    <span class="item-text">Search</span>
-                </li>
+                <search-slide-button></search-slide-button>
                 <a href="{{ route('chat.index') }}" class="text-dark text-decoration-none">
                     <li class="">
                         <i class="far fa-comment-dots icon"></i>
@@ -70,7 +68,9 @@
 
                 <a href="{{ route('profile.index',['user'=> Auth::user()->username]) }}" class="text-dark text-decoration-none">
                     <li class="d-flex">
-                        <img src="{{ Auth::user()->profile->getImage() }}" class="rounded-circle" style="margin-right: 18px;width: 26px;height: 26px;" alt="">
+                        <div class="icon">
+                            <img src="{{ Auth::user()->profile->getImage() }}" class="rounded-circle icon" style="width: 26px;height: 26px;" alt="">
+                        </div>
                         <span class="item-text">Profile</span>
                     </li>
                 </a>

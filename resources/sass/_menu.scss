@@ -3,12 +3,23 @@
     top: 0;
     left: 0;
     height: 100%;
+    transition: .3s;
+    z-index: 1000;
     @extend .border-right;
+    .search-slide.show{
+        transform: translateX(0);
+    }
     ul{
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #f8fafc;
+        height: 100%;
         padding: 0 10px;
+        z-index: 2;
         .icon-logo{
             display: none;
-            padding: 20px 8px;
+            padding: 26.5px 8px;
         }
         .text-logo{
             h1{
@@ -17,9 +28,12 @@
         }
     }
     li{
+        @extend .prevent-select;
+        display: flex;
+        align-items: center;
         cursor: pointer;
         margin: 5px 0;
-        padding: 5px 10px;
+        padding: 5px 10px 5px 5px;
         border-radius: 12px;
         font-size: 18px;
         white-space: nowrap;
@@ -32,10 +46,16 @@
         }
 
         .icon{
+            text-align: center;
             width: 40px;
             font-size: 26px;
+            line-height: 26px;
+        }
+        .item-text{
+            line-height: 26px;
         }
     }
+
 }
 
 @media (min-width: 1920px) {
@@ -50,13 +70,20 @@
 }
 @media (min-width: 768px) and (max-width: 1263px){
     .menu-app{
+        transition: .3s;
         width: $nav-app-small-width;
-        overflow: hidden;
         ul{
+            li{
+                padding: 5px 0;
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+
             .icon-logo{
                 display: block;
             }
-            .text-logo{
+            .text-logo,.item-text{
                 display: none;
             }
         }
@@ -71,6 +98,9 @@
         width: 100%;
         z-index: 100;
         background: white;
+        .search-slide.show{
+            transform: translateY(0);
+        }
         ul{
             display: flex;
             justify-content: space-evenly;
@@ -101,14 +131,24 @@
 }
 
 @media (min-width: 768px) {
-    .menu-app.small {
-        width: 66px;
-        overflow: hidden;
-    }
-    .menu-app.small ul .text-logo {
-        display: none;
-    }
-    .menu-app.small ul .icon-logo {
-        display: block;
+    .menu-app.small{
+        transition: .3s;
+
+        width: $nav-app-small-width;
+        ul{
+            li{
+                padding: 5px 0;
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .icon-logo{
+                display: block;
+            }
+            .text-logo,.item-text{
+                display: none;
+            }
+        }
     }
 }

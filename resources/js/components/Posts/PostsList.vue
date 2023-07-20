@@ -1,7 +1,7 @@
 <template>
     <div class="col-md-8 d-flex flex-column align-items-center posts" id="posts">
         <Post :user="auth_user" :post="post" v-for="post in posts" :key="post.id" ></Post>
-        <button class="btn btn-primary m-5" v-if="isShowLoadMore && !isLoading" @click="loadMorePost">Load more</button>
+        <span class="text-primary prevent-select cursor-pointer m-3" v-if="isShowLoadMore && !isLoading" @click="loadMorePost">Load more</span>
     </div>
 </template>
 

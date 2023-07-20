@@ -66,7 +66,7 @@ export default {
           this.chatsData.unshift(chat);
           this.selected_id = chat.id;
       })
-        $('.menu-app').addClass('small');
+        $('.menu-app').addClass('small message');
 
     },
     methods: {
