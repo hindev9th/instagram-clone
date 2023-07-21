@@ -1,15 +1,15 @@
 <template>
-    <div class="modal fade" id="modal-new-post" tabindex="-1" role="dialog"
+    <div class="modal fade" id="modal-edit-post" tabindex="-1" role="dialog"
          aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xxl" role="document">
             <div class="modal-content overflow-hidden border-0">
                 <form action="#" @submit="sharePost" method="post" enctype="multipart/form-data">
                     <div class="modal-header d-flex justify-content-between align-items-center">
-                        <span class="close-new-modal-post prevent-select pl-3 text-danger text-decoration-none"
-                              data-dismiss="modal"><strong>
+                        <span class="close-new-modal-post prevent-select cursor-pointer pl-3 text-danger text-decoration-none"
+                              data-dismiss="modal" @click="$emit('close-modal')"><strong>
                             Close</strong></span>
-                        <strong>Create new post</strong>
-                        <button class="btn text-primary font-weight-bold focus-none" :disabled="isLoading">
+                        <strong>Edit info</strong>
+                        <button class="btn text-primary font-weight-bold focus-none" :disabled="isChange || isLoading">
                             <span class="spinner-border mr-1 spinner-border-sm" v-if="isLoading" role="status"
                                   aria-hidden="true"></span>
                             {{ isLoading ? 'Sharing...' : 'Share' }}
@@ -19,23 +19,24 @@
                         <div class="box-new-post row m-0 w-100 d-flex h-100">
                             <div
                                 class="box-image d-flex col-md-8 align-items-center justify-content-center border-right">
-                                <label for="image" class="col-form-label custom-file-image-label"
+                                <label for="image-edit" class="col-form-label custom-file-image-label"
                                        :style="{background : (url === '' ? '' : 'url(' + url + ') no-repeat')}"></label>
 
-                                <input id="image" accept='image/*' @change="onFileChange" :disabled="isLoading"
+                                <input id="image-edit" accept='image/*' @change="onFileChange" :disabled="isLoading"
                                        type="file" class="form-control-file" name="image"
-                                       required autocomplete="image">
+                                       autocomplete="image">
                             </div>
                             <div class="col-md-4 box-content">
                                 <div class="box-user pt-2 pb-2">
-                                    <img :src="getImage(auth_user.profile.image)" class="avatar rounded-circle"
+                                    <img :src="getImage(user.profile.image)" class="avatar rounded-circle"
                                          alt="">
-                                    <strong>{{ auth_user.username }}</strong>
+                                    <strong>{{ user.username }}</strong>
                                 </div>
-                                <textarea id="caption" type="text"
+                                <textarea id="caption-edit" type="text"
                                           class="form-control p-0 border-0 bg-transparent"
                                           rows="10"
                                           name="caption"
+                                          @input="change"
                                           v-model="inputCaption"
                                           :readonly="isLoading"
                                           required
@@ -53,19 +54,22 @@
 
 <script>
 import {getImage} from "../../../functiton";
-import $ from 'jquery';
+import $ from "jquery";
 export default {
-    name: "ModalNewPost",
-    props: ['user'],
+    name: "ModalEditPost",
+    props: ['post','user'],
     data() {
         return {
-            auth_user: JSON.parse(this.user),
             url: '',
             file: null,
-            inputCaption: '',
+            inputCaption: this.post.caption,
             isLoading: false,
-            auth_data: window.Laravel,
+            isChange : true,
+            auth_data : window.Laravel,
         }
+    },
+    mounted() {
+        this.url = `${window.Laravel.baseUrl}/storage/${this.post.image}`;
     },
     methods: {
         getImage,
@@ -74,7 +78,6 @@ export default {
             this.url = URL.createObjectURL(file);
 
             this.file = file;
-
         },
         sharePost(e){
             e.preventDefault();
@@ -82,8 +85,11 @@ export default {
 
             let formData = new FormData();
             formData.append('_token', this.auth_data.csrf_token);
-            formData.append('image', this.file);
+            formData.append('_method', 'PATCH');
             formData.append('caption', this.inputCaption);
+            if (this.file != null){
+                formData.append('image', this.file);
+            }
 
             const config = {
                 headers: {
@@ -91,38 +97,28 @@ export default {
                 }
             }
 
-            axios.post(`${this.auth_data.baseUrl}/api/p?api_token=${this.auth_data.api_token}`,formData,config)
-            .then(res => {
-                this.isLoading = false;
-                Bus.$emit('new-post',res.data);
-                $('#modal-new-post').modal('hide');
-
-                this.url = '';
-                this.inputCaption = '';
-                this.file = null;
-            })
-            .catch(e =>{
-                this.isLoading = false;
-            })
+            axios.post(`${this.auth_data.baseUrl}/api/p/${this.post.id}?api_token=${this.auth_data.api_token}`,formData,config)
+                .then(res => {
+                    this.isLoading = false;
+                    Bus.$emit('update-post',res.data);
+                    $('#modal-edit-post').modal('hide');
+                    this.$emit('close-modal');
+                    this.url = '';
+                    this.inputCaption = '';
+                    this.file = null;
+                })
+                .catch(e =>{
+                    this.isLoading = false;
+                })
+        },
+        change(){
+            this.isChange = this.inputCaption === this.post.caption;
         }
 
-    }
+    },
 }
 </script>
 
-<style>
-.box-new-post .box-image {
-    width: 100vh;
-    height: 60vh;
-}
+<style scoped>
 
-.close-new-modal-post {
-    cursor: pointer;
-}
-@media (max-width: 767px) {
-    .box-new-post .box-image {
-        height: 45vh;
-    }
-
-}
 </style>

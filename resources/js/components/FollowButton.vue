@@ -21,6 +21,7 @@
                     _token : this.auth_data.csrf_token,
                 }).then(response => {
                     this.status = !this.status;
+                    this.$emit('follow',this.status);
                 })
                 .catch(errors => {
                     if (errors.response.status === 401){

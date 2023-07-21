@@ -11,10 +11,14 @@
                     <div class="modal-body p-0">
                         <ul class="list-unstyled text-center m-0">
                             <li class="hover-dark-20 p-2 border-bottom font-weight-bold text-danger"
-                                v-show="post.user_id === user.id" data-toggle="modal" data-backdrop="static"
+                                v-if="post.user_id === user.id" data-toggle="modal" data-backdrop="static"
                                 data-keyboard="false" :data-target="`#modal-confirm-${post.id}`" @click="showModalConfirm();">Delete
                             </li>
-                            <li class="hover-dark-20 p-2 border-bottom" v-if="post.user_id === user.id">Edit</li>
+                            <li class="hover-dark-20 p-2 border-bottom" data-toggle="modal" data-backdrop="static"
+                                data-keyboard="false" data-target="#modal-edit-post" @click="showModalEdit" v-if="post.user_id === user.id">Edit</li>
+                            <li class="hover-dark-20 p-2 border-bottom font-weight-bold text-danger" v-if="post.user_id !== user.id">
+                                <FollowButton :user-id="post.user_id" :follows="isFollowing" @follow="toggleFollow" ></FollowButton>
+                            </li>
                             <li class="hover-dark-20 p-2 border-bottom" @click="gotoPost">Go to post</li>
                             <li class="hover-dark-20 p-2 border-bottom" @click="showModalShare" data-toggle="modal"
                                 data-backdrop="static" data-keyboard="false" :data-target="`#modal-share-${post.id}`">Share to...
@@ -52,6 +56,7 @@
                 </div>
             </div>
         </div>
+        <ModalEditPost :user="user" :post="post" v-if="isShowEdit" @close-modal="hideModalEdit"></ModalEditPost>
         <ModalShare v-if="isShowShare" :post="post" @close-modal="hideModalShare"></ModalShare>
     </div>
 </template>
@@ -59,9 +64,11 @@
 <script>
     import $ from 'jquery';
     import ModalShare from "../Modals/ModalShare";
+    import ModalEditPost from "../Modals/ModalEditPost";
+    import FollowButton from "../../FollowButton";
     import {showNotify} from "../../../functiton";
 export default {
-    components : {ModalShare},
+    components : {ModalShare,ModalEditPost,FollowButton},
     name: "SettingButton",
     props: ['post','user'],
     data(){
@@ -69,6 +76,8 @@ export default {
             isShow : false,
             isShowShare : false,
             isShowConfirm : false,
+            isShowEdit : false,
+            isFollowing : this.post.user.isFollowing,
             baseUrl : window.Laravel.baseUrl,
         }
     },
@@ -97,6 +106,16 @@ export default {
             this.isShowShare = !this.isShowShare;
             this.isShow = !this.isShow;
         },
+        showModalEdit(){
+            $('#modal-setting-'+this.post.id).modal('hide');
+
+            this.isShowEdit = !this.isShowEdit;
+            $('#modal-edit-post').modal('show');
+        },
+        hideModalEdit(){
+            this.isShowEdit = !this.isShowEdit;
+            this.isShow = !this.isShow;
+        },
         copyText() {
             let testingCodeToCopy = document.querySelector('#link-copy')
             testingCodeToCopy.setAttribute('type', 'text')
@@ -116,7 +135,7 @@ export default {
             testingCodeToCopy.setAttribute('type', 'hidden')
         },
         gotoPost(){
-            window.location = this.baseUrl + '/p/' + this.post.id;
+            window.location = `${this.baseUrl}/p/${this.post.id}`;
         },
         aboutThisAccount(){
             window.location = this.baseUrl + '/profile/' + this.post.user.username;
@@ -134,6 +153,9 @@ export default {
                 console.log('error')
                 this.showNotify('Error! cannot delete post.');
             })
+        },
+        toggleFollow(isFollow){
+            this.isFollowing = isFollow;
         }
     },
 }

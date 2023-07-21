@@ -35,21 +35,9 @@ Route::middleware('auth')->prefix('/profile')->group(function (){
 /**
  * Post
  */
-Route::middleware('auth')->prefix('/p')->group(function () {
-    Route::get('/', 'PostsController@index')->name('post.index');
-    Route::post('/', 'PostsController@store')->name('post.store');
-    Route::get('/{post}', 'PostsController@show')->name('post.show');
-    Route::delete('/{post}','PostsController@destroy')->name('post.destroy');
-    /**
-     * Comments
-     */
-    Route::post('/{post}/comment','CommentsController@store')->name('comment.store');
-    /**
-     * Likes post
-     */
-    Route::get('/{post}/like','LikesController@check')->name('like.check');
-    Route::post('/{post}/like','LikesController@store')->name('like.store');
-});
+Route::middleware('auth')->get('/p/{post}',function ($postId){
+    return view('posts.show',compact('postId'));
+})->name('post.show');
 
 
 /**

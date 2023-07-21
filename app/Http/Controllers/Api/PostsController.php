@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Post;
-use App\Models\User;
-use Dotenv\Validator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class PostsController extends Controller
 {
@@ -23,7 +21,9 @@ class PostsController extends Controller
 
         $posts->each(function ($post) use ($user) {
             $post->isLiked = $user->likes->contains($post->id);
+            $post->user->isFollowing = auth()->user()->following->contains($post->user_id);
         });
+
         return $posts;
     }
 
@@ -45,7 +45,27 @@ class PostsController extends Controller
     {
         $post = $post->load('comments','likes');
         $post->isLiked = auth()->user()->likes->contains($post->id);
-        return view('posts.show',compact('post'));
+        $post->user->isFollowing = auth()->user()->following->contains($post->user_id);
+        return $post;
+    }
+
+    public function edit(Post $post)
+    {
+
+    }
+
+    public function update(Request $request,Post $post)
+    {
+        $data = [
+            'caption' => $request['caption'],
+        ];
+        if ($request['image'] != null){
+            $image = $request['image']->store('/uploads','public');
+            $data['image'] = $image;
+        }
+        $post->update($data);
+
+        return $post;
     }
 
     public function destroy(Post $post)

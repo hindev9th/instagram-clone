@@ -22,9 +22,17 @@
                                           @click="deleteTagUser(index)">&times</span>
                                 </div>
                             </div>
-                            <input type="text" v-model="search" @input="searchUsers"
-                                   class="form-control p-0 m-0 pl-2 border-0 focus-none" id="search-new-message"
-                                   placeholder="Search..."/>
+                            <div class="input-group mb-0 ">
+                                <input type="text" id="search-new-message" class="form-control p-0 m-0 pl-2 border-0 focus-none" v-model="search" @input="searchUsers"
+                                       placeholder="Search...">
+                                <div class="input-group-append">
+                                    <button class="pr-2 pl-2 input-group-text bg-white border-0" v-show="search.length > 0 && !isSearching" :disabled="search.length === 0"
+                                            @click="clearText">&times;</button>
+                                    <div class="input-loading" v-show="isSearching">
+                                        <div class="icon-load spinner-border text-primary"></div>
+                                    </div>
+                                </div>
+                            </div>
 
                         </li>
                         <li class="">
@@ -66,6 +74,7 @@ export default {
             selected: [],
             selected_id: [],
             search: '',
+            isSearching : false,
             isLoading: false,
             users: [],
             auth_data : window.Laravel,
@@ -82,9 +91,11 @@ export default {
         },
         searchUsers() {
             if (this.search.length > 2) {
+                this.isSearching = true;
                 axios.get(`${this.auth_data.baseUrl}/api/user/s/${this.search}?api_token=${this.auth_data.api_token}`)
                     .then(response => {
                         this.users = response.data;
+                        this.isSearching = false;
                     })
             }
 
@@ -120,6 +131,9 @@ export default {
         deleteTagUser(index) {
             this.$delete(this.selected, index)
             this.$delete(this.selected_id, index)
+        },
+        clearText(){
+            this.search = '';
         }
     }
 }
@@ -163,5 +177,21 @@ export default {
 
 }
 
+}
+
+.input-group{
+    border-radius: 12px;
+    overflow: hidden;
+.input-loading{
+    display : flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+
+.icon-load{
+    width: 1rem;
+    height: 1rem;
+}
+}
 }
 </style>

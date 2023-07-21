@@ -6836,6 +6836,12 @@ body::-webkit-scrollbar {
   }
 }
 
+@media (max-width: 576px) {
+  .modal-dialog.modal-xxl {
+    max-width: unset;
+  }
+}
+
 .menu-app {
   position: fixed;
   top: 0;

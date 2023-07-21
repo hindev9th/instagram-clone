@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CommentsController;
 use App\Http\Controllers\Api\LikesController;
+use App\Http\Controllers\Api\PostsController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\FollowsController;
 use Illuminate\Support\Facades\Route;
@@ -34,7 +35,11 @@ Route::middleware('auth:api')->prefix('/')->group(function (){
 
     // Post
     Route::prefix('/p')->group(function (){
-
+        Route::get('/', [PostsController::class,'index'])->name('post.index');
+        Route::post('/', [PostsController::class,'store'])->name('post.store');
+        Route::get('/{post}', [PostsController::class,'show']);
+        Route::patch('/{post}',[PostsController::class,'update'])->name('post.update');
+        Route::delete('/{post}',[PostsController::class,'destroy'])->name('post.destroy');
 
         // Comments post
         Route::get('/{post}/comments',[CommentsController::class,'index']);

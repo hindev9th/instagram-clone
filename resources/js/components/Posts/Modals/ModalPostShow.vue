@@ -7,7 +7,7 @@
                 </button>
                 <div class="modal-body p-0">
                     <div class="post-show-data">
-                        <PostShow :user="user" :post="post" ></PostShow>
+                        <PostShow :user="user" :post-id="post.id" ></PostShow>
                     </div>
                 </div>
             </div>

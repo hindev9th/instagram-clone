@@ -103,4 +103,9 @@ body{
     }
 
 }
+@media (max-width: 576px) {
+    .modal-dialog.modal-xxl{
+        max-width: unset;
+    }
+}
 

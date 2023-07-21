@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
-use Illuminate\Http\Request;
 
 class LikesController extends Controller
 {
@@ -17,16 +16,6 @@ class LikesController extends Controller
         return $users;
     }
 
-    /**
-     * check user liked post
-     *
-     * @param Post $post
-     * @return mixed
-     */
-    public function check(Post $post)
-    {
-        return auth()->user()->likes->contains($post->id);
-    }
 
     /**
      * toggle like and unlike

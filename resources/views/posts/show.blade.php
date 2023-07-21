@@ -2,6 +2,6 @@
 
 @section('content')
     <div class="box-main">
-        <post-show user="{{Auth::user()}}" post="{{$post}}"></post-show>
+        <post-show user="{{Auth::user()}}" post-id="{{$postId}}"></post-show>
     </div>
 @endsection
