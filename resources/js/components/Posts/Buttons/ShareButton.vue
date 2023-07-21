@@ -1,11 +1,7 @@
 <template>
     <div>
         <span class="btn-share" @click="showAndHide" data-toggle="modal" data-backdrop="static" data-keyboard="false" :data-target="`#modal-share-${post.id}`"><i class="far fa-paper-plane ml-2"></i></span>
-        <transition name="fade" mode="out-in">
-        <div v-if="isShow">
-            <ModalShare :post="post" @close-modal="showAndHide"></ModalShare>
-        </div>
-        </transition>
+        <ModalShare :post="post" v-if="isShow" @close-modal="showAndHide"></ModalShare>
     </div>
 </template>
 <script>

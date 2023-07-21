@@ -41,7 +41,7 @@ export default {
         this.fetchComments();
     },
     mounted() {
-        Bus.$on('NewComment', comment =>{
+        Bus.$on(`new-comment-${this.post.id}`, comment =>{
             this.comments.push(comment);
         })
     },

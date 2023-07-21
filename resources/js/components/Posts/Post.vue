@@ -27,8 +27,7 @@
                 <div class="box-interact w-100 pt-2">
                     <div class="icon-button d-flex">
                         <LikeButton :post="post" :user="user" @add-like="addLike" @minus-like="minusLike"></LikeButton>
-                        <a :href="base_url + '/p/' + post.id"><i
-                            class="far fa-comment ml-2" style="color: #212529; font-size: 25px"></i></a>
+                        <CommentButton :post="post" :user="user" text="" ></CommentButton>
                         <ShareButton :post="post"></ShareButton>
                     </div>
                     <div class="info-post pt-2 d-flex flex-column">
@@ -43,10 +42,8 @@
                             {{ post.caption }}
                         </div>
                     </div>
-                    <a :href="base_url + '/p/' + post.id"
-                       class="text-black-50 text-decoration-none">
-                        View all {{ formatNumber(comments) }} comments
-                    </a>
+                    <CommentButton :post="post" :user="user" :text="`View all ${formatNumber(comments)} comments`" ></CommentButton>
+                    <Comment :user="user" :comment="comment" :key="index" v-for="(comment,index) in newComments"></Comment>
                     <CommentForm :post="post" :user="user" class="border-bottom pb-3"></CommentForm>
                 </div>
             </div>
@@ -57,12 +54,14 @@
 <script>
 import {getImage, formatTime, formatNumber} from "../../functiton";
 import LikeButton from "./Buttons/LikeButton";
+import CommentButton from "./Buttons/CommentButton";
 import SettingButton from "./Buttons/SettingButton";
 import CommentForm from "./Comments/CommentForm";
 import ShareButton from "./Buttons/ShareButton";
 import ShowUserButton from "../User/Buttons/ShowUserButton";
+import Comment from "./Comments/Comment";
 export default {
-    components: {LikeButton,SettingButton,CommentForm,ShareButton,ShowUserButton},
+    components: {LikeButton,CommentButton,SettingButton,CommentForm,ShareButton,ShowUserButton,Comment},
     name: "Post",
     props: ['post','user'],
     data() {
@@ -71,7 +70,14 @@ export default {
             base_url : window.Laravel.baseUrl,
             likes : this.post.likes.length,
             comments : this.post.comments.length,
+            newComments : [],
         }
+    },
+    mounted() {
+        Bus.$on(`new-comment-${this.post.id}`, comment =>{
+            this.newComments.push(comment);
+            this.comments++;
+        })
     },
     methods:{
         getImage,formatNumber,formatTime,

@@ -41,7 +41,7 @@ export default {
             this.isSending = true
             axios.post(`${this.auth_data.baseUrl}/api/p/${this.post.id}/comments?api_token=${this.auth_data.api_token}`,data)
                 .then(res =>{
-                    Bus.$emit('NewComment',res.data);
+                    Bus.$emit(`new-comment-${this.post.id}`,res.data);
                     this.comment = '';
                     this.isSending = false;
                 })

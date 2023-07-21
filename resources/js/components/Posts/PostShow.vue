@@ -2,7 +2,7 @@
 
     <div class="post-show">
         <div class="box-user-post top position-relative pt-2 pb-2 pr-2 pl-0">
-            <div class="box-user d-flex">
+            <div class="box-user p-0 d-flex">
                 <div class="pr-1 pl-2">
                     <img :src="getImage(postData.user.profile.image)" class="avatar rounded-circle"
                          alt="">
@@ -23,7 +23,7 @@
             <div class="box-action-post position-relative p-0">
                 <div class="d-flex flex-column mw-100">
                     <div class="box-user-post border-bottom position-relative pt-2 pb-2 pr-2 pl-0">
-                        <div class="box-user d-flex">
+                        <div class="box-user p-0 d-flex">
                             <div class="pr-1 pl-2">
                                 <img :src="getImage(postData.user.profile.image)" class="avatar rounded-circle"
                                      alt="">
@@ -76,12 +76,16 @@ export default {
     props:['user','post'],
     data(){
         return{
-            postData : JSON.parse(this.post),
-            auth_user : JSON.parse(this.user),
+            postData :  null,
+            auth_user : null,
             base_url : window.Laravel.baseUrl,
 
             likes : 0,
         }
+    },
+    created() {
+        this.checkJsonUser();
+        this.checkJsonPost();
     },
     mounted() {
         this.likes = this.postData.likes.length;
@@ -93,6 +97,20 @@ export default {
         },
         minusLike(){
             this.likes--;
+        },
+        checkJsonUser(){
+            try {
+                this.auth_user = JSON.parse(this.user)
+            }catch (e){
+                this.auth_user = this.user;
+            }
+        },
+        checkJsonPost(){
+            try {
+                this.postData = JSON.parse(this.post)
+            }catch (e){
+                this.postData = this.post;
+            }
         }
     }
 }
