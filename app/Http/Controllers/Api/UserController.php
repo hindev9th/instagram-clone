@@ -33,12 +33,20 @@ class UserController extends Controller
     public function search($search)
     {
         $user = auth()->user();
-        return User::select('id', 'name', 'username')
+        $strSearch = '%' . $search . '%';
+        $users = User::select('id', 'name', 'username')
             ->where('id', '!=', $user->id)
-            ->where('name', 'like', '%' . $search . '%')
-            ->orWhere('username', 'like', '%' . $search . '%')
-            ->orWhere('email', 'like', '%' . $search . '%')
+            ->where(function ($query) use ($strSearch) {
+                $query->where('name', 'like', $strSearch)
+                    ->orWhere('username', 'like', $strSearch)
+                    ->orWhere('email', 'like', $strSearch);
+            })
             ->get();
+
+        $users->each(function ($u) use ($user){
+            $u->isFollowing = $user->following->contains($u->id);
+        });
+        return $users;
     }
 
     /**

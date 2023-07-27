@@ -15,7 +15,7 @@
                              v-for="chatUser in chat.users" class="img-avatar" alt="avatar">
                     </div>
                     <div class="chat-about d-flex align-items-center">
-                        <h4 class="m-b-0 m-0 font-weight-bold">
+                        <h4 class="name m-b-0 m-0 font-weight-bold">
                             {{ getNames(chat.users, user) }}</h4>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                                      v-for="chatUser in chat.users" class="img-avatar" alt="avatar">
                             </div>
                             <div class="chat-about p-2 d-flex align-items-center">
-                                <h4 class="m-b-0 m-0 font-weight-bold">
+                                <h4 class="name m-b-0 m-0 font-weight-bold">
                                     {{ getNames(chat.users, user) }}</h4>
                             </div>
                             <a href="#input-message" class="btn btn-primary">Start chat</a>
@@ -86,6 +86,7 @@ export default {
         return {
             messages: [],
             mss: [],
+            auth_data: window.Laravel,
             isLoading: true,
             typingName: '',
             isTyping : false,
@@ -129,7 +130,7 @@ export default {
         },
 
         fetchMessages() {
-            axios.get(window.Laravel.baseUrl + '/c/message/' + this.chat.id)
+            axios.get(`${this.auth_data.baseUrl}/api/c/message/${this.chat.id}?api_token=${this.auth_data.api_token}`)
                 .then(response => {
                     this.messages = response.data;
                     this.isLoading = false;

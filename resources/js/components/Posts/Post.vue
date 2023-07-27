@@ -26,7 +26,7 @@
             <div class="mw-100">
                 <div class="box-interact w-100 pt-2">
                     <div class="icon-button d-flex">
-                        <LikeButton :post="post" :user="user" @add-like="addLike" @minus-like="minusLike"></LikeButton>
+                        <LikeButton :post="post" @add-like="addLike" @minus-like="minusLike"></LikeButton>
                         <CommentButton :post="post" :user="user" text="" ></CommentButton>
                         <ShareButton :post="post"></ShareButton>
                     </div>

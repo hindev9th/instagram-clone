@@ -81,3 +81,10 @@ export function showNotify(message){
 export function formatNumber(number) {
     return number.toLocaleString('en-US');
 }
+
+export function extractTagsFromString(inputString) {
+    const baseUrl = window.Laravel.baseUrl;
+    const regex = /@([\w.]+)/g;
+    const replacedString = inputString.replace(regex, '<a href="' + baseUrl + '/profile/$1">$&</a>');
+    return replacedString;
+}

@@ -6,7 +6,7 @@
             <div class="input-group-append" :style="(isSending ? bgColor : '')">
                 <button class="pr-4 pl-4 input-group-text" v-show="message.length > 0 && !isSending" :disabled="message.length === 0"
                         @click="sendMessage"><i class="fa fa-paper-plane"></i></button>
-                <div class="input-loading" v-show="isSending">
+                <div class="input-loading p-0" v-show="isSending">
                     <div class="icon-load spinner-border text-primary"></div>
                 </div>
             </div>
@@ -21,14 +21,16 @@ export default {
             message: '',
             isSending : false,
             bgColor : {backgroundColor : '#e9ecef',},
+            auth_data: window.Laravel,
         }
     },
     methods: {
         sendMessage() {
             if (this.message.length > 0) {
                 this.isSending = true;
-                axios.post(window.Laravel.baseUrl + '/c/message/' + this.chat.id,
+                axios.post(`${this.auth_data.baseUrl}/api/c/message/${this.chat.id}?api_token=${this.auth_data.api_token}`,
                     {
+                        _token : this.auth_data.csrf_token,
                         message: this.message,
                     }
                 ).then(response => {
@@ -64,8 +66,8 @@ export default {
      height: 1rem;
      margin: auto;
      .icon-load{
-         width: 100%;
-         height: 100%;
+         width: 1rem;
+         height: 1rem;
      }
  }
 </style>

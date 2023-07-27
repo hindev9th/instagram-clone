@@ -69,6 +69,11 @@ input.comment:focus {
     display: flex;
     flex-direction: column;
     align-items: center;
+    .box-data{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
     .box-user-post.top{
         display: none;
         max-width: 450px;

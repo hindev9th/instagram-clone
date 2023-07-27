@@ -7,7 +7,7 @@
                          class="avatar rounded-circle" alt="">
                 </a>
             </div>
-            <div class="pl-2">
+            <div class="">
                 <a :href="auth_data.baseUrl + '/profile/' + post.user.username"
                    class="text-decoration-none text-dark"><strong>{{post.user.username}}</strong></a>
                 {{ post.caption }}
@@ -43,6 +43,10 @@ export default {
     mounted() {
         Bus.$on(`new-comment-${this.post.id}`, comment =>{
             this.comments.push(comment);
+        });
+
+        Bus.$on('delete-comment', comment => {
+            this.deleteComment(comment);
         })
     },
     methods:{
@@ -68,6 +72,14 @@ export default {
                 })
                 .catch(e =>{
                 })
+        },
+        deleteComment(cmt){
+            for (var index in this.comments){
+                if (this.comments[index].id === cmt.id){
+                    this.$delete(this.comments,index);
+                    break;
+                }
+            }
         }
     }
 }

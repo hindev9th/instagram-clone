@@ -16,6 +16,7 @@ class CreateUserProfileChatTable extends Migration
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable()->default(null);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

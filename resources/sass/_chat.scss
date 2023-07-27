@@ -127,9 +127,16 @@
     height: 100%;
 }
 
-.chat-header .chat-about {
+.chat-message .chat-about {
     float: left;
-    padding-left: 10px
+    padding-left: 10px;
+    .name{
+        padding-left: 0.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 }
 .box-message{
     height: calc(100% - 57px);

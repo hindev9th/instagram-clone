@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
+    use SoftDeletes;
 
     protected $fillable = ['user_id','caption','image'];
 
@@ -28,7 +30,7 @@ class Post extends Model
      */
     public function comments()
     {
-        return $this->hasMany(Comments::class);
+        return $this->hasMany(Comment::class)->whereNull('parent_id');
     }
 
     /**

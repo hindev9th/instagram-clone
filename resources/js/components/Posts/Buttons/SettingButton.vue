@@ -25,7 +25,7 @@
                             </li>
                             <li class="hover-dark-20 p-2 border-bottom" @click="copyText">
                                 Copy link
-                                <input type="hidden" :value="baseUrl + '/p/' + post.id" id="link-copy">
+                                <input type="hidden" :value="`${auth_data.baseUrl}/p/${post.id}`" id="link-copy">
                             </li>
                             <li class="hover-dark-20 p-2 border-bottom" @click="aboutThisAccount">About this account
                             </li>
@@ -78,7 +78,7 @@ export default {
             isShowConfirm : false,
             isShowEdit : false,
             isFollowing : this.post.user.isFollowing,
-            baseUrl : window.Laravel.baseUrl,
+            auth_data : window.Laravel,
         }
     },
     methods: {
@@ -135,13 +135,17 @@ export default {
             testingCodeToCopy.setAttribute('type', 'hidden')
         },
         gotoPost(){
-            window.location = `${this.baseUrl}/p/${this.post.id}`;
+            window.location = `${this.auth_data.baseUrl}/p/${this.post.id}`;
         },
         aboutThisAccount(){
-            window.location = this.baseUrl + '/profile/' + this.post.user.username;
+            window.location = `${this.auth_data.baseUrl}/profile/${this.post.user.username}`;
         },
         deletePost(){
-            axios.delete(window.Laravel.baseUrl + '/p/' + this.post.id)
+            axios.post(`${this.auth_data.baseUrl}/api/p/${this.post.id}?api_token=${this.auth_data.api_token}`,
+                {
+                    _token : this.auth_data.csrf_token,
+                    _method : 'DELETE',
+                })
             .then(response => {
                 Bus.$emit('delete-post',this.post);
                 this.hideModalConfirm();

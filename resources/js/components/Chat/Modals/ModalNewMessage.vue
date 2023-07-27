@@ -22,7 +22,7 @@
                                           @click="deleteTagUser(index)">&times</span>
                                 </div>
                             </div>
-                            <div class="input-group mb-0 ">
+                            <div class="input-group mb-0 bg-white">
                                 <input type="text" id="search-new-message" class="form-control p-0 m-0 pl-2 border-0 focus-none" v-model="search" @input="searchUsers"
                                        placeholder="Search...">
                                 <div class="input-group-append">

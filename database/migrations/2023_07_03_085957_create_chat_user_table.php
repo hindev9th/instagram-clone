@@ -17,6 +17,7 @@ class CreateChatUserTable extends Migration
             $table->id();
             $table->unsignedBigInteger('chat_id');
             $table->unsignedBigInteger('user_id');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

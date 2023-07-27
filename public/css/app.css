@@ -6204,6 +6204,12 @@ input.comment:focus {
   align-items: center;
 }
 
+.post-show .box-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .post-show .box-user-post.top {
   display: none;
   max-width: 450px;
@@ -6477,9 +6483,17 @@ input.comment:focus {
   height: 100%;
 }
 
-.chat-header .chat-about {
+.chat-message .chat-about {
   float: left;
   padding-left: 10px;
+}
+
+.chat-message .chat-about .name {
+  padding-left: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .box-message {

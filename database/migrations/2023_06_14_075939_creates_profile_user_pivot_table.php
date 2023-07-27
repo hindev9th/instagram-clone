@@ -17,6 +17,7 @@ class CreatesProfileUserPivotTable extends Migration
             $table->id();
             $table->unsignedBigInteger('profile_id');
             $table->unsignedBigInteger('user_id');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

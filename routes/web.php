@@ -46,7 +46,5 @@ Route::middleware('auth')->get('/p/{post}',function ($postId){
 Route::middleware('auth')->prefix('c')->group(function (){
     Route::get('','ChatsController@index')->name('chat.index');
     Route::post('','ChatsController@store')->name('chat.store');
-    Route::get('message/{chat}','MessagesController@index')->name('message.index');
-    Route::post('message/{chat}','MessagesController@store')->name('messages.store');
 });
 

@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Events\NewMessage;
 use App\Models\Chat;
-use App\Models\Message;
-use Illuminate\Http\Request;
 
 class MessagesController extends Controller
 {

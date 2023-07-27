@@ -90,6 +90,13 @@ export default {
                 cursor: pointer;
                 line-height: 40px;
             }
+            .name{
+                padding-left: 0.5rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
         }
     }
     .body-info{

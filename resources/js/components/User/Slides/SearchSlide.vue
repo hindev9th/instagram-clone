@@ -1,11 +1,11 @@
 <template>
     <div class="search-slide">
         <h1 class="text-left title">Search</h1>
-        <div class="input-group mb-0 border">
+        <div class="input-group mb-0 border bg-white">
             <input type="text" id="input-search" class="form-control border-0 focus-none" v-model="text_search" @input="searchUsers"
                    placeholder="Search...">
             <div class="input-group-append">
-                <button class="pr-2 pl-2 input-group-text bg-base border-0" v-show="text_search.length > 0 && !isLoading" :disabled="text_search.length === 0"
+                <button class="pr-2 pl-2 input-group-text bg-white border-0" v-show="text_search.length > 0 && !isLoading" :disabled="text_search.length === 0"
                         @click="clearText">&times;</button>
                 <div class="input-loading" v-show="isLoading">
                     <div class="icon-load spinner-border text-primary"></div>

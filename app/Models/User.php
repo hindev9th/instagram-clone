@@ -93,6 +93,11 @@ class User extends Authenticatable
         return $this->hasMany(Post::class)->orderBy('created_at','DESC');
     }
 
+    public function commentLikes()
+    {
+        return $this->belongsToMany(Comment::class);
+    }
+
     /**
      * a user can have many comment
      *
@@ -100,7 +105,7 @@ class User extends Authenticatable
      */
     public function comments()
     {
-        return $this->hasMany(Comments::class);
+        return $this->hasMany(Comment::class);
     }
 
     /**

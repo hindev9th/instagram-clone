@@ -1,6 +1,6 @@
 <template>
     <div class="post-show position-relative">
-        <div v-if="!isLoading">
+        <div class="box-data" v-if="!isLoading">
             <div class="box-user-post top position-relative pt-2 pb-2 pr-2 pl-0">
                 <div class="box-user p-0 d-flex">
                     <div class="pr-1 pl-2">
@@ -28,7 +28,7 @@
                                     <img :src="getImage(post.user.profile.image)" class="avatar rounded-circle"
                                          alt="">
                                 </div>
-                                <div class="col-11 pl-2 d-flex align-items-center font-weight-bold">
+                                <div class="col-11 pl-0 d-flex align-items-center font-weight-bold">
                                     <a :href="auth_data.baseUrl + '/profile/' + post.user.username"
                                        class="text-decoration-none text-dark pr-2"><strong>{{post.user.username}}</strong></a>
                                 </div>
@@ -39,7 +39,7 @@
                         <div class="d-flex flex-column w-100 m-0 border-top position-absolute" style="bottom: 0;left: 0;">
                             <div class="box-post-action p-2 w-100 bg-white">
                                 <div class="icon-button d-flex">
-                                    <LikeButton :post="post" :user="auth_user" @add-like="addLike"
+                                    <LikeButton :post="post" @add-like="addLike"
                                                 @minus-like="minusLike"></LikeButton>
                                     <a href="#comment"><i class="far fa-comment ml-2"
                                                           style="color: #212529; font-size: 25px"></i></a>
@@ -86,7 +86,7 @@ export default {
             auth_user : null,
             auth_data : window.Laravel,
             likes : 0,
-            isLoading : false,
+            isLoading : true,
         }
     },
     created() {
@@ -150,6 +150,11 @@ export default {
         .loading.show{
             opacity: 1;
             transition: .3s;
+        }
+    }
+    @media (max-width: 479px){
+        .post-show .box-data{
+            width: 100%;
         }
     }
 </style>

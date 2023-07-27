@@ -1,14 +1,15 @@
 <template>
-    <div class="like-post">
-        <i class="fa-heart" :class="iconButton" @click="likePost" style="font-size: 25px"></i>
+    <div class="like-post prevent-select cursor-pointer" title="Like">
+        <i class="fa-heart" :class="iconButton" @click="likeComment" style="font-size: 18px"></i>
     </div>
 </template>
 
 <script>
 export default {
-    props: ['post',],
+    name: "LikeCommentButton",
+    props: ['comment'],
     mounted() {
-        this.status = this.post.isLiked;
+        this.status = this.comment.isLiked;
     },
     data: function () {
         return {
@@ -19,10 +20,10 @@ export default {
         }
     },
     methods: {
-        likePost(event) {
+        likeComment(event) {
             this.toggleClass(event);
             this.status = !this.status;
-            axios.post(`${this.auth_data.baseUrl}/api/p/${this.post.id}/likes?api_token=${this.auth_data.api_token}`,{
+            axios.post(`${this.auth_data.baseUrl}/api/p/comment/${this.comment.id}/likes?api_token=${this.auth_data.api_token}`,{
                 _token : this.auth_data.csrf_token,
             }).then(response => {
                     response.data.attached.length ? this.$emit('add-like') : this.$emit('minus-like');
@@ -49,24 +50,7 @@ export default {
     }
 }
 </script>
-<style>
-    .like-post{
-        cursor: pointer;
-    }
-    .flashing {
-        transform: scale(1);
-        animation: scale .3s;
-    }
 
-    @keyframes scale {
-        0% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.5);
-        }
-        100% {
-            transform: scale(1);
-        }
-    }
+<style scoped>
+
 </style>
