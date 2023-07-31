@@ -46,7 +46,7 @@
                                     <ShareButton :post="post"></ShareButton>
                                 </div>
                                 <div class="info-post pt-2 d-flex flex-column">
-                                    <strong class="d-flex">{{ formatNumber(likes) }} &nbsp
+                                    <strong class="d-flex">{{ formatNumber(likesCount) }} &nbsp
                                         <ShowUserButton :action="`${auth_data.baseUrl}/api/p/${post.id}/likes`" title="Likes" text="Likes"></ShowUserButton>
                                     </strong>
                                     <span>{{ formatTime(post.created_at) }}</span>
@@ -85,7 +85,7 @@ export default {
             post : null,
             auth_user : null,
             auth_data : window.Laravel,
-            likes : 0,
+            likesCount : 0,
             isLoading : true,
         }
     },
@@ -101,10 +101,10 @@ export default {
     methods:{
         getImage,formatNumber,formatTime,
         addLike(){
-            this.likes++;
+            this.likesCount++;
         },
         minusLike(){
-            this.likes--;
+            this.likesCount--;
         },
         checkJsonUser(){
             try {
@@ -118,7 +118,7 @@ export default {
             axios.get(`${this.auth_data.baseUrl}/api/p/${this.postId}?api_token=${this.auth_data.api_token}`)
                 .then(res => {
                     this.post = res.data;
-                    this.likes = res.data.likes.length;
+                    this.likesCount = res.data.likes_count;
                     this.isLoading = false;
                 })
                 .catch(e => {

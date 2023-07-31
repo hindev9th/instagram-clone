@@ -10,20 +10,12 @@ class LikesController extends Controller
 {
     public function index(Post $post)
     {
-        $users = $post->likes()->paginate(5);
-        $users->each(function ($user){
-            $user->isFollowing = auth()->user()->following->contains($user->id);
-        });
-        return $users;
+        return $post->likes()->paginate(5);
     }
 
     public function loadUserLikeComment(Comment $comment)
     {
-        $users = $comment->likes()->paginate(5);
-        $users->each(function ($user){
-            $user->isFollowing = auth()->user()->following->contains($user->id);
-        });
-        return $users;
+        return $comment->likes()->paginate(5);
     }
 
 

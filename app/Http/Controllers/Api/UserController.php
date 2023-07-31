@@ -23,10 +23,6 @@ class UserController extends Controller
             ->inRandomOrder()
             ->paginate(5);
 
-        $users->each(function ($user) use ($userId) {
-            $user->isFollowing = auth()->user()->following->contains($user->id);
-        });
-
         return $users;
     }
 
@@ -34,7 +30,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $strSearch = '%' . $search . '%';
-        $users = User::select('id', 'name', 'username')
+        return User::select('id', 'name', 'username')
             ->where('id', '!=', $user->id)
             ->where(function ($query) use ($strSearch) {
                 $query->where('name', 'like', $strSearch)
@@ -42,11 +38,6 @@ class UserController extends Controller
                     ->orWhere('email', 'like', $strSearch);
             })
             ->get();
-
-        $users->each(function ($u) use ($user){
-            $u->isFollowing = $user->following->contains($u->id);
-        });
-        return $users;
     }
 
     /**

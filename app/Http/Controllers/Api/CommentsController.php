@@ -11,24 +11,13 @@ class CommentsController extends Controller
 {
     public function index(Post $post)
     {
-        $comments = Comment::where('post_id',$post->id)->whereNull('parent_id')->withCount('likes','replies')
+        return Comment::where('post_id',$post->id)->whereNull('parent_id')->withCount('likes','replies')
             ->paginate(5);
-
-
-        $comments->each(function ($comment){
-            $comment->isLiked = auth()->user()->commentLikes->contains($comment->id);
-        });
-
-        return $comments;
     }
 
     public function loadReplies(Comment $comment)
     {
-        $comments = $comment->replies()->withCount('likes','replies')->paginate(5);
-        $comments->each(function ($comment){
-            $comment->isLiked = auth()->user()->commentLikes->contains($comment->id);
-        });
-        return $comments;
+        return $comment->replies()->withCount('likes','replies')->paginate(5);
     }
 
     public function store(Request $request,Post $post)

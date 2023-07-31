@@ -11,7 +11,14 @@ class Post extends Model
 
     protected $fillable = ['user_id','caption','image'];
 
+    protected $appends = ['isLiked'];
+
     protected $with = ['user'];
+
+    public function getIsLikedAttribute()
+    {
+        return auth()->user()->likes->contains($this->id);;
+    }
 
     /**
      * a post belong to a user
@@ -20,7 +27,7 @@ class Post extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class)->select('id','name','username');
+        return $this->belongsTo(User::class);
     }
 
     /**

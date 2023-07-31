@@ -49,10 +49,7 @@ class ChatsController extends Controller
      * @return Chat
      */
     public function update(Request $request,Chat $chat){
-        $chat->update([
-            'name' => $request->post('name'),
-        ]);
-
+        $chat->update($request->all());
         return $chat;
     }
 }

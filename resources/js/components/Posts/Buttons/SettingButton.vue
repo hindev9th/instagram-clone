@@ -17,7 +17,7 @@
                             <li class="hover-dark-20 p-2 border-bottom" data-toggle="modal" data-backdrop="static"
                                 data-keyboard="false" data-target="#modal-edit-post" @click="showModalEdit" v-if="post.user_id === user.id">Edit</li>
                             <li class="hover-dark-20 p-2 border-bottom font-weight-bold text-danger" v-if="post.user_id !== user.id">
-                                <FollowButton :user-id="post.user_id" :follows="isFollowing" @follow="toggleFollow" ></FollowButton>
+                                <FollowButton :user-id="post.user_id" :follows="isFollowed" @follow="toggleFollow" ></FollowButton>
                             </li>
                             <li class="hover-dark-20 p-2 border-bottom" @click="gotoPost">Go to post</li>
                             <li class="hover-dark-20 p-2 border-bottom" @click="showModalShare" data-toggle="modal"
@@ -77,7 +77,7 @@ export default {
             isShowShare : false,
             isShowConfirm : false,
             isShowEdit : false,
-            isFollowing : this.post.user.isFollowing,
+            isFollowed : this.post.user.isFollowed,
             auth_data : window.Laravel,
         }
     },
@@ -159,7 +159,7 @@ export default {
             })
         },
         toggleFollow(isFollow){
-            this.isFollowing = isFollow;
+            this.isFollowed = isFollow;
         }
     },
 }

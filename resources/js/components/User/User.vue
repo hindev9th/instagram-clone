@@ -12,7 +12,7 @@
             </div>
         </div>
         <follow-button :user-id="user.id"
-                       :follows="user.isFollowing"
+                       :follows="user.isFollowed"
                        v-if="user.api_token !== auth_data.api_token"
                        class="text-primary"></follow-button>
     </div>

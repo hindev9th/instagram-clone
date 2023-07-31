@@ -15,14 +15,9 @@ class PostsController extends Controller
         $userId = auth()->user()->following()->pluck('profiles.user_id')->push($user->id);
 
         $posts = Post::whereIn('user_id',$userId)
-            ->with('comments','likes')
+            ->withCount('comments','likes')
             ->latest()
             ->paginate(5);
-
-        $posts->each(function ($post) use ($user) {
-            $post->isLiked = $user->likes->contains($post->id);
-            $post->user->isFollowing = auth()->user()->following->contains($post->user_id);
-        });
 
         return $posts;
     }
@@ -43,9 +38,7 @@ class PostsController extends Controller
 
     public function show(Post $post)
     {
-        $post = $post->load('comments','likes');
-        $post->isLiked = auth()->user()->likes->contains($post->id);
-        $post->user->isFollowing = auth()->user()->following->contains($post->user_id);
+        $post = $post->loadCount('comments','likes');
         return $post;
     }
 

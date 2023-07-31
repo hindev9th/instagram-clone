@@ -48,6 +48,13 @@ class User extends Authenticatable
     protected $with = ['profile'];
 
     /**
+     * load custom attribute of user;
+     *
+     * @var string[] $appends
+     */
+    protected $appends = ['isFollowed'];
+
+    /**
      * create a profile null for new user and send to an email welcome
      */
     protected static function boot()
@@ -61,6 +68,11 @@ class User extends Authenticatable
 
 //            Mail::to($user->email)->send(new NewUserWelcome());
         });
+    }
+
+    public function getIsFollowedAttribute()
+    {
+        return auth()->user()->following->contains($this->id);
     }
 
     /**

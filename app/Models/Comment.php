@@ -13,6 +13,13 @@ class Comment extends Model
 
     protected $with = ['user'];
 
+    protected $appends = ['isLiked'];
+
+    public function getIsLikedAttribute()
+    {
+        return auth()->user()->commentLikes->contains($this->id);
+    }
+
     public function post()
     {
         return $this->belongsTo(Post::class);
@@ -20,7 +27,7 @@ class Comment extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class)->select('id','name','username');
+        return $this->belongsTo(User::class);
     }
 
     public function likes()

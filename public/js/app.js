@@ -51,6 +51,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -838,7 +841,7 @@ __webpack_require__.r(__webpack_exports__);
       isShowShare: false,
       isShowConfirm: false,
       isShowEdit: false,
-      isFollowing: this.post.user.isFollowing,
+      isFollowed: this.post.user.isFollowed,
       auth_data: window.Laravel
     };
   },
@@ -914,7 +917,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     toggleFollow: function toggleFollow(isFollow) {
-      this.isFollowing = isFollow;
+      this.isFollowed = isFollow;
     }
   }
 });
@@ -2002,8 +2005,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       posts: [],
       base_url: window.Laravel.baseUrl,
-      likes: this.post.likes.length,
-      comments: this.post.comments.length,
+      likesCount: this.post.likes_count,
+      commentsCount: this.post.comments_count,
       newComments: []
     };
   },
@@ -2018,11 +2021,12 @@ __webpack_require__.r(__webpack_exports__);
     getImage: _functiton__WEBPACK_IMPORTED_MODULE_0__.getImage,
     formatNumber: _functiton__WEBPACK_IMPORTED_MODULE_0__.formatNumber,
     formatTime: _functiton__WEBPACK_IMPORTED_MODULE_0__.formatTime,
+    extractTagsFromString: _functiton__WEBPACK_IMPORTED_MODULE_0__.extractTagsFromString,
     addLike: function addLike() {
-      this.likes++;
+      this.likesCount++;
     },
     minusLike: function minusLike() {
-      this.likes--;
+      this.likesCount--;
     }
   }
 });
@@ -2143,7 +2147,7 @@ __webpack_require__.r(__webpack_exports__);
       post: null,
       auth_user: null,
       auth_data: window.Laravel,
-      likes: 0,
+      likesCount: 0,
       isLoading: true
     };
   },
@@ -2162,10 +2166,10 @@ __webpack_require__.r(__webpack_exports__);
     formatNumber: _functiton__WEBPACK_IMPORTED_MODULE_7__.formatNumber,
     formatTime: _functiton__WEBPACK_IMPORTED_MODULE_7__.formatTime,
     addLike: function addLike() {
-      this.likes++;
+      this.likesCount++;
     },
     minusLike: function minusLike() {
-      this.likes--;
+      this.likesCount--;
     },
     checkJsonUser: function checkJsonUser() {
       try {
@@ -2179,7 +2183,7 @@ __webpack_require__.r(__webpack_exports__);
       this.isLoading = true;
       axios.get("".concat(this.auth_data.baseUrl, "/api/p/").concat(this.postId, "?api_token=").concat(this.auth_data.api_token)).then(function (res) {
         _this2.post = res.data;
-        _this2.likes = res.data.likes.length;
+        _this2.likesCount = res.data.likes_count;
         _this2.isLoading = false;
       })["catch"](function (e) {});
     }
@@ -52314,53 +52318,66 @@ var render = function () {
           _c(
             "ul",
             { staticClass: "list-unstyled chat-list mt-2 mb-0" },
-            _vm._l(_vm.chatsData, function (chat) {
-              return _c(
-                "li",
-                {
-                  class:
-                    "d-flex flex-nowrap" +
-                    (_vm.chat_id === chat.id ? "active" : ""),
-                  on: {
-                    click: function ($event) {
-                      return _vm.showMessage(chat)
+            [
+              _vm.chatsData.length === 0
+                ? _c(
+                    "div",
+                    {
+                      staticClass:
+                        "d-flex justify-content-center align-items-center w-100 h-100",
+                    },
+                    [_c("span", [_vm._v("Not messages found.")])]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm._l(_vm.chatsData, function (chat) {
+                return _c(
+                  "li",
+                  {
+                    class:
+                      "d-flex flex-nowrap" +
+                      (_vm.chat_id === chat.id ? "active" : ""),
+                    on: {
+                      click: function ($event) {
+                        return _vm.showMessage(chat)
+                      },
                     },
                   },
-                },
-                [
-                  _c(
-                    "div",
-                    { staticClass: "avatars rounded-circle" },
-                    _vm._l(chat.users, function (chatUser) {
-                      return chatUser.id !== _vm.auth_user.id
-                        ? _c("img", {
-                            staticClass: "img-avatar",
-                            attrs: {
-                              src: _vm.getImage(chatUser.profile.image),
-                              alt: "avatar",
-                            },
-                          })
-                        : _vm._e()
-                    }),
-                    0
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "about" }, [
-                    _c("div", {
-                      staticClass: "name",
-                      domProps: {
-                        textContent: _vm._s(
-                          chat.name == null
-                            ? _vm.getNames(chat.users, _vm.auth_user)
-                            : chat.name
-                        ),
-                      },
-                    }),
-                  ]),
-                ]
-              )
-            }),
-            0
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "avatars rounded-circle" },
+                      _vm._l(chat.users, function (chatUser) {
+                        return chatUser.id !== _vm.auth_user.id
+                          ? _c("img", {
+                              staticClass: "img-avatar",
+                              attrs: {
+                                src: _vm.getImage(chatUser.profile.image),
+                                alt: "avatar",
+                              },
+                            })
+                          : _vm._e()
+                      }),
+                      0
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "about" }, [
+                      _c("div", {
+                        staticClass: "name",
+                        domProps: {
+                          textContent: _vm._s(
+                            chat.name == null
+                              ? _vm.getNames(chat.users, _vm.auth_user)
+                              : chat.name
+                          ),
+                        },
+                      }),
+                    ]),
+                  ]
+                )
+              }),
+            ],
+            2
           ),
         ]
       ),
@@ -53586,7 +53603,7 @@ var render = function () {
                                     _c("FollowButton", {
                                       attrs: {
                                         "user-id": _vm.post.user_id,
-                                        follows: _vm.isFollowing,
+                                        follows: _vm.isFollowed,
                                       },
                                       on: { follow: _vm.toggleFollow },
                                     }),
@@ -55345,7 +55362,7 @@ var render = function () {
                 { staticClass: "d-flex" },
                 [
                   _vm._v(
-                    _vm._s(_vm.formatNumber(_vm.likes)) +
+                    _vm._s(_vm.formatNumber(_vm.likesCount)) +
                       "  \n                        "
                   ),
                   _c("ShowUserButton", {
@@ -55372,11 +55389,14 @@ var render = function () {
                   },
                   [_c("strong", [_vm._v(_vm._s(_vm.post.user.username))])]
                 ),
-                _vm._v(
-                  "\n                        " +
-                    _vm._s(_vm.post.caption) +
-                    "\n                    "
-                ),
+                _vm._v(" "),
+                _c("span", {
+                  domProps: {
+                    innerHTML: _vm._s(
+                      _vm.extractTagsFromString(_vm.post.caption)
+                    ),
+                  },
+                }),
               ]),
             ]),
             _vm._v(" "),
@@ -55385,7 +55405,9 @@ var render = function () {
                 post: _vm.post,
                 user: _vm.user,
                 text:
-                  "View all " + _vm.formatNumber(_vm.comments) + " comments",
+                  "View all " +
+                  _vm.formatNumber(_vm.commentsCount) +
+                  " comments",
               },
             }),
             _vm._v(" "),
@@ -55621,7 +55643,7 @@ var render = function () {
                                   { staticClass: "d-flex" },
                                   [
                                     _vm._v(
-                                      _vm._s(_vm.formatNumber(_vm.likes)) +
+                                      _vm._s(_vm.formatNumber(_vm.likesCount)) +
                                         "  \n                                    "
                                     ),
                                     _c("ShowUserButton", {
@@ -56136,7 +56158,7 @@ var render = function () {
       _vm.user.api_token !== _vm.auth_data.api_token
         ? _c("follow-button", {
             staticClass: "text-primary",
-            attrs: { "user-id": _vm.user.id, follows: _vm.user.isFollowing },
+            attrs: { "user-id": _vm.user.id, follows: _vm.user.isFollowed },
           })
         : _vm._e(),
     ],

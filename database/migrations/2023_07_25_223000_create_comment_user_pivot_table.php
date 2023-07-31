@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCommentLikePivotTable extends Migration
+class CreateCommentUserPivotTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateCommentLikePivotTable extends Migration
      */
     public function up()
     {
-        Schema::create('comments_user', function (Blueprint $table) {
+        Schema::create('comment_user', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('comment_id')->unsigned();
             $table->unsignedBigInteger('user_id')->unsigned();

@@ -6,6 +6,9 @@
                 <NewButton></NewButton>
             </div>
             <ul class="list-unstyled chat-list mt-2 mb-0">
+                <div class="d-flex justify-content-center align-items-center w-100 h-100" v-if="chatsData.length === 0">
+                    <span>Not messages found.</span>
+                </div>
                 <li :class="'d-flex flex-nowrap' + (chat_id === chat.id ? 'active' : '')"
                     @click="showMessage(chat);"
                     v-for="chat in chatsData">

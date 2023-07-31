@@ -31,7 +31,7 @@
                         <ShareButton :post="post"></ShareButton>
                     </div>
                     <div class="info-post pt-2 d-flex flex-column">
-                        <strong class="d-flex">{{ formatNumber(likes) }} &nbsp
+                        <strong class="d-flex">{{ formatNumber(likesCount) }} &nbsp
                             <ShowUserButton :action="`${base_url}/api/p/${post.id}/likes`" title="Likes" text="Likes"></ShowUserButton>
                         </strong>
                     </div>
@@ -39,10 +39,10 @@
                         <div class="w-100">
                             <a :href="base_url + '/profile/' + post.user.username"
                                class="text-decoration-none text-dark"><strong>{{ post.user.username }}</strong></a>
-                            {{ post.caption }}
+                            <span v-html="extractTagsFromString(post.caption)"></span>
                         </div>
                     </div>
-                    <CommentButton :post="post" :user="user" :text="`View all ${formatNumber(comments)} comments`" ></CommentButton>
+                    <CommentButton :post="post" :user="user" :text="`View all ${formatNumber(commentsCount)} comments`" ></CommentButton>
                     <Comment :user="user" :comment="comment" :key="index" v-for="(comment,index) in newComments"></Comment>
                     <CommentForm :post="post" :user="user" class="border-bottom pb-3"></CommentForm>
                 </div>
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import {getImage, formatTime, formatNumber} from "../../functiton";
+import {getImage, formatTime, formatNumber, extractTagsFromString} from "../../functiton";
 import LikeButton from "./Buttons/LikeButton";
 import CommentButton from "./Buttons/CommentButton";
 import SettingButton from "./Buttons/SettingButton";
@@ -68,8 +68,8 @@ export default {
         return {
             posts : [],
             base_url : window.Laravel.baseUrl,
-            likes : this.post.likes.length,
-            comments : this.post.comments.length,
+            likesCount : this.post.likes_count,
+            commentsCount : this.post.comments_count,
             newComments : [],
         }
     },
@@ -80,12 +80,12 @@ export default {
         })
     },
     methods:{
-        getImage,formatNumber,formatTime,
+        getImage,formatNumber,formatTime,extractTagsFromString,
         addLike(){
-            this.likes++;
+            this.likesCount++;
         },
         minusLike(){
-            this.likes--;
+            this.likesCount--;
         }
     }
 }
