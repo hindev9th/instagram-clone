@@ -6,9 +6,41 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
 import Vue from "vue";
+import VueRouter from 'vue-router';
+import InfiniteLoading from "vue-infinite-loading";
+import routes from './router/index';
+import store from "./stores/index";
+
+window.Vue = require('vue');
 window.Bus = new Vue();
+
+Vue.use(VueRouter);
+Vue.use(InfiniteLoading,{
+    props: {
+        spinner: 'waveDots',
+        /* other props need to configure */
+    },
+});
+
+const router = new VueRouter({
+    routes,
+    mode : 'history',
+    scrollBehavior (to, from, savedPosition) {
+        return { x: 0 ,y : 0}
+    }
+})
+router.beforeEach((to, from, next) => {
+    let modalBackground = document.querySelector('.modal-backdrop')
+    let body = document.querySelector('body');
+    if (modalBackground) {
+        body.classList.remove('modal-open');
+        modalBackground.remove()
+    }
+    // do other stuff
+    next()
+})
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -19,22 +51,12 @@ window.Bus = new Vue();
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-// Menu
-Vue.component('search-slide-button', require('./components/User/Buttons/SearchButton.vue').default);
-Vue.component('search-slide', require('./components/User/Slides/SearchSlide.vue').default);
+Vue.component('app-component', require('./components/pages/layouts/App').default);
 
 
-// Post
-Vue.component('new-post-modal', require('./components/Posts/Modals/ModalNewPost.vue').default);
-Vue.component('posts-list', require('./components/Posts/PostsList.vue').default);
 Vue.component('post-show', require('./components/Posts/PostShow.vue').default);
 
-// Chats
-Vue.component('chat', require('./components/Chat/Chat.vue').default);
-Vue.component('new-chat-modal', require('./components/Chat/Modals/ModalNewMessage.vue').default);
 
-// User
-Vue.component('sug-users', require('./components/User/SuggestedUsers.vue').default);
 Vue.component('show-user-button', require('./components/User/Buttons/ShowUserButton.vue').default);
 Vue.component('follow-button', require('./components/FollowButton.vue').default);
 
@@ -46,4 +68,6 @@ Vue.component('follow-button', require('./components/FollowButton.vue').default)
 
 const app = new Vue({
     el: '#app',
+    router,
+    store : store,
 });

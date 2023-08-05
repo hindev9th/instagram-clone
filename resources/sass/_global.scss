@@ -1,9 +1,3 @@
-body{
-    overflow-x: hidden;
-    &::-webkit-scrollbar{
-        display: none;
-    }
-}
 .bg-base{
     background: $body-bg !important;
 }

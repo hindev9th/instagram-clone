@@ -9,13 +9,13 @@ class FollowsController extends Controller
 {
     public function followers(User $user)
     {
-        return $user->profile->followers()->paginate(5);
+        return $user->profile->followers()->paginate(10);
     }
 
     public function following(User $user)
     {
         $userId = $user->following()->pluck('profiles.user_id');
-        return $user->whereIn('id',$userId)->paginate(5);
+        return $user->whereIn('id',$userId)->paginate(10);
     }
 
     public function store(User $user)

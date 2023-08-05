@@ -63,6 +63,43 @@ input.comment:focus {
                 justify-content: space-between;
             }
         }
+        &.small{
+            max-height: 300px;
+            max-width: 470px;
+            margin: 0 auto;
+            .suggested-users{
+                display: flex;
+                width: 100%;
+                overflow-y: auto;
+                .user{
+                    min-width: 130px;
+                    padding: 20px;
+                    flex-direction: column;
+                    border: $border-base;
+                    border-radius: 10px;
+                    align-items: center;
+                }
+                .user:not(:first-of-type){
+                    margin-left: 10px;
+                }
+                .info{
+                    flex-direction: column;
+                    align-items: center;
+                    padding-bottom: 15px;
+                }
+                .avatar{
+                    margin: 0;
+                    min-width: 55px;
+                    min-height: 55px;
+                }
+                .name{
+                    align-items: center;
+                }
+            }
+        }
+        .title-sug-user{
+            align-items: baseline;
+        }
     }
 }
 .post-show{
@@ -116,38 +153,8 @@ input.comment:focus {
             .posts{
                 margin: 0 auto;
             }
-            .remember{
-                max-width: 470px;
-                margin: 0 auto;
-                .suggested-users{
-                    display: flex;
-                    width: 100%;
-                    overflow-y: auto;
-                    .user{
-                        min-width: 130px;
-                        padding: 20px;
-                        flex-direction: column;
-                        border: $border-base;
-                        border-radius: 10px;
-                        align-items: center;
-                    }
-                    .user:not(:first-of-type){
-                        margin-left: 10px;
-                    }
-                    .info{
-                        flex-direction: column;
-                        align-items: center;
-                        padding-bottom: 15px;
-                    }
-                    .avatar{
-                        margin: 0;
-                        min-width: 55px;
-                        min-height: 55px;
-                    }
-                    .name{
-                        align-items: center;
-                    }
-                }
+            .remember:not(.small){
+                display: none;
             }
         }
     }

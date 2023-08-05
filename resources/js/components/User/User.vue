@@ -6,8 +6,9 @@
                     :src="getImage(user.profile.image)" alt=""></a>
             </div>
             <div class="name d-flex flex-column">
-                <a class="text-dark text-decoration-none"
-                   :href="`${auth_data.baseUrl}/profile/${user.username}`"><strong>{{ user.username }}</strong></a>
+                <router-link class="text-dark text-decoration-none" :to="{name : 'profile' , params : {username : user.username}}" data-bs-dismiss="modal">
+                    <strong>{{ user.username }}</strong>
+                </router-link>
                 <span class="text-black-50" style="font-size: 10px">{{ user.name }}</span>
             </div>
         </div>

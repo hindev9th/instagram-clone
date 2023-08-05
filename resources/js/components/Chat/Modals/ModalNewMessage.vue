@@ -5,7 +5,7 @@
             <div class="modal-content overflow-hidden border-0">
                 <div class="modal-header d-flex align-items-center justify-content-center position-relative">
                     <strong>New message</strong>
-                    <button type="button" @click="clearModal" class="close position-absolute" data-dismiss="modal"
+                    <button type="button" @click="clearModal" class="close position-absolute p-0" data-dismiss="modal"
                             aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

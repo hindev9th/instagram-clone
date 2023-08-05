@@ -10,12 +10,12 @@ class LikesController extends Controller
 {
     public function index(Post $post)
     {
-        return $post->likes()->paginate(5);
+        return $post->likes()->paginate(10);
     }
 
     public function loadUserLikeComment(Comment $comment)
     {
-        return $comment->likes()->paginate(5);
+        return $comment->likes()->paginate(10);
     }
 
 

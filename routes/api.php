@@ -4,9 +4,11 @@ use App\Http\Controllers\Api\CommentsController;
 use App\Http\Controllers\Api\LikesController;
 use App\Http\Controllers\Api\MessagesController;
 use App\Http\Controllers\Api\PostsController;
+use App\Http\Controllers\Api\ProfilesController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\FollowsController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,25 +24,38 @@ Route::middleware('auth:api')->prefix('/')->group(function (){
 
     // User
     Route::prefix('/user')->group(function (){
-        Route::get('/',[UserController::class,'index'])->name('user.index');
+        Route::get('/',[UserController::class,'auth'])->name('user.auth');
+        Route::get('/suggested',[UserController::class,'suggested'])->name('user.suggested');
         Route::get('/s/{search}',[UserController::class,'search']);
 
     });
 
+    Route::prefix('/profiles')->group(function (){
+        Route::get('/{user:username}',[ProfilesController::class,'index'])->name('profiles.index');
+        Route::get('/posts/{user:username}',[ProfilesController::class,'posts'])->name('profiles.posts');
+        Route::get('/edit',[ProfilesController::class,'edit'])->name('profiles.edit');
+        Route::patch('/',[ProfilesController::class,'update'])->name('profiles.update');
+    });
+
     // Follow
     Route::prefix('/follow')->group(function (){
-        Route::post('/{user}', [FollowsController::class,'store'])->name('follow.store');
-        Route::get('/{user}/followers',[FollowsController::class,'followers'])->name('follow.followers');
-        Route::get('/{user}/following',[FollowsController::class,'following'])->name('follow.following');
+        Route::post('/{user:username}', [FollowsController::class,'store'])->name('follow.store');
+        Route::get('/{user:username}/followers',[FollowsController::class,'followers'])->name('follow.followers');
+        Route::get('/{user:username}/following',[FollowsController::class,'following'])->name('follow.following');
     });
 
     // Post
-    Route::prefix('/p')->group(function (){
+    Route::prefix('/posts')->group(function (){
+        Route::get('/suggested', [PostsController::class,'suggested'])->name('post.suggested');
+        Route::get('/old', [PostsController::class,'olds'])->name('post.olds');
         Route::get('/', [PostsController::class,'index'])->name('post.index');
         Route::post('/', [PostsController::class,'store'])->name('post.store');
         Route::get('/{post}', [PostsController::class,'show'])->name('post.show');
         Route::patch('/{post}',[PostsController::class,'update'])->name('post.update');
         Route::delete('/{post}',[PostsController::class,'destroy'])->name('post.destroy');
+    });
+
+    Route::prefix('/p')->group(function (){
 
         // Comments post
         Route::get('/{post}/comments',[CommentsController::class,'index']);
@@ -60,6 +75,8 @@ Route::middleware('auth:api')->prefix('/')->group(function (){
         Route::post('/comment/{comment}/likes',[LikesController::class,'commentStore'])->name('likes.comment.store');
     });
 
+
+    Route::resource('chats','Api\ChatsController');
     /**
      * Chat room
      */

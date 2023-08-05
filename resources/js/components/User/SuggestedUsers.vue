@@ -1,36 +1,25 @@
 <template>
     <div class="suggested-users">
-        <User :user="user" v-for="(user,index) in users" :key="index"></User>
+        <User :user="user" v-for="(user,index) in suggested.data" :key="index"></User>
     </div>
 </template>
 
 <script>
 import User from "./User";
+import {mapActions,mapState} from 'vuex';
 export default {
     components:{User},
     name: "SuggestedUsers",
-    data(){
-        return{
-            users : null,
-            api_token: window.Laravel.api_token,
-            base_url : window.Laravel.baseUrl,
-            page: 0,
-        }
-    },
-    mounted() {
-        this.fetchSugUserS();
+    created() {
+        this.$store.dispatch('user/fetchSuggested');
     },
     methods:{
-        fetchSugUserS() {
-            this.page++;
-            axios.get(`${this.base_url}/api/user?api_token=${this.api_token}&page=${this.page}`)
-                .then(res => {
-                    this.users = res.data.data;
-                })
-                .catch(e => {
 
-                })
-        }
+    },
+    computed:{
+        ...mapActions('user',['fetchSuggested']),
+        ...mapState('user',['suggested'])
+
     }
 }
 </script>

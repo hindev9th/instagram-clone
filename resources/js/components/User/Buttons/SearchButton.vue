@@ -1,5 +1,5 @@
 <template>
-    <li class="" @click="showAndHideSearch">
+    <li class="search-btn" @click="showAndHideSearch">
         <i class="fa fa-search icon"></i>
         <span class="item-text">Search</span>
     </li>
@@ -11,6 +11,7 @@ export default {
     name: "SearchButton",
     methods:{
         showAndHideSearch(){
+            $('.search-btn').toggleClass('active');
             $('.search-slide').toggleClass('show');
             $('.menu-app:not(.message)').toggleClass('small');
         }

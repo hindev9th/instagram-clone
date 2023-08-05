@@ -1,28 +1,56 @@
 <template>
     <div class="col-md-8 d-flex flex-column align-items-center posts" id="posts">
-        <Post :user="auth_user" :post="post" v-for="(post,index) in posts" :key="index" ></Post>
-        <span class="text-primary prevent-select cursor-pointer m-3" v-if="isShowLoadMore && !isLoading" @click="fetchPosts">Load more</span>
+        <div class="post-new" v-if="getPosts">
+            <Post :user="getAuth" :post="post" v-for="(post,index) in getPosts.data" :key="index" ></Post>
+            <infinite-loading @infinite="infiniteLoad" v-if="getPosts.last_page > page"></infinite-loading>
+        </div>
+        <div class="message-end-post pt-3" v-if="isShowMessageEnd">
+            <h5 class="font-weight-bold">You're all caught up</h5>
+            <span>You've seen all new posts from the past 3 days.</span>
+            <router-link :to="{name: 'past'}">View older posts</router-link>
+        </div>
+        <div class="remember small col-md-4">
+            <div class="title-sug-user d-flex justify-content-between">
+                <span class="mt-2">Suggested for you</span>
+                <ShowUserButton :action="sug_user" title="Suggested for you" text="See All"></ShowUserButton>
+            </div>
+            <SuggestedUsers></SuggestedUsers>
+        </div>
+        <div class="post-suggested border-top w-100" v-if="getPostsSug">
+            <div class="title-sug-post d-flex justify-content-between">
+                <h5 class="mt-2 font-weight-bold">Suggested Posts</h5>
+            </div>
+            <Post :user="getAuth" :post="post" v-for="(post,index) in getPostsSug.data" :key="index" ></Post>
+            <infinite-loading @infinite="infiniteLoadSuggested"></infinite-loading>
+        </div>
     </div>
 </template>
 
 <script>
 import Post from "./Post";
+import {mapActions, mapGetters} from 'vuex';
+import SuggestedUsers from "../User/SuggestedUsers";
+import ShowUserButton from "../User/Buttons/ShowUserButton";
+import {SUGGESTED_USER} from "../../api/userApi";
 export default {
-    components : {Post},
+    components : {Post,SuggestedUsers,ShowUserButton},
     name: "PostsList",
-    props: ['user'],
     data() {
         return {
-            posts : null,
-            auth_user : JSON.parse(this.user),
             auth_data : window.Laravel,
-            page : 0,
+            page : 1,
+            page_sug: 1,
             isLoading : false,
-            isShowLoadMore : true,
+            isShowMessageEnd : false,
+            sug_user: SUGGESTED_USER,
         }
     },
     created() {
-        this.fetchPosts();
+        this.fetchPosts(this.page);
+    },
+    computed:{
+        ...mapGetters('user',['getAuth']),
+        ...mapGetters('post',['getPosts','getPostsSug']),
     },
     mounted() {
         Bus.$on('new-post', post => {
@@ -37,23 +65,8 @@ export default {
         })
     },
     methods: {
-        fetchPosts() {
-            this.isLoading = true;
-            this.page++;
-            axios.get(`${this.auth_data.baseUrl}/api/p?api_token=${this.auth_data.api_token}&page=${this.page}`)
-                .then(res => {
-                    this.isLoading = false;
-                    if (this.posts == null){
-                        this.posts = res.data.data;
-                    }else {
-                        res.data.data.forEach(e => this.posts.push(e));
-                    }
-                    this.isShowLoadMore = this.posts.length < res.data.total;
-                })
-                .catch(e => {
-                    this.isLoading = false;
-                })
-        },
+        ...mapActions('post',['fetchPosts','fetchPostSug']),
+
         updatePost(post){
             for (var index in this.posts){
                 if (this.posts[index].id === post.id){
@@ -69,6 +82,33 @@ export default {
                     break;
                 }
             }
+        },
+        infiniteLoad($state){
+            setTimeout(()=>{
+                this.page++;
+                this.fetchPosts(this.page).then(e => {
+                    if (this.getPosts.last_page <= this.page){
+                        $state.complete();
+                        this.isShowMessageEnd = true;
+                        this.fetchPostSug(this.page_sug);
+                    }else {
+                        $state.loaded();
+                    }
+                })
+            },1000)
+
+        },
+        infiniteLoadSuggested($state){
+            setTimeout(()=>{
+                this.page_sug++;
+                this.fetchPostSug(this.page).then(e => {
+                    if (this.getPostsSug.last_page <= this.page_sug){
+                        $state.complete();
+                    }else {
+                        $state.loaded();
+                    }
+                })
+            },1000)
         }
     },
 }
@@ -77,5 +117,11 @@ export default {
 <style scoped>
     #posts::-webkit-scrollbar{
         display: none;
+    }
+    .message-end-post{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 </style>

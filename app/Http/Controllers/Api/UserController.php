@@ -8,30 +8,32 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function auth()
+    {
+        $userId =  auth()->id();
+        return User::where('id',$userId)->withCount('following')->first();
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function suggested()
     {
         $user = auth()->user();
+        $userId = $user->following()->pluck('profiles.user_id')->push($user->id);
 
-        $userId = auth()->user()->following()->pluck('profiles.user_id')->push($user->id);
-
-        $users = User::whereNotIn('id', $userId)
+        return User::whereNotIn('id', $userId)
             ->inRandomOrder()
-            ->paginate(5);
-
-        return $users;
+            ->paginate(10);
     }
 
     public function search($search)
     {
         $user = auth()->user();
         $strSearch = '%' . $search . '%';
-        return User::select('id', 'name', 'username')
-            ->where('id', '!=', $user->id)
+        return User::where('id', '!=', $user->id)
             ->where(function ($query) use ($strSearch) {
                 $query->where('name', 'like', $strSearch)
                     ->orWhere('username', 'like', $strSearch)

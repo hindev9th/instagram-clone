@@ -35,7 +35,7 @@
                             </div>
                             <SettingButton :post="post" :user="auth_user"></SettingButton>
                         </div>
-                        <Comments :post="post" :user="auth_user"></Comments>
+                        <Comments :post="post"></Comments>
                         <div class="d-flex flex-column w-100 m-0 border-top position-absolute" style="bottom: 0;left: 0;">
                             <div class="box-post-action p-2 w-100 bg-white">
                                 <div class="icon-button d-flex">
@@ -53,7 +53,7 @@
                                 </div>
                             </div>
 
-                            <CommentForm :user="auth_user" :post="post" class="border-top p-2 w-100 bg-white"></CommentForm>
+                            <CommentForm :post="post" class="border-top p-2 w-100 bg-white"></CommentForm>
                         </div>
                     </div>
                 </div>

@@ -4,7 +4,7 @@
             <div class="modal-content overflow-hidden border-0">
                 <div class="modal-header d-flex align-items-center justify-content-center position-relative">
                     <strong>{{ title }}</strong>
-                    <button type="button" @click="$emit('close-modal')" class="close position-absolute" data-dismiss="modal"
+                    <button type="button" @click="$emit('close-modal')" class="close position-absolute p-0" data-dismiss="modal"
                             aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -14,6 +14,7 @@
                         <User :user="user" :key="index" v-for="(user,index) in users"></User>
                         <div class="w-100 text-center">
                             <span class="p-3 text-primary prevent-select cursor-pointer" v-if="isShowMore" @click="fetchUsers">Show more</span>
+                            <infinite-loading @infinite="fetchUsers"></infinite-loading>
                         </div>
                     </div>
                 </div>
@@ -24,6 +25,7 @@
 
 <script>
 import User from "../User";
+import $api from "../../../api";
 export default {
     components: {User},
     name: "ModalUsers",
@@ -40,14 +42,18 @@ export default {
         this.fetchUsers();
     },
     methods:{
-        fetchUsers(){
+        async fetchUsers($state){
             this.page++;
-            axios.get(`${this.action}?api_token=${this.api_token}&page=${this.page}`)
-            .then(res => {
+            await $api.get(`${this.action}?page=${this.page}`).then(res => {
                 if (this.users == null){
                     this.users = res.data.data;
                 }else {
                     res.data.data.forEach(e => this.users.push(e));
+                }
+                if (this.page >= res.data.last_page){
+                    $state.complete();
+                }else {
+                    $state.loaded();
                 }
                 this.isShowMore = this.users.length < res.data.total;
             })
@@ -61,8 +67,8 @@ export default {
 
 <style scoped>
     .box-users{
-        height: 600px;
-        max-height: 600px;
+        height: 500px;
+        max-height: 500px;
         overflow-y: auto;
     }
 </style>

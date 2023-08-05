@@ -15,7 +15,7 @@
                         <div class="action d-flex">
                             <ShowUserButton :action="`${auth_data.baseUrl}/api/p/comment/${comment.id}/likes`" title="Likes" :text="`${likeCount} Likes`" v-if="likeCount > 0"></ShowUserButton>
                             <span class="prevent-select cursor-pointer text-primary pr-3" @click="reply">Reply</span>
-                            <div class="setting-comment" v-if="isShowBtnSt && comment.user_id === user.id">
+                            <div class="setting-comment" v-if="isShowBtnSt && comment.user_id === getAuth.id">
                                 <span class="setting prevent-select cursor-pointer p-2" data-toggle="modal"
                                       data-keyboard="false" data-target="#modal-comment-setting" @click="showAndHide">
                                      <i class="fas fa-ellipsis-v"></i>
@@ -32,7 +32,7 @@
         <div class="replies">
             <EditCommentForm :comment="comment" @close-edit-form="showAndHideEditForm" @edit-comment="editComment" v-if="isShowEditForm"></EditCommentForm>
             <span class="prevent-select cursor-pointer" @click="loadReplies" v-if="repliesCount > 0" v-text="`View replies (${repliesCount})`"></span>
-            <comment :comment="reply" :user="user" :key="index" v-for="(reply,index) in replies" class="reply p-0"></comment>
+            <comment :comment="reply"  :key="index" v-for="(reply,index) in replies" class="reply p-0"></comment>
         </div>
 
 
@@ -62,13 +62,11 @@ import {getImage,formatTime,extractTagsFromString} from "../../../functiton";
 import ShowUserButton from "../../User/Buttons/ShowUserButton";
 import LikeCommentButton from "./Buttons/LikeCommentButton";
 import EditCommentForm from "./EditCommentForm";
+import {mapGetters} from "vuex";
 export default {
     name: "comment",
     components: {ShowUserButton,LikeCommentButton,EditCommentForm},
-    props: ['comment','user'],
-    created() {
-
-    },
+    props: ['comment'],
     data(){
         return{
             base_url:window.Laravel.baseUrl,
@@ -81,6 +79,9 @@ export default {
             repliesCount : this.comment.replies_count,
             page : 0,
         }
+    },
+    computed:{
+      ...mapGetters('user',['getAuth']),
     },
     mounted() {
       Bus.$on('reply-comment', reply => {

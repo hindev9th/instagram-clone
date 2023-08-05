@@ -2,13 +2,13 @@
     <div class="box-comments d-flex w-100 mt-2 pl-2 pr-2 overflow-auto mh-100 position-absolute flex-column flex-nowrap">
         <div class="d-flex mb-2">
             <div class="pr-1">
-                <a :href="auth_data.baseUrl + '/profile/' + post.user.username">
+                <a :href="`${auth_data.baseUrl}/profile/${post.user.username}`">
                     <img :src="getImage(post.user.profile.image)"
                          class="avatar rounded-circle" alt="">
                 </a>
             </div>
             <div class="">
-                <a :href="auth_data.baseUrl + '/profile/' + post.user.username"
+                <a :href="`${auth_data.baseUrl}/profile/${post.user.username}`"
                    class="text-decoration-none text-dark"><strong>{{post.user.username}}</strong></a>
                 {{ post.caption }}
                 <div class="time">
@@ -16,7 +16,7 @@
                 </div>
             </div>
         </div>
-        <Comment :comment="comment" :user="user" v-for="comment in comments" :key="comment.id"></Comment>
+        <Comment :comment="comment" v-for="comment in comments" :key="comment.id"></Comment>
         <span class="text-primary prevent-select cursor-pointer text-center m-3" @click="showMore" v-if="isShowMore">Show more</span>
     </div>
 </template>
@@ -27,7 +27,7 @@ import Comment from './Comment.vue';
 export default {
     components: {Comment},
     name: "Comments",
-    props: ['post','user'],
+    props: ['post'],
     data(){
         return{
             comments : [],

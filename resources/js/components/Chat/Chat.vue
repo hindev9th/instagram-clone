@@ -6,18 +6,18 @@
                 <NewButton></NewButton>
             </div>
             <ul class="list-unstyled chat-list mt-2 mb-0">
-                <div class="d-flex justify-content-center align-items-center w-100 h-100" v-if="chatsData.length === 0">
+                <div class="d-flex justify-content-center align-items-center w-100 h-100" v-if="getChats.length === 0">
                     <span>Not messages found.</span>
                 </div>
                 <li :class="'d-flex flex-nowrap' + (chat_id === chat.id ? 'active' : '')"
                     @click="showMessage(chat);"
-                    v-for="chat in chatsData">
+                    v-for="chat in getChats" v-if="getAuth && getAuth.profile">
                     <div class="avatars rounded-circle">
-                        <img :src="getImage(chatUser.profile.image)" v-if="chatUser.id !== auth_user.id"
+                        <img :src="getImage(chatUser.profile.image)" v-if="chatUser.id !== getAuth.id"
                              v-for="chatUser in chat.users" class="img-avatar" alt="avatar">
                     </div>
                     <div class="about">
-                        <div class="name" v-text="chat.name == null ? getNames(chat.users,auth_user) : chat.name"></div>
+                        <div class="name" v-text="chat.name == null ? getNames(chat.users,getAuth) : chat.name"></div>
                         <!--                            <div class="status"> <i class="fa fa-circle online"></i> online </div>-->
                     </div>
                 </li>
@@ -30,7 +30,7 @@
             <button class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-keyboard="false"
                     data-target="#modal-new">Send message</button>
         </div>
-        <ChatMessage :chat="chat" :user="auth_user" :class="{'open' : (chat.id === selected_id)}" @close-message="closeMessage" v-if="chat.id === selected_id" v-for="chat in chatsData"
+        <ChatMessage :chat="chat" :user="getAuth" :class="{open : (chat.id === selected_id)}" @close-message="closeMessage" v-if="chat.id === selected_id" v-for="chat in getChats"
                      :key="chat.id"></ChatMessage>
     </div>
 
@@ -40,21 +40,20 @@ import NewButton from "./NewButton";
 import {getImage, getNames} from "../../functiton";
 import ChatMessage from "./ChatMessage";
 import $ from 'jquery';
+import {mapGetters} from "vuex";
 
 export default {
     components: {NewButton, ChatMessage},
-    props: ['chats', 'user'],
     data() {
         return {
             messages: [],
-            chatsData: JSON.parse(this.chats),
-            auth_user: JSON.parse(this.user),
             chat_id: 0,
             selected_id: 0,
         }
     },
     created() {
-        Echo.private('user.' + this.auth_user.id)
+        this.$store.dispatch('chat/fetchChats');
+        Echo.private('user.' + this.getAuth.id)
             .listen('NewChat', (e) => {
                 this.chatsData.unshift({
                     'id': e.id,
@@ -63,14 +62,19 @@ export default {
                 });
             });
 
+
     },
     mounted() {
       Bus.$on('NewChatRoom', (chat) => {
           this.chatsData.unshift(chat);
           this.selected_id = chat.id;
       })
-        $('.menu-app').addClass('small message');
 
+
+    },
+    computed:{
+        ...mapGetters('chat',['getChats']),
+        ...mapGetters('user',['getAuth']),
     },
     methods: {
         getImage,

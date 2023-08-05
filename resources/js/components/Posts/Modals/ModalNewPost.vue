@@ -27,10 +27,10 @@
                                        required autocomplete="image">
                             </div>
                             <div class="col-md-4 box-content">
-                                <div class="box-user pt-2 pb-2">
-                                    <img :src="getImage(auth_user.profile.image)" class="avatar rounded-circle"
+                                <div class="box-user pt-2 pb-2" v-if="getAuth && getAuth.profile">
+                                    <img :src="getImage(getAuth.profile.image)" class="avatar rounded-circle"
                                          alt="">
-                                    <strong>{{ auth_user.username }}</strong>
+                                    <strong>{{ getAuth.username }}</strong>
                                 </div>
                                 <textarea id="caption" type="text"
                                           class="form-control p-0 border-0 bg-transparent"
@@ -54,18 +54,20 @@
 <script>
 import {getImage} from "../../../functiton";
 import $ from 'jquery';
+import {mapGetters} from "vuex";
 export default {
     name: "ModalNewPost",
-    props: ['user'],
     data() {
         return {
-            auth_user: JSON.parse(this.user),
             url: '',
             file: null,
             inputCaption: '',
             isLoading: false,
             auth_data: window.Laravel,
         }
+    },
+    computed:{
+        ...mapGetters('user',['getAuth']),
     },
     methods: {
         getImage,

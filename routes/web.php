@@ -17,34 +17,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 Auth::routes();
 
-Route::middleware('auth')->get('/','HomeController@index')->name('home.index');
-/**
- * Follow
- */
-
-
-/**
- * Profile
- */
-Route::middleware('auth')->prefix('/profile')->group(function (){
-    Route::get('/{user:username}', 'ProfilesController@index')->name('profile.index');
-    Route::get('/{user:username}/edit', 'ProfilesController@edit')->name('profile.edit');
-    Route::patch('/{user:username}', 'ProfilesController@update')->name('profile.update');
-});
-
-/**
- * Post
- */
-Route::middleware('auth')->get('/p/{post}',function ($postId){
-    return view('posts.show',compact('postId'));
-})->name('post.show');
-
-
-/**
- * Chat room
- */
-Route::middleware('auth')->prefix('c')->group(function (){
-    Route::get('','ChatsController@index')->name('chat.index');
-    Route::post('','ChatsController@store')->name('chat.store');
-});
+Route::middleware('auth')->get('{any}',function (){
+    return view('home');
+})->where('any','[\/\w\.-]*');
 
