@@ -11,12 +11,12 @@
                     <div class="modal-body p-0">
                         <ul class="list-unstyled text-center m-0">
                             <li class="hover-dark-20 p-2 border-bottom font-weight-bold text-danger"
-                                v-if="post.user_id === user.id" data-toggle="modal" data-backdrop="static"
+                                v-if="post.user_id === getAuth.id" data-toggle="modal" data-backdrop="static"
                                 data-keyboard="false" :data-target="`#modal-confirm-${post.id}`" @click="showModalConfirm();">Delete
                             </li>
                             <li class="hover-dark-20 p-2 border-bottom" data-toggle="modal" data-backdrop="static"
-                                data-keyboard="false" data-target="#modal-edit-post" @click="showModalEdit" v-if="post.user_id === user.id">Edit</li>
-                            <li class="hover-dark-20 p-2 border-bottom font-weight-bold text-danger" v-if="post.user_id !== user.id">
+                                data-keyboard="false" data-target="#modal-edit-post" @click="showModalEdit" v-if="post.user_id === getAuth.id">Edit</li>
+                            <li class="hover-dark-20 p-2 border-bottom font-weight-bold text-danger" v-if="post.user_id !== getAuth.id">
                                 <FollowButton :user-id="post.user_id" :follows="isFollowed" @follow="toggleFollow" ></FollowButton>
                             </li>
                             <li class="hover-dark-20 p-2 border-bottom" @click="gotoPost">Go to post</li>
@@ -56,7 +56,7 @@
                 </div>
             </div>
         </div>
-        <ModalEditPost :user="user" :post="post" v-if="isShowEdit" @close-modal="hideModalEdit"></ModalEditPost>
+        <ModalEditPost :user="getAuth" :post="post" v-if="isShowEdit" @close-modal="hideModalEdit"></ModalEditPost>
         <ModalShare v-if="isShowShare" :post="post" @close-modal="hideModalShare"></ModalShare>
     </div>
 </template>
@@ -67,19 +67,27 @@
     import ModalEditPost from "../Modals/ModalEditPost";
     import FollowButton from "../../FollowButton";
     import {showNotify} from "../../../functiton";
+    import {mapGetters} from "vuex";
 export default {
     components : {ModalShare,ModalEditPost,FollowButton},
     name: "SettingButton",
-    props: ['post','user'],
+    props: ['post'],
     data(){
         return{
             isShow : false,
             isShowShare : false,
             isShowConfirm : false,
             isShowEdit : false,
-            isFollowed : this.post.user.isFollowed,
+            isFollowed : false,
             auth_data : window.Laravel,
         }
+    },
+    created() {
+        let user = this.post.user;
+        this.isFollowed = user.isFollowed ;
+    },
+    computed:{
+        ...mapGetters('user',['getAuth']),
     },
     methods: {
         showNotify,
@@ -135,10 +143,10 @@ export default {
             testingCodeToCopy.setAttribute('type', 'hidden')
         },
         gotoPost(){
-            window.location = `${this.auth_data.baseUrl}/p/${this.post.id}`;
+            this.$router.push({name : 'post', params : {id : this.post.id}});
         },
         aboutThisAccount(){
-            window.location = `${this.auth_data.baseUrl}/profile/${this.post.user.username}`;
+            this.$router.push({name : 'profile', params : {username : this.post.user.username}});
         },
         deletePost(){
             axios.post(`${this.auth_data.baseUrl}/api/p/${this.post.id}?api_token=${this.auth_data.api_token}`,

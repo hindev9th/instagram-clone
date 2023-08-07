@@ -17,7 +17,7 @@
 
                 </div>
             </div>
-            <SettingButton :post="post" :user="getAuth"></SettingButton>
+            <SettingButton :post="post"></SettingButton>
         </div>
         <div class="border rounded-lg overflow-hidden d-flex justify-content-center align-items-center">
             <img :src="base_url + '/storage/' + post.image" class="w-100" style="height: fit-content"
@@ -28,7 +28,7 @@
                 <div class="box-interact w-100 pt-2">
                     <div class="icon-button d-flex">
                         <LikeButton :post="post" @add-like="addLike" @minus-like="minusLike"></LikeButton>
-                        <CommentButton :post="post" :user="getAuth" text="" ></CommentButton>
+                        <CommentButton :post="post" text="" ></CommentButton>
                         <ShareButton :post="post"></ShareButton>
                     </div>
                     <div class="info-post pt-2 d-flex flex-column">
@@ -43,7 +43,7 @@
                             <span v-html="extractTagsFromString(post.caption)"></span>
                         </div>
                     </div>
-                    <CommentButton :post="post" :user="getAuth" :text="`View all ${formatNumber(commentsCount)} comments`" ></CommentButton>
+                    <CommentButton :post="post"  :text="`View all ${formatNumber(commentsCount)} comments`" ></CommentButton>
                     <Comment :comment="comment" :key="index" v-for="(comment,index) in newComments"></Comment>
                     <CommentForm :post="post"  class="border-bottom pb-3"></CommentForm>
                 </div>
@@ -65,19 +65,16 @@ import {mapGetters} from "vuex";
 export default {
     components: {LikeButton,CommentButton,SettingButton,CommentForm,ShareButton,ShowUserButton,Comment},
     name: "Post",
-    props: ['post','user'],
+    props: ['post'],
     data() {
         return {
-            posts : [],
             base_url : window.Laravel.baseUrl,
             likesCount : this.post.likes_count,
             commentsCount : this.post.comments_count,
             newComments : [],
         }
     },
-    computed:{
-        ...mapGetters('user',['getAuth']),
-    },
+
     mounted() {
         Bus.$on(`new-comment-${this.post.id}`, comment =>{
             this.newComments.push(comment);

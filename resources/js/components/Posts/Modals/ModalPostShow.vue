@@ -7,7 +7,7 @@
                 </button>
                 <div class="modal-body p-0">
                     <div class="post-show-data">
-                        <PostShow :user="user" :post-id="post.id" ></PostShow>
+                        <PostShow :post="post" ></PostShow>
                     </div>
                 </div>
             </div>
@@ -20,7 +20,7 @@ import PostShow from "../PostShow";
 export default {
     components : {PostShow},
     name: "ModalComments",
-    props : ['post','user'],
+    props : ['post'],
 }
 </script>
 

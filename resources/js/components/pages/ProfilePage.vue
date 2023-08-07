@@ -1,15 +1,15 @@
 <template>
     <div class="box-main">
-        <div class="container">
-            <div class="row pb-5 border-bottom" v-if="getProfile.profile">
-                <div class="col-sm-3">
+        <div class="container profile">
+            <div class="box-info-user d-flex pb-5 border-bottom" v-if="getProfile.profile">
+                <div class="pr-2">
                     <img
                         :src="getImage(getProfile.profile.image)"
                         width="200px"
                         height="200px"
                         class="rounded-circle">
                 </div>
-                <div class="col-sm-9 pt-4">
+                <div class="pt-4 info">
                     <div class="container">
                         <div class="row ">
                             <div class="d-flex">
@@ -105,5 +105,16 @@ export default {
 </script>
 
 <style scoped>
-
+.profile .box-info-user{
+    display: flex;
+}
+@media (max-width: 478px) {
+    .profile .box-info-user{
+        flex-direction: column;
+        align-items: center;
+    }
+    .profile .box-info-user .info{
+        width: 100%;
+    }
+}
 </style>

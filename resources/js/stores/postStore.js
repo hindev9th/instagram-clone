@@ -11,7 +11,7 @@ const postStore = {
         posts : null,
         postsOld : null,
         postsSug : null,
-        post : {},
+        post : null,
     },
     mutations : {
         FETCH_POSTS(state,posts){
@@ -35,6 +35,38 @@ const postStore = {
         ADD_POSTS_SUG(state,posts){
             posts.data.forEach(e => state.postsSug.data.push(e));
         },
+        UPDATE_POST(state,post){
+            if (state.posts != null){
+                for (let index in state.posts.data){
+                    console.log("index1");
+                    if (state.posts.data[index].id === post.id){
+                        state.posts.data.splice(index,1,post);
+                        break;
+                    }
+                }
+            }
+            if (state.postsOld != null){
+                for (let index in state.postsOld.data){
+
+                    if (state.postsOld.data[index].id === post.id){
+                        state.postsOld.data.splice(index,1,post);
+                        return;
+                    }
+                }
+            }
+            if (state.postsSug != null){
+                for (let index in state.postsSug.data){
+                    console.log("index1s");
+                    if (state.postsSug.data[index].id === post.id){
+                        state.postsSug.data.splice(index,1,post);
+                        break;
+                    }
+                }
+            }
+            if (state.post != null){
+                state.post = post;
+            }
+        }
     },
     getters :{
         getPosts(state){
@@ -81,12 +113,24 @@ const postStore = {
                     }
                 })
         },
-        async fetchPost({commit}){
-            await $api.get(RESOURCE_POSTS)
+        async fetchPost({commit},id){
+            await $api.get(`${RESOURCE_POSTS}/${id}`)
                 .then(res =>{
                     commit('FETCH_POST',res.data);
                 })
         },
+        async updatePost({commit}, {id, post}){
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data',
+                }
+            }
+
+            await $api.post(`${RESOURCE_POSTS}/${id}`,post,config)
+                .then(res => {
+                    commit('UPDATE_POST', res.data);
+                })
+        }
 
 
     }

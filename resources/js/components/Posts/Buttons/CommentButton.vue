@@ -2,7 +2,7 @@
     <div>
         <span class="btn-comment prevent-select cursor-pointer" @click="showAndHide" data-toggle="modal" data-backdrop="static" data-keyboard="false"
               data-target="#modal-post-show" v-html="showText"></span>
-        <ModalPostShow :post="post" :user="user" v-if="isShow" @close-modal="showAndHide"></ModalPostShow>
+        <ModalPostShow :post="post" v-if="isShow" @close-modal="showAndHide"></ModalPostShow>
     </div>
 </template>
 
@@ -11,7 +11,7 @@ import ModalPostShow from "../Modals/ModalPostShow";
 export default {
     components : {ModalPostShow},
     name: "CommentButton",
-    props: ['post','user','text'],
+    props: ['post','text'],
     data(){
         return{
             isShow : false,

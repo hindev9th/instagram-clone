@@ -1,13 +1,13 @@
 <template>
     <div class="col-md-8 d-flex flex-column align-items-center posts" id="posts">
-        <div class="post-new" v-if="getPosts">
-            <Post :user="getAuth" :post="post" v-for="(post,index) in getPosts.data" :key="index" ></Post>
-            <infinite-loading @infinite="infiniteLoad" v-if="getPosts.last_page > page"></infinite-loading>
+        <div class="post-new" v-if="posts">
+            <Post :user="getAuth" :post="post" v-for="(post,index) in posts.data" :key="index" ></Post>
+            <infinite-loading @infinite="infiniteLoad" v-if="posts.last_page > page"></infinite-loading>
         </div>
-        <div class="message-end-post pt-3" v-if="isShowMessageEnd">
+        <div class="message-end-post pt-3" v-if="isShowMessageEnd ||( posts && posts.total === 0)">
             <h5 class="font-weight-bold">You're all caught up</h5>
             <span>You've seen all new posts from the past 3 days.</span>
-            <router-link :to="{name: 'past'}">View older posts</router-link>
+            <router-link class="" :to="{name: 'past'}" >View older posts</router-link>
         </div>
         <div class="remember small col-md-4">
             <div class="title-sug-user d-flex justify-content-between">
@@ -16,11 +16,11 @@
             </div>
             <SuggestedUsers></SuggestedUsers>
         </div>
-        <div class="post-suggested border-top w-100" v-if="getPostsSug">
+        <div class="post-suggested border-top w-100" v-if="postsSug">
             <div class="title-sug-post d-flex justify-content-between">
                 <h5 class="mt-2 font-weight-bold">Suggested Posts</h5>
             </div>
-            <Post :user="getAuth" :post="post" v-for="(post,index) in getPostsSug.data" :key="index" ></Post>
+            <Post :user="getAuth" :post="post" v-for="(post,index) in postsSug.data" :key="index" ></Post>
             <infinite-loading @infinite="infiniteLoadSuggested"></infinite-loading>
         </div>
     </div>
@@ -46,11 +46,18 @@ export default {
         }
     },
     created() {
-        this.fetchPosts(this.page);
+        this.fetchPosts(this.page).then(e => {
+            if(this.posts.total === 0 ){
+              this.fetchPostSug(this.page_sug);
+            }
+        });
     },
     computed:{
         ...mapGetters('user',['getAuth']),
-        ...mapGetters('post',['getPosts','getPostsSug']),
+        ...mapGetters('post',{
+          posts : 'getPosts',
+          postsSug : 'getPostsSug',
+        }),
     },
     mounted() {
         Bus.$on('new-post', post => {
@@ -87,7 +94,7 @@ export default {
             setTimeout(()=>{
                 this.page++;
                 this.fetchPosts(this.page).then(e => {
-                    if (this.getPosts.last_page <= this.page){
+                    if (this.posts.last_page <= this.page){
                         $state.complete();
                         this.isShowMessageEnd = true;
                         this.fetchPostSug(this.page_sug);
@@ -101,8 +108,8 @@ export default {
         infiniteLoadSuggested($state){
             setTimeout(()=>{
                 this.page_sug++;
-                this.fetchPostSug(this.page).then(e => {
-                    if (this.getPostsSug.last_page <= this.page_sug){
+                this.fetchPostSug(this.page_sug).then(e => {
+                    if (this.postsSug.last_page <= this.page_sug){
                         $state.complete();
                     }else {
                         $state.loaded();

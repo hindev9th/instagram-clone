@@ -1,15 +1,16 @@
 <template>
-    <div class="box-comments d-flex w-100 mt-2 pl-2 pr-2 overflow-auto mh-100 position-absolute flex-column flex-nowrap">
+    <div class="box-comments d-flex w-100 mt-2 pl-2 pr-2 overflow-auto mh-100 position-absolute flex-column flex-nowrap" v-if="post.user">
         <div class="d-flex mb-2">
-            <div class="pr-1">
-                <a :href="`${auth_data.baseUrl}/profile/${post.user.username}`">
+            <div class="pr-1" >
+                    <router-link :to="{name : 'profile',params : {username :post.user.username }}">
                     <img :src="getImage(post.user.profile.image)"
                          class="avatar rounded-circle" alt="">
-                </a>
+                    </router-link>
             </div>
-            <div class="">
-                <a :href="`${auth_data.baseUrl}/profile/${post.user.username}`"
-                   class="text-decoration-none text-dark"><strong>{{post.user.username}}</strong></a>
+            <div class="" >
+                <router-link class="text-decoration-none text-dark" :to="{name : 'profile',params : {username :post.user.username }}">
+                    <strong>{{post.user.username}}</strong>
+                </router-link>
                 {{ post.caption }}
                 <div class="time">
                     {{ formatTime(post.created_at) }}

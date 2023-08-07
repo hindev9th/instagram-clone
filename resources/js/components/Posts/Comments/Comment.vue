@@ -3,13 +3,19 @@
         <div class="d-flex justify-content-between align-items-center w-100" @mouseover="isShowBtnSt = true" @mouseleave="isShowBtnSt = false">
             <div class="box-comment d-flex mt-2 mb-2">
                 <div class="pr-1">
+                    <router-link :to="{name : 'profile',params : {username :comment.user.username }}">
                     <img :src="getImage(comment.user.profile.image)"
                          class="avatar rounded-circle" alt="">
+                    </router-link>
                 </div>
                 <div class="">
-                    <a :href="base_url + '/profile/' + comment.user.username"
-                       class="text-decoration-none text-dark"><strong>{{comment.user.username}}</strong></a>
-                    <span v-html="extractTagsFromString(comment.comment)"></span>
+                    <span>
+                        <router-link class="text-decoration-none text-dark" :to="{name : 'profile',params : {username :comment.user.username }}">
+                            <strong>{{comment.user.username}}</strong>
+                        </router-link>
+                        <MentionLink :text="comment.comment"></MentionLink>
+                    </span>
+
                     <div class="box-action">
                         <span class="time pr-2"> {{ formatTime(comment.created_at) }} </span>
                         <div class="action d-flex">
@@ -57,15 +63,15 @@
 </template>
 
 <script>
-import $ from 'jquery';
 import {getImage,formatTime,extractTagsFromString} from "../../../functiton";
 import ShowUserButton from "../../User/Buttons/ShowUserButton";
 import LikeCommentButton from "./Buttons/LikeCommentButton";
 import EditCommentForm from "./EditCommentForm";
+import MentionLink from "../../helpers/MentionLink";
 import {mapGetters} from "vuex";
 export default {
     name: "comment",
-    components: {ShowUserButton,LikeCommentButton,EditCommentForm},
+    components: {ShowUserButton,LikeCommentButton,EditCommentForm,MentionLink},
     props: ['comment'],
     data(){
         return{

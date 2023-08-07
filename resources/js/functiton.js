@@ -58,23 +58,47 @@ export function getNames(users,auth_user) {
 }
 
 export function showNotify(message){
-    var html = `
-                  <div class="toast m-4" data-autohide="false" style="width: 250px;position: fixed; top: 0; right: 0;">
-                    <div class="toast-header">
+    function remove(){
+        toast.style.animation = 'notify-frame-out .5s reverse ease-in-out';
+        toast.classList.add('remove');
+        setTimeout(function (){
+            toast.remove();
+        },500);
+    }
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'ml-2 mb-1 close close-notify';
+    closeBtn.setAttribute('data-dismiss','toast');
+    closeBtn.setAttribute('aria-label','Close');
+    closeBtn.style.position = 'absolute';
+    closeBtn.style.top = '5px';
+    closeBtn.style.right = '5px';
+    closeBtn.innerHTML = `<span aria-hidden="true">&times;</span>`;
+    closeBtn.addEventListener('click', function () {
+        remove();
+    });
+
+
+    const toast = document.createElement('div')
+    toast.className = 'toast bg-white m-2';
+    toast.setAttribute('data-autohide','false');
+    toast.style.position = 'relative';
+    toast.innerHTML =  `<div class="toast-header">
                       <strong class="mr-auto">Notification</strong>
-                      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
                     </div>
                     <div class="toast-body">
                       ${message}
-                    </div>
-                  </div>`
-    $('body').append(html);
-    $('.toast').toast('show');
+                    </div>`
+
+
+    toast.append(closeBtn);
+    $('#notify').append(toast);
+
+    toast.classList.add('show');
+    toast.style.animation = 'notify-frame .5s ease-in-out';
     setTimeout(function (){
-        $('.toast').toast('hide');
-    },5000);
+        remove();
+    },5000)
+
     return true;
 }
 
@@ -83,8 +107,9 @@ export function formatNumber(number) {
 }
 
 export function extractTagsFromString(inputString) {
-    const baseUrl = window.Laravel.baseUrl;
     const regex = /@([\w.]+)/g;
-    const replacedString = inputString.replace(regex, '<a href="' + baseUrl + '/profile/$1">$&</a>');
-    return replacedString;
+    // return inputString.replace(regex, '<router-link to="/$1">$&</router-link>');
+    return inputString.replace(
+        /@\w+/g,
+        (user) => `<router-link :to="'/${user.slice(1)}'">@${user.slice(1)}</router-link>`);
 }

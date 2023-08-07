@@ -33,6 +33,54 @@
 .cursor-pointer{
     cursor: pointer;
 }
+#notify{
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1039;
+    .toast{
+        width: 250px;
+        flex-basis: auto;
+        &.remove{
+            transform: translateX(300px);
+        }
+
+    }
+}
+@keyframes notify-frame-out {
+    from {
+        transform: translateX(300px);
+    }
+
+    50% {
+        transform: translateX(-30px);
+    }
+
+    70% {
+        transform: translateX(10px);
+    }
+
+    to {
+        transform: translateX(0px);
+    }
+}
+@keyframes notify-frame {
+    from {
+        transform: translateX(300px);
+    }
+
+    50% {
+        transform: translateX(-30px);
+    }
+
+    70% {
+        transform: translateX(10px);
+    }
+
+    to {
+        transform: translateX(0px);
+    }
+}
 .avatar{
     min-width: 40px;
     width: 40px;

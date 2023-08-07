@@ -1,65 +1,67 @@
 <template>
     <div class="post-show position-relative">
-        <div class="box-data" v-if="!isLoading">
+        <div class="box-data" v-if="getPost && getPost.user">
             <div class="box-user-post top position-relative pt-2 pb-2 pr-2 pl-0">
                 <div class="box-user p-0 d-flex">
-                    <div class="pr-1 pl-2">
-                        <img :src="getImage(post.user.profile.image)" class="avatar rounded-circle"
+                    <div class="pr-1 pl-2" >
+                        <img :src="getImage(getPost.user.profile.image)" class="avatar rounded-circle"
                              alt="">
                     </div>
-                    <div class="col-11 pl-2 d-flex align-items-center font-weight-bold">
-                        <a :href="`${auth_data.baseUrl}/profile/${post.user.username}`"
-                           class="text-decoration-none text-dark pr-2"><strong>{{post.user.username}}</strong></a>
+                    <div class="col-11 pl-2 d-flex align-items-center font-weight-bold" >
+                        <router-link class="text-decoration-none text-dark pr-2"  :to="{name : 'profile',params : {username :getPost.user.username }}">
+                            <strong>{{getPost.user.username}}</strong>
+                        </router-link>
                         <i class="fas fa-circle pr-2" style="font-size: 5px"></i>
-                        <div class="font-weight-normal">{{ formatTime(post.created_at) }}</div>
+                        <div class="font-weight-normal">{{ formatTime(getPost.created_at) }}</div>
                     </div>
                 </div>
-                <SettingButton :post="post" :user="auth_user"></SettingButton>
+                <SettingButton :post="getPost"  ></SettingButton>
             </div>
             <div class="box-post w-100">
                 <div class="img-post d-flex justify-content-center align-items-center">
-                    <img :src="`${auth_data.baseUrl}/storage/${post.image}`" class="w-100" style="height: fit-content" alt="">
+                    <img :src="`${auth_data.baseUrl}/storage/${getPost.image}`" class="w-100" style="height: fit-content" alt="">
                 </div>
                 <div class="box-action-post position-relative p-0">
                     <div class="d-flex flex-column mw-100">
                         <div class="box-user-post border-bottom position-relative pt-2 pb-2 pr-2 pl-0">
                             <div class="box-user p-0 d-flex">
-                                <div class="pr-1 pl-2">
-                                    <img :src="getImage(post.user.profile.image)" class="avatar rounded-circle"
+                                <div class="pr-1 pl-2"  >
+                                    <img :src="getImage(getPost.user.profile.image)" class="avatar rounded-circle"
                                          alt="">
                                 </div>
-                                <div class="col-11 pl-0 d-flex align-items-center font-weight-bold">
-                                    <a :href="auth_data.baseUrl + '/profile/' + post.user.username"
-                                       class="text-decoration-none text-dark pr-2"><strong>{{post.user.username}}</strong></a>
+                                <div class="col-11 pl-0 d-flex align-items-center font-weight-bold" >
+                                    <router-link class="text-decoration-none text-dark pr-2" :to="{name : 'profile',params : {username :getPost.user.username }}">
+                                        <strong v-text="getPost.user.username"></strong>
+                                    </router-link>
                                 </div>
                             </div>
-                            <SettingButton :post="post" :user="auth_user"></SettingButton>
+                            <SettingButton :post="getPost" ></SettingButton>
                         </div>
-                        <Comments :post="post"></Comments>
+                        <Comments :post="getPost" ></Comments>
                         <div class="d-flex flex-column w-100 m-0 border-top position-absolute" style="bottom: 0;left: 0;">
                             <div class="box-post-action p-2 w-100 bg-white">
                                 <div class="icon-button d-flex">
-                                    <LikeButton :post="post" @add-like="addLike"
+                                    <LikeButton :post="getPost" @add-like="addLike"
                                                 @minus-like="minusLike"></LikeButton>
                                     <a href="#comment"><i class="far fa-comment ml-2"
                                                           style="color: #212529; font-size: 25px"></i></a>
-                                    <ShareButton :post="post"></ShareButton>
+                                    <ShareButton :post="getPost"></ShareButton>
                                 </div>
                                 <div class="info-post pt-2 d-flex flex-column">
                                     <strong class="d-flex">{{ formatNumber(likesCount) }} &nbsp
-                                        <ShowUserButton :action="`${auth_data.baseUrl}/api/p/${post.id}/likes`" title="Likes" text="Likes"></ShowUserButton>
+                                        <ShowUserButton :action="`${auth_data.baseUrl}/api/p/${getPost.id}/likes`" title="Likes" text="Likes"></ShowUserButton>
                                     </strong>
-                                    <span>{{ formatTime(post.created_at) }}</span>
+                                    <span>{{ formatTime(getPost.created_at) }}</span>
                                 </div>
                             </div>
 
-                            <CommentForm :post="post" class="border-top p-2 w-100 bg-white"></CommentForm>
+                            <CommentForm :post="getPost" class="border-top p-2 w-100 bg-white"></CommentForm>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div v-if="isLoading" :class="{loading: true, show: isLoading}">
+        <div v-if="!getPost" :class="{loading: true, show: isLoading}">
             <div class="spinner-border" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
@@ -68,7 +70,6 @@
 </template>
 
 <script>
-import $ from 'jquery';
 import CommentForm from "./Comments/CommentForm";
 import Comments from "./Comments/Comments";
 import LikeButton from "./Buttons/LikeButton";
@@ -76,29 +77,35 @@ import SettingButton from "./Buttons/SettingButton";
 import ShareButton from "./Buttons/ShareButton";
 import ShowUserButton from "../User/Buttons/ShowUserButton";
 import {getImage,formatNumber,formatTime} from "../../functiton";
+import {mapActions, mapGetters} from "vuex";
 export default {
     components: {CommentForm,Comments,LikeButton,SettingButton,ShareButton,ShowUserButton},
     name: "PostShow",
-    props:['user','postId'],
+    props : ['post'],
     data(){
         return{
-            post : null,
-            auth_user : null,
             auth_data : window.Laravel,
             likesCount : 0,
             isLoading : true,
         }
     },
     created() {
-        this.checkJsonUser();
-        this.fetchPost();
+        let postId = this.$route.params.id ? this.$route.params.id : this.post.id
+        this.fetchPost(postId).then(e => {
+            this.likesCount = this.getPost.likes_count;
+        });
     },
     mounted() {
         Bus.$on('update-post',post => {
-            this.post = post;
+
         })
     },
+    computed:{
+      ...mapGetters('user',['getAuth']),
+      ...mapGetters('post',['getPost']),
+    },
     methods:{
+        ...mapActions('post',['fetchPost']),
         getImage,formatNumber,formatTime,
         addLike(){
             this.likesCount++;
@@ -106,24 +113,6 @@ export default {
         minusLike(){
             this.likesCount--;
         },
-        checkJsonUser(){
-            try {
-                this.auth_user = JSON.parse(this.user)
-            }catch (e){
-                this.auth_user = this.user;
-            }
-        },
-        fetchPost(){
-            this.isLoading = true;
-            axios.get(`${this.auth_data.baseUrl}/api/p/${this.postId}?api_token=${this.auth_data.api_token}`)
-                .then(res => {
-                    this.post = res.data;
-                    this.likesCount = res.data.likes_count;
-                    this.isLoading = false;
-                })
-                .catch(e => {
-                });
-        }
     }
 }
 </script>

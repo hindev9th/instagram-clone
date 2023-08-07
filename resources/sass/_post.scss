@@ -61,23 +61,29 @@ input.comment:focus {
             .user{
                 display: flex;
                 justify-content: space-between;
+                align-items: start;
             }
         }
         &.small{
             max-height: 300px;
             max-width: 470px;
+            padding: 10px;
             margin: 0 auto;
+            .box-user{
+                display: none;
+            }
             .suggested-users{
                 display: flex;
                 width: 100%;
                 overflow-y: auto;
                 .user{
                     min-width: 130px;
-                    padding: 20px;
+                    min-height: 190px;
+                    padding: 20px 0;
                     flex-direction: column;
                     border: $border-base;
                     border-radius: 10px;
-                    align-items: center;
+
                 }
                 .user:not(:first-of-type){
                     margin-left: 10px;
@@ -88,7 +94,7 @@ input.comment:focus {
                     padding-bottom: 15px;
                 }
                 .avatar{
-                    margin: 0;
+                    margin: 0 0 10px;
                     min-width: 55px;
                     min-height: 55px;
                 }
@@ -190,9 +196,6 @@ input.comment:focus {
         }
         .box-interact{
             padding: 0 15px;
-        }
-        .remember{
-            padding: 0;
         }
     }
     .post-show{

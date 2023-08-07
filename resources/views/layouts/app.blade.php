@@ -32,6 +32,7 @@
 </head>
 <body>
 <div id="app">
+    <div id="notify" class="p-3 d-flex flex-column"></div>
     @yield('content')
 </div>
 </body>

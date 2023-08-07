@@ -55,6 +55,7 @@
 <script>
 import {getImage} from "../../../functiton";
 import $ from "jquery";
+import {mapActions} from "vuex";
 export default {
     name: "ModalEditPost",
     props: ['post','user'],
@@ -68,11 +69,15 @@ export default {
             auth_data : window.Laravel,
         }
     },
+    computed:{
+
+    },
     mounted() {
         this.url = `${window.Laravel.baseUrl}/storage/${this.post.image}`;
     },
     methods: {
         getImage,
+        ...mapActions('post',['updatePost']),
         onFileChange(e) {
             const file = e.target.files[0];
             this.url = URL.createObjectURL(file);
@@ -84,32 +89,24 @@ export default {
             this.isLoading = true;
 
             let formData = new FormData();
-            formData.append('_token', this.auth_data.csrf_token);
             formData.append('_method', 'PATCH');
             formData.append('caption', this.inputCaption);
             if (this.file != null){
                 formData.append('image', this.file);
             }
 
-            const config = {
-                headers: {
-                    'content-type': 'multipart/form-data',
-                }
-            }
 
-            axios.post(`${this.auth_data.baseUrl}/api/p/${this.post.id}?api_token=${this.auth_data.api_token}`,formData,config)
-                .then(res => {
-                    this.isLoading = false;
-                    Bus.$emit('update-post',res.data);
-                    $('#modal-edit-post').modal('hide');
-                    this.$emit('close-modal');
-                    this.url = '';
-                    this.inputCaption = '';
-                    this.file = null;
-                })
-                .catch(e =>{
-                    this.isLoading = false;
-                })
+            this.updatePost({id : this.post.id,post : formData}).then(e => {
+                this.isLoading = false;
+                $('#modal-edit-post').modal('hide');
+                this.$emit('close-modal');
+                this.url = '';
+                this.inputCaption = '';
+                this.file = null;
+            }).catch(e => {
+                this.isLoading = false;
+            })
+
         },
         change(){
             this.isChange = this.inputCaption === this.post.caption;

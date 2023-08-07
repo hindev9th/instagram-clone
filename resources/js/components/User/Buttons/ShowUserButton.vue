@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span class="pr-2 font-weight-bold cursor-pointer prevent-select" @click="hideAndShowModal" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#modal-users" v-text="text"></span>
+        <span class="font-weight-bold cursor-pointer prevent-select" @click="hideAndShowModal" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#modal-users" v-text="text"></span>
         <ModalUsers v-if="isShow" @close-modal="hideAndShowModal" :title="title" :action="action"></ModalUsers>
     </div>
 </template>

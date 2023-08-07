@@ -1,5 +1,5 @@
 <template>
-    <span class="pr-2 focus-none cursor-pointer prevent-select" @click="followUser" v-text="buttonText" style="height: fit-content"></span>
+    <span class="focus-none cursor-pointer prevent-select" @click="followUser" v-text="buttonText" style="height: fit-content"></span>
 </template>
 <script>
     export default {
