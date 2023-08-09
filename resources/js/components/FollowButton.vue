@@ -2,13 +2,11 @@
     <span class="focus-none cursor-pointer prevent-select" @click="followUser" v-text="buttonText" style="height: fit-content"></span>
 </template>
 <script>
+    import $api from "../api";
+    import {RESOURCE_FOLLOWS} from "../api/followApi";
+
     export default {
-        props: ['userId','follows'],
-
-        mounted(){
-
-        },
-
+        props: ['username','follows'],
         data : function (){
             return {
                 status : this.follows,
@@ -16,18 +14,17 @@
             }
         },
         methods: {
-            followUser() {
-                axios.post(`${this.auth_data.baseUrl}/api/follow/${this.userId}?api_token=${this.auth_data.api_token}`,{
-                    _token : this.auth_data.csrf_token,
-                }).then(response => {
-                    this.status = !this.status;
-                    this.$emit('follow',this.status);
-                })
-                .catch(errors => {
-                    if (errors.response.status === 401){
-                        window.location = '/login';
-                    }
-                });
+            async followUser() {
+                await $api.post(`${RESOURCE_FOLLOWS}/${this.username}`)
+                    .then(res => {
+                        this.status = !this.status;
+                        this.$emit('follow', this.status);
+                    })
+                    .catch(errors => {
+                        if (errors.response.status === 401) {
+                            window.location = '/login';
+                        }
+                    });
             }
         },
         computed : {

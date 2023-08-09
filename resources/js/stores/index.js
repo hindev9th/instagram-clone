@@ -3,6 +3,7 @@ import userStore from "./userStore";
 import postStore from "./postStore";
 import chatStore from "./chatStore";
 import profileStore from "./profileStore";
+import commentStore from "./commentStore";
 
 const index = new Vuex.Store({
     modules: {
@@ -10,6 +11,7 @@ const index = new Vuex.Store({
         post : postStore,
         chat : chatStore,
         profile : profileStore,
+        comment : commentStore,
     }
 });
 

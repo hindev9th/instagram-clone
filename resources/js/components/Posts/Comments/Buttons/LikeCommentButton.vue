@@ -5,6 +5,9 @@
 </template>
 
 <script>
+import $api from "../../../../api";
+import {RESOURCE_LIKES} from "../../../../api/likeApi";
+
 export default {
     name: "LikeCommentButton",
     props: ['comment'],
@@ -23,9 +26,8 @@ export default {
         likeComment(event) {
             this.toggleClass(event);
             this.status = !this.status;
-            axios.post(`${this.auth_data.baseUrl}/api/p/comment/${this.comment.id}/likes?api_token=${this.auth_data.api_token}`,{
-                _token : this.auth_data.csrf_token,
-            }).then(response => {
+            $api.post(`${RESOURCE_LIKES}/comment/${this.comment.id}`)
+                .then(response => {
                     response.data.attached.length ? this.$emit('add-like') : this.$emit('minus-like');
                 }
             );

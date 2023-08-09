@@ -35,10 +35,23 @@ const postStore = {
         ADD_POSTS_SUG(state,posts){
             posts.data.forEach(e => state.postsSug.data.push(e));
         },
+        ADD_NEW_POST(state,post){
+            if (state.posts == null){
+                state.posts = {
+                    last_page : 1,
+                    total : 1,
+                    to: 1,
+                    data : [
+                        post,
+                    ]
+                }
+            }else {
+                state.posts.data.unshift(post);
+            }
+        },
         UPDATE_POST(state,post){
             if (state.posts != null){
                 for (let index in state.posts.data){
-                    console.log("index1");
                     if (state.posts.data[index].id === post.id){
                         state.posts.data.splice(index,1,post);
                         break;
@@ -54,17 +67,38 @@ const postStore = {
                     }
                 }
             }
+            if (state.post != null){
+                state.post = post;
+            }
+        },
+        DELETE_POST(state,id){
+            if (state.posts != null){
+                for (let index in state.posts.data){
+                    if (state.posts.data[index].id === id){
+                        state.posts.data.splice(index,1);
+                        break;
+                    }
+                }
+            }
+            if (state.postsOld != null){
+                for (let index in state.postsOld.data){
+
+                    if (state.postsOld.data[index].id === id){
+                        state.postsOld.data.splice(index,1);
+                        return;
+                    }
+                }
+            }
             if (state.postsSug != null){
                 for (let index in state.postsSug.data){
-                    console.log("index1s");
-                    if (state.postsSug.data[index].id === post.id){
-                        state.postsSug.data.splice(index,1,post);
+                    if (state.postsSug.data[index].id === id){
+                        state.postsSug.data.splice(index,1);
                         break;
                     }
                 }
             }
             if (state.post != null){
-                state.post = post;
+                this.$router.push({name : 'home'});
             }
         }
     },
@@ -119,6 +153,15 @@ const postStore = {
                     commit('FETCH_POST',res.data);
                 })
         },
+        async addPost({commit},post){
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data',
+                }
+            }
+            let response = await $api.post(`${RESOURCE_POSTS}`,post,config);
+            commit('ADD_NEW_POST',response.data);
+        },
         async updatePost({commit}, {id, post}){
             const config = {
                 headers: {
@@ -130,6 +173,12 @@ const postStore = {
                 .then(res => {
                     commit('UPDATE_POST', res.data);
                 })
+        },
+        async deletePost({commit},id){
+            await $api.post(`${RESOURCE_POSTS}/${id}`,{
+                _method : 'DELETE',
+            });
+            commit('DELETE_POST',id);
         }
 
 

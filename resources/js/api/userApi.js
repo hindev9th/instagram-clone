@@ -1,9 +1,9 @@
 const AUTH_USER = '/api/user';
-const SUGGESTED_USER = '/api/user/suggested';
-const SEARCH_USER = '/api/user/search';
+const USER_SUGGESTED = '/api/user/suggested';
+const USER_SEARCH = '/api/user/search';
 
 export {
     AUTH_USER,
-    SUGGESTED_USER,
-    SEARCH_USER,
+    USER_SUGGESTED,
+    USER_SEARCH,
 };

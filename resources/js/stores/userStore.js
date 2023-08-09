@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import {AUTH_USER,SUGGESTED_USER,SEARCH_USER} from "../api/userApi";
+import {AUTH_USER,USER_SUGGESTED} from "../api/userApi";
 import $api from "../api";
 
 Vue.use(Vuex);
@@ -30,22 +30,15 @@ const userStore = {
     },
     actions : {
         async fetchAuth({commit}){
-            await $api.get(AUTH_USER)
-                .then(res => {
-                    commit('FETCH_AUTH',res.data);
-                })
+            let auth = await $api.get(AUTH_USER)
+            commit('FETCH_AUTH',auth.data);
         },
         async fetchSuggested({commit}){
-            await $api.get(SUGGESTED_USER)
-                .then(res =>{
-                    commit('FETCH_SUGGESTED',res.data);
-                })
+            let users = await $api.get(USER_SUGGESTED)
+            commit('FETCH_SUGGESTED',users.data);
         },
-        async logOut({commit}){
+        async logOut({}){
             await $api.post('/logout')
-                .then(res => {
-                    location.reload();
-                })
         }
     }
 }

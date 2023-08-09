@@ -31,7 +31,7 @@ import Post from "./Post";
 import {mapActions, mapGetters} from 'vuex';
 import SuggestedUsers from "../User/SuggestedUsers";
 import ShowUserButton from "../User/Buttons/ShowUserButton";
-import {SUGGESTED_USER} from "../../api/userApi";
+import {USER_SUGGESTED} from "../../api/userApi";
 export default {
     components : {Post,SuggestedUsers,ShowUserButton},
     name: "PostsList",
@@ -42,7 +42,7 @@ export default {
             page_sug: 1,
             isLoading : false,
             isShowMessageEnd : false,
-            sug_user: SUGGESTED_USER,
+            sug_user: USER_SUGGESTED,
         }
     },
     created() {

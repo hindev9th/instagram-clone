@@ -5,7 +5,7 @@
                 <label for="comment" class="m-0" v-html="extractTagsFromString(`Replying to @${replyComment.user.username} comment`)"></label>
                 <span class="text-primary prevent-select cursor-pointer" @click="cancelReply" >Cancel</span>
             </div>
-            <form method="post" @submit.prevent="addComment">
+            <form method="post" @submit.prevent="addHandle">
                 <div class="d-flex">
                     <input id="comment" type="text"
                            class="comment form-control border-0 p-0"
@@ -26,6 +26,7 @@
 
 <script>
 import {extractTagsFromString} from "../../../functiton";
+import {mapActions} from "vuex";
 export default {
     name: "CommentForm",
     props : ['post'],
@@ -52,27 +53,28 @@ export default {
             }
       });
     },
+    computed:{
+
+    },
     methods:{
+        ...mapActions('comment',['addComment']),
         extractTagsFromString,
-        addComment(){
+        addHandle(){
             let data = new FormData();
             data.append('_token',this.auth_data.csrf_token);
             data.append('comment',this.strComment);
             if (this.replyComment != null){
-                data.append('parent_id',this.replyComment.id);
+                data.append('parent_id',this.replyComment.parent_id != null ? this.replyComment.parent_id : this.replyComment.id );
             }
 
 
             this.isSending = true
-            axios.post(`${this.auth_data.baseUrl}/api/p/${this.post.id}/comments?api_token=${this.auth_data.api_token}`,data)
+            this.addComment({postId : this.post.id,formData : data})
                 .then(res =>{
                     this.strComment = '';
                     this.isSending = false;
                     if (this.replyComment != null){
-                        Bus.$emit(`reply-comment`,res.data);
                         this.cancelReply();
-                    }else {
-                        Bus.$emit(`new-comment-${this.post.id}`,res.data);
                     }
                 })
                 .catch(e =>{

@@ -49,7 +49,7 @@
                     </button>
                     <div class="modal-body p-0">
                         <ul class="list-unstyled text-center m-0">
-                            <li class="hover-dark-20 p-2 border-bottom text-danger font-weight-bold" @click="deletePost">Delete</li>
+                            <li class="hover-dark-20 p-2 border-bottom text-danger font-weight-bold" @click="deletePostHandle">Delete</li>
                             <li class="hover-dark-20 p-2 border-bottom" @click="hideModalConfirm" data-dismiss="modal">Cancel</li>
                         </ul>
                     </div>
@@ -67,7 +67,7 @@
     import ModalEditPost from "../Modals/ModalEditPost";
     import FollowButton from "../../FollowButton";
     import {showNotify} from "../../../functiton";
-    import {mapGetters} from "vuex";
+    import {mapActions, mapGetters} from "vuex";
 export default {
     components : {ModalShare,ModalEditPost,FollowButton},
     name: "SettingButton",
@@ -91,6 +91,7 @@ export default {
     },
     methods: {
         showNotify,
+        ...mapActions('post',['deletePost']),
         showModal() {
             this.isShow = !this.isShow;
         },
@@ -148,21 +149,17 @@ export default {
         aboutThisAccount(){
             this.$router.push({name : 'profile', params : {username : this.post.user.username}});
         },
-        deletePost(){
-            axios.post(`${this.auth_data.baseUrl}/api/p/${this.post.id}?api_token=${this.auth_data.api_token}`,
-                {
-                    _token : this.auth_data.csrf_token,
-                    _method : 'DELETE',
-                })
-            .then(response => {
-                Bus.$emit('delete-post',this.post);
+        deletePostHandle(){
+            this.deletePost(this.post.id).then(response => {
                 this.hideModalConfirm();
                 $('#modal-confirm-'+this.post.id).modal('hide');
                 $('.modal-backdrop').remove();
                 this.showNotify('Delete post success.');
             })
             .catch(error => {
-                console.log('error')
+                this.hideModalConfirm();
+                $('#modal-confirm-'+this.post.id).modal('hide');
+                $('.modal-backdrop').remove();
                 this.showNotify('Error! cannot delete post.');
             })
         },

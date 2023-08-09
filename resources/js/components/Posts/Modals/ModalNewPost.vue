@@ -52,9 +52,9 @@
 </template>
 
 <script>
-import {getImage} from "../../../functiton";
+import {getImage,showNotify} from "../../../functiton";
 import $ from 'jquery';
-import {mapGetters} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 export default {
     name: "ModalNewPost",
     data() {
@@ -70,7 +70,8 @@ export default {
         ...mapGetters('user',['getAuth']),
     },
     methods: {
-        getImage,
+        getImage,showNotify,
+        ...mapActions('post',['addPost']),
         onFileChange(e) {
             const file = e.target.files[0];
             this.url = URL.createObjectURL(file);
@@ -83,27 +84,21 @@ export default {
             this.isLoading = true;
 
             let formData = new FormData();
-            formData.append('_token', this.auth_data.csrf_token);
             formData.append('image', this.file);
             formData.append('caption', this.inputCaption);
 
-            const config = {
-                headers: {
-                    'content-type': 'multipart/form-data',
-                }
-            }
-
-            axios.post(`${this.auth_data.baseUrl}/api/p?api_token=${this.auth_data.api_token}`,formData,config)
-            .then(res => {
+            this.addPost(formData)
+                .then(() => {
                 this.isLoading = false;
-                Bus.$emit('new-post',res.data);
                 $('#modal-new-post').modal('hide');
 
+                this.showNotify('Create post success');
                 this.url = '';
                 this.inputCaption = '';
                 this.file = null;
             })
             .catch(e =>{
+                this.showNotify('Create post fail');
                 this.isLoading = false;
             })
         }

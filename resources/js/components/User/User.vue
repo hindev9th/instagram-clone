@@ -13,9 +13,9 @@
                 <span class="text-black-50" style="font-size: 10px">{{ user.name }}</span>
             </div>
         </div>
-        <follow-button :user-id="user.id"
+        <follow-button :username="user.username"
                        :follows="user.isFollowed"
-                       v-if="user.api_token !== auth_data.api_token"
+                       v-if="user.id !== auth.id"
                        class="text-primary"></follow-button>
     </div>
 </template>
@@ -23,6 +23,7 @@
 <script>
 import FollowButton from "../FollowButton";
 import {getImage} from "../../functiton";
+import {mapGetters} from "vuex";
 export default {
     components : {FollowButton},
     name: "User",
@@ -31,6 +32,11 @@ export default {
         return{
             auth_data : window.Laravel,
         }
+    },
+    computed:{
+        ...mapGetters('user',{
+            auth : 'getAuth',
+        })
     },
     methods:{
         getImage,

@@ -32,22 +32,16 @@ const profileStore = {
     },
     actions :{
         async fetchProfile({commit},username){
-            await $api.get(`${RESOURCE_PROFILES}/${username}`)
-                .then(res =>{
-                    commit('FETCH_PROFILE',res.data);
-                })
+            let profile = await $api.get(`${RESOURCE_PROFILES}/${username}`)
+            commit('FETCH_PROFILE',profile.data);
         },
         async fetchPosts({commit}, username){
-            await $api.get(`${PROFILES_POSTS}/${username}`)
-                .then(res =>{
-                    commit('FETCH_POSTS',res.data);
-                })
+            let posts = await $api.get(`${PROFILES_POSTS}/${username}`)
+            commit('FETCH_POSTS',posts.data);
         },
         async fetchMorePosts({commit}, {username, page}){
-            await $api.get(`${PROFILES_POSTS}/${username}?page=${page}`)
-                .then(res =>{
-                    commit('ADD_POSTS',res.data);
-                })
+            let posts =  await $api.get(`${PROFILES_POSTS}/${username}?page=${page}`)
+            commit('ADD_POSTS',posts.data);
         },
     }
 };

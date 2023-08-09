@@ -26,7 +26,7 @@ Route::middleware('auth:api')->prefix('/')->group(function (){
     Route::prefix('/user')->group(function (){
         Route::get('/',[UserController::class,'auth'])->name('user.auth');
         Route::get('/suggested',[UserController::class,'suggested'])->name('user.suggested');
-        Route::get('/s/{search}',[UserController::class,'search']);
+        Route::get('/search/{search}',[UserController::class,'search']);
 
     });
 
@@ -38,7 +38,7 @@ Route::middleware('auth:api')->prefix('/')->group(function (){
     });
 
     // Follow
-    Route::prefix('/follow')->group(function (){
+    Route::prefix('/follows')->group(function (){
         Route::post('/{user:username}', [FollowsController::class,'store'])->name('follow.store');
         Route::get('/{user:username}/followers',[FollowsController::class,'followers'])->name('follow.followers');
         Route::get('/{user:username}/following',[FollowsController::class,'following'])->name('follow.following');
@@ -55,24 +55,23 @@ Route::middleware('auth:api')->prefix('/')->group(function (){
         Route::delete('/{post}',[PostsController::class,'destroy'])->name('post.destroy');
     });
 
-    Route::prefix('/p')->group(function (){
-
-        // Comments post
-        Route::get('/{post}/comments',[CommentsController::class,'index']);
-        Route::post('/{post}/comments',[CommentsController::class,'store']);
-
-        Route::patch('/comments/{comment}',[CommentsController::class,'update']);
-        Route::delete('/comments/{comment}',[CommentsController::class,'destroy']);
-        // Comment replies
+    Route::prefix('/comments')->group(function (){
+        Route::get('/{post}',[CommentsController::class,'index']);
         Route::get('/{comment}/replies',[CommentsController::class,'loadReplies']);
+        Route::post('/{post}',[CommentsController::class,'store']);
+        Route::patch('/{comment}',[CommentsController::class,'update']);
+        Route::delete('/{comment}',[CommentsController::class,'destroy']);
+
+    });
+    Route::prefix('/likes')->group(function (){
 
         // Likes post
-        Route::get('/{post}/likes',[LikesController::class,'index'])->name('likes.index');
-        Route::post('/{post}/likes',[LikesController::class,'store'])->name('likes.store');
+        Route::get('/post/{post}',[LikesController::class,'index'])->name('likes.index');
+        Route::post('/post/{post}',[LikesController::class,'store'])->name('likes.store');
 
         // Likes Comment
-        Route::get('/comment/{comment}/likes',[LikesController::class,'loadUserLikeComment'])->name('likes.comment.index');
-        Route::post('/comment/{comment}/likes',[LikesController::class,'commentStore'])->name('likes.comment.store');
+        Route::get('/comment/{comment}',[LikesController::class,'loadUserLikeComment'])->name('likes.comment.index');
+        Route::post('/comment/{comment}',[LikesController::class,'commentStore'])->name('likes.comment.store');
     });
 
 

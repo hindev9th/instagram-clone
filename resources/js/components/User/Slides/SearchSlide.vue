@@ -1,5 +1,5 @@
 <template>
-    <div class="search-slide">
+    <div class="search-slide shadow-lg border-right">
         <h1 class="text-left title">Search</h1>
         <div class="input-group mb-0 border bg-white">
             <input type="text" id="input-search" class="form-control border-0 focus-none" v-model="text_search" @input="searchUsers"
@@ -20,6 +20,8 @@
 
 <script>
 import User from "../User";
+import $api from "../../../api";
+import {USER_SEARCH} from "../../../api/userApi";
 export default {
     components : {User},
     name: "SearchSlide",
@@ -35,10 +37,10 @@ export default {
         clearText(){
             this.text_search = '';
         },
-        searchUsers() {
+        async searchUsers() {
             if (this.text_search.length > 2) {
                 this.isLoading = true;
-                axios.get(`${this.auth_data.baseUrl}/api/user/s/${this.text_search}?api_token=${this.auth_data.api_token}`)
+                await $api.get(`${USER_SEARCH}/${this.text_search}`)
                     .then(response => {
                         this.users = response.data;
                         this.isLoading = false;

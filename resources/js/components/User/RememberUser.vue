@@ -18,7 +18,7 @@
                     <span class="name">{{ auth.name }}</span>
                 </div>
             </div>
-            <div class="logout cursor-pointer prevent-select text-primary" @click="logOut()">
+            <div class="logout cursor-pointer prevent-select text-primary" @click="logOutAccount()">
                 Logout
             </div>
         </div>
@@ -35,14 +35,14 @@ import ShowUserButton from "./Buttons/ShowUserButton";
 import SuggestedUsers from "./SuggestedUsers";
 import {mapActions, mapGetters} from "vuex";
 import {getImage} from "../../functiton";
-import {SUGGESTED_USER} from "../../api/userApi";
+import {USER_SUGGESTED} from "../../api/userApi";
 
 export default {
     components : {SuggestedUsers,ShowUserButton},
     name: "RememberUser",
     data(){
         return{
-            sug_user : SUGGESTED_USER,
+            sug_user : USER_SUGGESTED,
         }
     },
     computed:{
@@ -53,6 +53,9 @@ export default {
     methods:{
         ...mapActions('user',['logOut']),
         getImage,
+        logOutAccount(){
+            this.logOut().then(window.location.reload())
+        }
 
     }
 }

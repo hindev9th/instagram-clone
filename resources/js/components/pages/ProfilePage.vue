@@ -2,7 +2,7 @@
     <div class="box-main">
         <div class="container profile">
             <div class="box-info-user d-flex pb-5 border-bottom" v-if="getProfile.profile">
-                <div class="pr-2">
+                <div class="pr-4">
                     <img
                         :src="getImage(getProfile.profile.image)"
                         width="200px"
@@ -21,7 +21,7 @@
                                    style="height: fit-content;"
                                    title="Edit profile">Edit profile</a>
                                 <div v-else>
-                                    <follow-button :user-id="getProfile.id" :follows="getProfile.isFollowed" class="btn btn-primary text-right"></follow-button>
+                                    <follow-button :username="getProfile.username" :follows="getProfile.isFollowed" class="btn btn-primary text-right"></follow-button>
                                     <router-link class="btn btn-primary ml-2" :to="{name : 'chat'}">
                                         Message
                                     </router-link>
@@ -33,12 +33,12 @@
                         <div class="row pb-3">
                             <div class="pr-5"><strong>{{ getProfile.posts_count }}</strong> posts</div>
                             <div class="pr-5 d-flex"><strong>{{ getProfile.followers_count }}</strong> &nbsp
-                                <show-user-button action="#"
+                                <show-user-button :action="`${resource_follows}/${getProfile.username}/followers`"
                                                   title="followers"
                                                   text="followers"></show-user-button>
                             </div>
                             <div class="pr-5 d-flex"><strong>{{ getProfile.following_count }}</strong> &nbsp
-                                <show-user-button action="#"
+                                <show-user-button :action="`${resource_follows}/${getProfile.username}/following`"
                                                   title="following"
                                                   text="following"></show-user-button>
                             </div>
@@ -53,9 +53,15 @@
                 <div class="tab-pane active " id="POSTS" v-if="getPosts">
                     <div class="row" >
                         <div class="col-4 p-1" v-for="post in getPosts.data" >
-                            <a href="#">
-                                <img :src="`/storage/${post.image}`" class="w-100" alt="">
-                            </a>
+                            <span @click="showPost(post.id)"
+                                  data-toggle="modal"
+                                  data-backdrop="static"
+                                  data-keyboard="false"
+                                  data-target="#modal-post-show">
+                                <img :src="`${baseUrl}/storage/${post.image}`" class="w-100" alt="">
+                            </span>
+                            <modal-post-show :post="post" v-if="post.id === indexShowPost" @close-modal="hidePost"></modal-post-show>
+
                         </div>
                     </div>
                     <infinite-loading @infinite="infiniteLoad"></infinite-loading>
@@ -68,12 +74,20 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import {getImage} from "../../functiton";
+import ModalPostShow from "../Posts/Modals/ModalPostShow";
+import FollowButton from "../FollowButton";
+import ShowUserButton from "../User/Buttons/ShowUserButton";
+import {RESOURCE_FOLLOWS} from "../../api/followApi";
 
 export default {
+    components : {ModalPostShow,FollowButton,ShowUserButton},
     name: "ProfilePage",
     data(){
         return{
             page : 1,
+            indexShowPost : null,
+            baseUrl : Laravel.baseUrl,
+            resource_follows : RESOURCE_FOLLOWS,
         }
     },
     created() {
@@ -99,6 +113,12 @@ export default {
                 });
             },1000)
 
+        },
+        showPost(index){
+            this.indexShowPost = index;
+        },
+        hidePost(){
+            this.indexShowPost = null;
         }
     }
 }

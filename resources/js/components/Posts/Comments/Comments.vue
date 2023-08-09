@@ -17,21 +17,25 @@
                 </div>
             </div>
         </div>
-        <Comment :comment="comment" v-for="comment in comments" :key="comment.id"></Comment>
-        <span class="text-primary prevent-select cursor-pointer text-center m-3" @click="showMore" v-if="isShowMore">Show more</span>
+        <div v-if="getComments">
+            <Comment :comment="comment" v-for="comment in getComments.data"  :key="comment.id"></Comment>
+            <infinite-loading @infinite="infiniteHandle"></infinite-loading>
+        </div>
     </div>
 </template>
 
 <script>
 import {getImage,formatTime} from "../../../functiton";
 import Comment from './Comment.vue';
+import {mapActions, mapGetters} from "vuex";
+import $api from "../../../api";
 export default {
     components: {Comment},
     name: "Comments",
     props: ['post'],
     data(){
         return{
-            comments : [],
+            comments : null,
             isLoading : false,
             auth_data : window.Laravel,
             page : 1,
@@ -39,48 +43,26 @@ export default {
         }
     },
     created() {
-        this.fetchComments();
-    },
-    mounted() {
-        Bus.$on(`new-comment-${this.post.id}`, comment =>{
-            this.comments.push(comment);
-        });
+        this.fetchComments({postId : this.post.id,page: this.page}).then(e => {
 
-        Bus.$on('delete-comment', comment => {
-            this.deleteComment(comment);
-        })
+        });
+    },
+    computed:{
+        ...mapGetters('comment',['getComments'])
     },
     methods:{
         getImage,formatTime,
-        fetchComments(){
-            this.isLoading = true;
-            axios.get(`${this.auth_data.baseUrl}/api/p/${this.post.id}/comments?api_token=${this.auth_data.api_token}`)
-            .then(res =>{
-                this.comments = res.data.data;
-                this.isShowMore = res.data.data.length < res.data.total;
-                this.isLoading = false;
-            })
-            .catch(e =>{
-                this.isLoading = false;
-            })
-        },
-        showMore(){
+        ...mapActions('comment',['fetchComments']),
+        infiniteHandle($state){
             this.page++;
-            axios.get(`${this.auth_data.baseUrl}/api/p/${this.post.id}/comments?api_token=${this.auth_data.api_token}&page=${this.page}`)
-                .then(res =>{
-                    res.data.data.forEach(e => this.comments.push(e));
-                    this.isShowMore = this.comments.length < res.data.total;
-                })
-                .catch(e =>{
-                })
-        },
-        deleteComment(cmt){
-            for (var index in this.comments){
-                if (this.comments[index].id === cmt.id){
-                    this.$delete(this.comments,index);
-                    break;
+            this.fetchComments({postId: this.post.id, page: this.page})
+            .then(e =>{
+                if (this.page >= this.getComments.last_page){
+                    $state.complete();
+                }else {
+                    $state.loaded();
                 }
-            }
+            })
         }
     }
 }

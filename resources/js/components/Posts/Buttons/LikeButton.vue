@@ -5,6 +5,9 @@
 </template>
 
 <script>
+import $api from "../../../api";
+import {RESOURCE_LIKES} from "../../../api/likeApi";
+
 export default {
     props: ['post',],
     mounted() {
@@ -22,9 +25,9 @@ export default {
         likePost(event) {
             this.toggleClass(event);
             this.status = !this.status;
-            axios.post(`${this.auth_data.baseUrl}/api/p/${this.post.id}/likes?api_token=${this.auth_data.api_token}`,{
-                _token : this.auth_data.csrf_token,
-            }).then(response => {
+
+            $api.post(`${RESOURCE_LIKES}/post/${this.post.id}`)
+                .then(response => {
                     response.data.attached.length ? this.$emit('add-like') : this.$emit('minus-like');
                 }
             );

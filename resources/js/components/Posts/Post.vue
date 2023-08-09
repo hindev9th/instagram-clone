@@ -33,7 +33,7 @@
                     </div>
                     <div class="info-post pt-2 d-flex flex-column">
                         <strong class="d-flex">{{ formatNumber(likesCount) }} &nbsp
-                            <ShowUserButton :action="`${base_url}/api/p/${post.id}/likes`" title="Likes" text="Likes"></ShowUserButton>
+                            <ShowUserButton :action="`${RESOURCE_LIKES}/post/${post.id}`" title="Likes" text="Likes"></ShowUserButton>
                         </strong>
                     </div>
                     <div class="row m-0 pt-2 pb-2">
@@ -62,6 +62,7 @@ import ShareButton from "./Buttons/ShareButton";
 import ShowUserButton from "../User/Buttons/ShowUserButton";
 import Comment from "./Comments/Comment";
 import {mapGetters} from "vuex";
+import {RESOURCE_LIKES} from "../../api/likeApi";
 export default {
     components: {LikeButton,CommentButton,SettingButton,CommentForm,ShareButton,ShowUserButton,Comment},
     name: "Post",
@@ -72,6 +73,7 @@ export default {
             likesCount : this.post.likes_count,
             commentsCount : this.post.comments_count,
             newComments : [],
+            RESOURCE_LIKES : RESOURCE_LIKES,
         }
     },
 

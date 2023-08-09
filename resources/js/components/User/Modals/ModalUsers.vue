@@ -34,7 +34,6 @@ export default {
         return  {
             users: null,
             page : 0,
-            api_token: window.Laravel.api_token,
             isShowMore: false,
         }
     },

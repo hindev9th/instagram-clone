@@ -11,8 +11,7 @@ class CommentsController extends Controller
 {
     public function index(Post $post)
     {
-        return Comment::where('post_id',$post->id)->whereNull('parent_id')->withCount('likes','replies')
-            ->paginate(5);
+        return $post->comments()->withCount('likes','replies')->paginate(5);
     }
 
     public function loadReplies(Comment $comment)
