@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ChatsController;
 use App\Http\Controllers\Api\CommentsController;
 use App\Http\Controllers\Api\LikesController;
 use App\Http\Controllers\Api\MessagesController;
@@ -75,13 +76,20 @@ Route::middleware('auth:api')->prefix('/')->group(function (){
     });
 
 
-    Route::resource('chats','Api\ChatsController');
     /**
      * Chat room
      */
-    Route::prefix('c')->group(function (){
-        Route::get('message/{chat}',[MessagesController::class,'index'])->name('message.index');
-        Route::post('message/{chat}',[MessagesController::class,'store'])->name('messages.store');
+    Route::prefix('/chats')->group(function (){
+        Route::get('/',[ChatsController::class,'index']);
+        Route::post('/',[ChatsController::class,'store']);
+        Route::get('/{chat}',[ChatsController::class,'show']);
+        Route::patch('/{chat}',[ChatsController::class,'update']);
+        Route::delete('/{chat}',[ChatsController::class,'destroy']);
+    });
+
+    Route::prefix('/messages')->group(function (){
+        Route::get('/{chat}',[MessagesController::class,'index'])->name('message.index');
+        Route::post('/',[MessagesController::class,'store'])->name('messages.store');
     });
 
 });

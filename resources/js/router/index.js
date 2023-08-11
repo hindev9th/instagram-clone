@@ -1,6 +1,7 @@
 import chatRouter from "./chatRouter";
 import profileRouter from "./profileRouter";
 import postRouter from "./postRouter.";
+import messageRouter from "./messageRouter";
 
 const index = [
     {
@@ -11,5 +12,6 @@ const index = [
     ...postRouter,
     ...chatRouter,
     ...profileRouter,
+    ...messageRouter,
 ];
 export default index;

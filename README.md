@@ -39,6 +39,8 @@ PUSHER_APP_ID= your_app_id
 PUSHER_APP_KEY= your_app_key
 PUSHER_APP_SECRET= your_app_secret
 PUSHER_APP_CLUSTER= your_app_cluster
+
+run : php artisan config:clear
 ````
 Now run this command to start the project
 ````
@@ -50,4 +52,5 @@ Fake 20 rows of user and post table in db
 (Note :Before running, you have to copy the image to the "storage/app/public" folder.)
 ````
 php artisan db:seed
+php artisan storage:link
 ````

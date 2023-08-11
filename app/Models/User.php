@@ -72,7 +72,7 @@ class User extends Authenticatable
 
     public function getIsFollowedAttribute()
     {
-        return auth()->user()->following->contains($this->id);
+//        return auth()->user()->following->contains($this->id);
     }
 
     /**

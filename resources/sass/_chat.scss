@@ -15,6 +15,9 @@
     border: none;
     background-color: $body-bg;
     box-shadow: unset;
+
+}
+.message-page{
     .chat-message{
         width: 100%;
         padding: 0px;
@@ -71,6 +74,8 @@
     transition: .5s
 }
 .people-list .chat-list li {
+    display: flex;
+    flex-wrap: nowrap;
     padding: 10px 20px;
     list-style: none;
     border-radius: 3px
@@ -148,6 +153,8 @@
 
     .message-list{
         height: 100%;
+        display: flex;
+        flex-direction: column-reverse;
     }
 }
 
@@ -303,13 +310,24 @@ li.clearfix{
 }
 .box-main.chat-main{
     padding: 0;
+    max-width: 280px;
     position: fixed;
-    right: 0;
+    left: $nav-app-small-width;
     top: 0;
     height: 100%;
     .clearfix{
         height: 100%;
     }
+}
+.message-page{
+    width: calc(100% - (#{$nav-app-small-width} + 280px));
+    margin-left: auto;
+    height: 100vh;
+}
+.non-message{
+    width: calc(100% - (#{$nav-app-small-width} + 280px));
+    margin-left: auto;
+    height: 100vh;
 }
 .close-message{
     display: none;
@@ -327,10 +345,10 @@ li.clearfix{
     .chat-app .people-list.open {
         margin-left: 0
     }
-    .chat-app .chat-message{
+    .message-page .chat-message{
         margin-right: -100%;
     }
-    .chat-app .chat-message.open{
+    .message-page.chat-message.open{
         margin-right: -100%;
     }
     .chat-app .chat {

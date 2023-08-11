@@ -1,6 +1,6 @@
 <template>
     <div class="box-app">
-        <div class="menu-app" :class="[{small : $route.name === 'chat'}]">
+        <div class="menu-app" :class="[{small : $route.name === 'chat' || $route.name === 'message'}]">
             <SearchSlide></SearchSlide>
             <ul class="list-unstyled w-100">
                 <router-link
@@ -59,6 +59,14 @@
 
         <main>
             <router-view :key="$route.fullPath"></router-view>
+            <router-view :key="`${$route.fullPath}/message`" name="message"></router-view>
+            <div class="chat-messge non-message flex-column justify-content-center align-items-center" v-if="$route.name === 'chat'">
+                <i class="far fa-comment-dots icon" style="font-size: 40px"></i>
+                <h4 class="font-weight-bold">Your messages</h4>
+                <span>Send private messages to your friend or group</span>
+                <button class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-keyboard="false"
+                        data-target="#modal-new">Send message</button>
+            </div>
         </main>
     </div>
 </template>

@@ -19,7 +19,7 @@ const chatStore = {
             state.chat = chat;
         },
         ADD_CHATS(state,chat){
-            state.chats.unshift(chat);
+            state.chats.data.unshift(chat);
         }
     },
     getters :{
@@ -28,7 +28,7 @@ const chatStore = {
         },
         getChat(state){
             return state.chat;
-        }
+        },
     },
     actions : {
         async fetchChats({commit}){
@@ -37,14 +37,16 @@ const chatStore = {
                     commit('FETCH_CHATS',res.data);
                 })
         },
-        async fetchChat({commit}){
-            await $api.get(RESOURCE_CHATS)
-                .then(res =>{
-                    commit('FETCH_CHAT',res.data);
-                })
+        async fetchChat({commit},id){
+            let res = await $api.get(`${RESOURCE_CHATS}/${id}`)
+            commit('FETCH_CHAT',res.data);
+        },
+        async addNewChatHandle({commit},usersId){
+            let res = await $api.post(`${RESOURCE_CHATS}`,{users : usersId});
         },
         addNewChat({commit},chat){
             commit('ADD_CHATS',chat)
+            console.log(chat)
         }
     }
 }

@@ -104,8 +104,8 @@ export default {
         infiniteLoad($state){
             setTimeout(() => {
                 this.page++;
-                this.fetchMorePosts({'username' : this.$route.params.username , 'page' : this.page}).then(e => {
-                    if (this.page === this.getPosts.last_page){
+                this.fetchMorePosts({'username' : this.$route.params.username , 'page' : this.page}).then(() => {
+                    if (this.page >= this.getPosts.last_page ){
                         $state.complete()
                     }else {
                         $state.loaded();

@@ -67,6 +67,9 @@
 <script>
 import {getImage} from "../../../functiton";
 import {showNotify} from "../../../functiton";
+import $api from "../../../api";
+import {USER_SEARCH} from "../../../api/userApi";
+import {mapActions} from "vuex";
 export default {
     name: "ModalNewMessage",
     data() {
@@ -81,8 +84,8 @@ export default {
         }
     },
     methods: {
-        showNotify,
-        getImage,
+        showNotify,getImage,
+        ...mapActions('chat',['addNewChatHandle']),
         clearModal() {
             this.selected = []
             this.selected_id = []
@@ -92,7 +95,7 @@ export default {
         searchUsers() {
             if (this.search.length > 2) {
                 this.isSearching = true;
-                axios.get(`${this.auth_data.baseUrl}/api/user/s/${this.search}?api_token=${this.auth_data.api_token}`)
+                $api.get(`${USER_SEARCH}/${this.search}`)
                     .then(response => {
                         this.users = response.data;
                         this.isSearching = false;
@@ -102,11 +105,8 @@ export default {
         },
         createChatRoom() {
             this.isLoading = true;
-            axios.post(`${this.auth_data.baseUrl}/c`, {
-                _token: this.auth_data.csrf_token,
-                users: this.selected_id
-            }).then(response => {
-                Bus.$emit('NewChatRoom',response.data);
+            this.addNewChatHandle(this.selected_id)
+                .then(() => {
                 $('#modal-new').modal('hide');
                 this.selected = []
                 this.selected_id = []
@@ -116,6 +116,7 @@ export default {
                 showNotify('Create chat room success.');
             }).catch(e => {
                 this.isLoading = false;
+                console.log(e)
                 showNotify('Error! Cannot create chat room.');
             })
         },

@@ -1,5 +1,5 @@
 <template>
-    <div class="chat-message">
+    <div class="chat-message h-100" v-if="">
         <div class="box-message">
             <div class="chat-header border-bottom d-flex justify-content-between align-items-center">
                 <div class="close-message" @click="$emit('close-message')">
@@ -11,12 +11,12 @@
                 </div>
                 <div class="box-name">
                     <div class="avatars rounded-circle">
-                        <img :src="getImage(chatUser.profile.image)" v-if="chatUser.id !== user.id"
-                             v-for="chatUser in chat.users" class="img-avatar" alt="avatar">
+                        <img :src="getImage(user.profile.image)" v-if="user.id !== auth.id"
+                             v-for="user in chat.users" class="img-avatar" alt="avatar">
                     </div>
                     <div class="chat-about d-flex align-items-center">
                         <h4 class="name m-b-0 m-0 font-weight-bold">
-                            {{ getNames(chat.users, user) }}</h4>
+                            {{ getNames(chat.users, auth) }}</h4>
                     </div>
                 </div>
                 <div class="hidden-sm text-right">
@@ -28,34 +28,7 @@
                     <div class="spinner-border text-light"></div>
                 </div>
                 <ul class="m-b-0 m-0 p-3 message-list" id="message-list">
-                    <li class="p-5 d-flex justify-content-center align-items-center" v-if="messages.length === 0">
-                        <div class="box-name flex-column w-100 align-items-center">
-                            <div class="avatars rounded-circle" style="min-width: 100px;min-height: 100px">
-                                <img :src="getImage(chatUser.profile.image)" v-if="chatUser.id !== user.id"
-                                     v-for="chatUser in chat.users" class="img-avatar" alt="avatar">
-                            </div>
-                            <div class="chat-about p-2 d-flex align-items-center">
-                                <h4 class="name m-b-0 m-0 font-weight-bold">
-                                    {{ getNames(chat.users, user) }}</h4>
-                            </div>
-                            <a href="#input-message" class="btn btn-primary">Start chat</a>
-                        </div>
-                    </li>
-                    <li :class="{'text-right' : message.user_id === user.id}" v-for="message in messages">
-                        <div :class="'message-data d-flex '+ (message.user_id !== user.id ? '' : 'justify-content-end')">
-                            <img v-if="message.user_id !== user.id"
-                                 :src="getImage( message.user.profile.image)"
-                                 class="rounded-circle" alt="avatar">
-                            <div class="message-name d-flex flex-column pl-2">
-                                <strong v-if="message.user_id !== user.id">{{ message.user.name }}</strong>
-                                <span class="message-data-time">{{ formatTime(message.created_at) }}</span>
-                            </div>
-                        </div>
-                        <div :class="'message ' + (message.user_id !== user.id ? 'my-message' : 'other-message') ">
-                            {{ message.message }}
-                        </div>
-                    </li>
-                    <li class="typing d-flex justify-content-center" v-if="isTyping">
+                    <li class="typing d-flex justify-content-center mb-0" v-if="isTyping">
                         {{typingName}}
                         typing
                         <div id="wave">
@@ -64,12 +37,40 @@
                             <span class="dot"></span>
                         </div>
                     </li>
+                    <li class="p-5 d-flex justify-content-center align-items-center" v-if="messages.length === 0">
+                        <div class="box-name flex-column w-100 align-items-center">
+                            <div class="avatars rounded-circle" style="min-width: 100px;min-height: 100px">
+                                <img :src="getImage(chatUser.profile.image)" v-if="chatUser.id !== auth.id"
+                                     v-for="chatUser in chat.users" class="img-avatar" alt="avatar">
+                            </div>
+                            <div class="chat-about p-2 d-flex align-items-center">
+                                <h4 class="name m-b-0 m-0 font-weight-bold">
+                                    {{ getNames(chat.users, auth) }}</h4>
+                            </div>
+                            <a href="#input-message" class="btn btn-primary">Start chat</a>
+                        </div>
+                    </li>
+                    <li :class="{'text-right' : message.user_id === auth.id}" v-for="message in messages.data">
+                        <div :class="'message-data d-flex '+ (message.user_id !== auth.id ? '' : 'justify-content-end')">
+                            <img v-if="message.user_id !== auth.id"
+                                 :src="getImage( message.user.profile.image)"
+                                 class="rounded-circle" alt="avatar">
+                            <div class="message-name d-flex flex-column pl-2">
+                                <strong v-if="message.user_id !== auth.id">{{ message.user.name }}</strong>
+                                <span class="message-data-time">{{ formatTime(message.created_at) }}</span>
+                            </div>
+                        </div>
+                        <div :class="'message ' + (message.user_id !== auth.id ? 'my-message' : 'other-message') ">
+                            {{ message.message }}
+                        </div>
+                    </li>
+
                 </ul>
 
             </div>
         </div>
-        <ChatForm :chat="chat" :user="user"></ChatForm>
-        <info-slide :user="user" :chat="chat" :class="{'show':isShowInfo}" @close-info="showAndHideInfo"></info-slide>
+        <ChatForm></ChatForm>
+        <info-slide :user="auth" :chat="chat" :class="{'show':isShowInfo}" @close-info="showAndHideInfo"></info-slide>
     </div>
 
 </template>
@@ -78,15 +79,13 @@ import $ from 'jquery';
 import ChatForm from './ChatForm.vue';
 import InfoSlide from "./Slides/InfoSlide";
 import {formatTime, getImage, getNames} from "../../functiton";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
     components: {ChatForm,InfoSlide},
-    props: ['user', 'chat'],
     data() {
         return {
-            messages: [],
             mss: [],
-            auth_data: window.Laravel,
             isLoading: true,
             typingName: '',
             isTyping : false,
@@ -94,33 +93,49 @@ export default {
         }
     },
     created() {
-        Echo.private('chat.' + this.chat.id)
-            .listen('NewMessage', (e) => {
-                this.messages.push(e)
-            })
-            .listenForWhisper('typing', (e) =>{
-                this.isTyping = e.typing;
-                this.typingName = e.name;
+        this.fetchChat(this.$route.params.id).then(() => {
+            Echo.private('chat.' + this.chat.id)
+                .listen('NewMessage', (e) => {
+                    this.addNewMessage(e);
+                })
+                .listenForWhisper('typing', (e) =>{
+                    this.isTyping = e.typing;
+                    this.typingName = e.name;
 
-                setTimeout( () => {
-                    this.isTyping = false;
-                }, 1000)
+                    setTimeout( () => {
+                        this.isTyping = false;
+                    }, 1000)
+                })
+        })
+        this.fetchMessages(this.$route.params.id)
+            .then(() => {
+                this.isLoading = false;
             })
 
 
     },
     mounted() {
-        this.fetchMessages();
 
         Bus.$on('NewMessage', (message) => {
             this.messages.push(message);
         })
 
     },
+    computed : {
+        ...mapGetters('user',{
+            auth : 'getAuth',
+        }),
+        ...mapGetters('chat',{
+            chat : 'getChat'
+        }),
+        ...mapGetters('message',{
+            messages : 'getMessages'
+        })
+    },
     methods: {
-        formatTime,
-        getImage,
-        getNames,
+        formatTime,getImage,getNames,
+        ...mapActions('chat',['fetchChat']),
+        ...mapActions('message',['fetchMessages','addNewMessage']),
         showAndHideInfo(){
             this.isShowInfo = !this.isShowInfo;
         },
@@ -129,13 +144,6 @@ export default {
             element.scrollTop = element.scrollHeight;
         },
 
-        fetchMessages() {
-            axios.get(`${this.auth_data.baseUrl}/api/c/message/${this.chat.id}?api_token=${this.auth_data.api_token}`)
-                .then(response => {
-                    this.messages = response.data;
-                    this.isLoading = false;
-                })
-        },
 
     },
     updated() {

@@ -386,8 +386,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       status: false,
       notLike: 'far',
-      isLike: 'fas text-danger',
-      auth_data: window.Laravel
+      isLike: 'fas text-danger'
     };
   },
   methods: {

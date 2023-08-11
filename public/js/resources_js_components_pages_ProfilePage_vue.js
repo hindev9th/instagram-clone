@@ -339,8 +339,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       status: false,
       notLike: 'far',
-      isLike: 'fas text-danger',
-      auth_data: window.Laravel
+      isLike: 'fas text-danger'
     };
   },
   methods: {
@@ -1689,8 +1688,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         _this.fetchMorePosts({
           'username': _this.$route.params.username,
           'page': _this.page
-        }).then(function (e) {
-          if (_this.page === _this.getPosts.last_page) {
+        }).then(function () {
+          if (_this.page >= _this.getPosts.last_page) {
             $state.complete();
           } else {
             $state.loaded();

@@ -19,7 +19,6 @@ export default {
             status: false,
             notLike: 'far',
             isLike: 'fas text-danger',
-            auth_data: window.Laravel,
         }
     },
     methods: {

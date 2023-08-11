@@ -14,29 +14,30 @@
     </div>
 </template>
 <script>
+import {mapActions, mapGetters} from "vuex";
+
 export default {
-    props: ['chat', 'user'],
     data() {
         return {
             message: '',
             isSending : false,
             bgColor : {backgroundColor : '#e9ecef',},
-            auth_data: window.Laravel,
         }
     },
+    computed : {
+        ...mapGetters('user',{
+            auth :'getAuth',
+        })
+    },
     methods: {
+        ...mapActions('message',['addNewMessageHandle']),
         sendMessage() {
             if (this.message.length > 0) {
                 this.isSending = true;
-                axios.post(`${this.auth_data.baseUrl}/api/c/message/${this.chat.id}?api_token=${this.auth_data.api_token}`,
-                    {
-                        _token : this.auth_data.csrf_token,
-                        message: this.message,
-                    }
-                ).then(response => {
+                this.addNewMessageHandle({chatId : this.$route.params.id,message : this.message})
+                .then(response => {
                     this.isSending = false;
                     this.message = '';
-                    Bus.$emit('NewMessage', response.data);
                 })
                 .catch(error => {
                     this.isSending = false;
@@ -44,11 +45,11 @@ export default {
             }
         },
         typing(){
-            let channel = Echo.private('chat.' + this.chat.id)
+            let channel = Echo.private('chat.' + this.$route.params.id)
 
             setTimeout( () => {
                 channel.whisper('typing', {
-                    name : this.user.username,
+                    name : this.auth.username,
                     typing: true,
                 })
             }, 300)

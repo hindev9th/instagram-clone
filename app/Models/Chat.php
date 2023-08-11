@@ -16,6 +16,8 @@ class Chat extends Model
      */
     protected $fillable = ['name'];
 
+    protected $hidden = ['deleted_at'];
+
     public function messages()
     {
         return $this->hasMany(Message::class);

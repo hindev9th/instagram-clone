@@ -1,37 +1,28 @@
 <template>
-    <div class="card chat-app">
+    <div class="card chat-app" v-if="getChats">
         <div id="plist" :class="'people-list h-100 border-right ' + (selected_id === 0 ? 'open' : '')">
             <div class="input-group d-flex justify-content-between" style="padding: 20px">
                 <h3>Messages</h3>
                 <NewButton></NewButton>
             </div>
-            <ul class="list-unstyled chat-list mt-2 mb-0">
-                <div class="d-flex justify-content-center align-items-center w-100 h-100" v-if="getChats.length === 0">
+            <ul class="list-unstyled chat-list mt-2 mb-0" >
+                <div class="d-flex justify-content-center align-items-center w-100 h-100" v-if="getChats.total === 0">
                     <span>Not messages found.</span>
                 </div>
-                <li :class="'d-flex flex-nowrap' + (chat_id === chat.id ? 'active' : '')"
-                    @click="showMessage(chat);"
-                    v-for="chat in getChats" v-if="getAuth && getAuth.profile">
+                <li :class="[{active : $route.params.id === chat.id}]"
+                    @click="$router.push({name: 'message', params : {id : chat.id}})"
+                    v-for="chat in getChats.data" v-if="getAuth && getAuth.profile">
                     <div class="avatars rounded-circle">
-                        <img :src="getImage(chatUser.profile.image)" v-if="chatUser.id !== getAuth.id"
-                             v-for="chatUser in chat.users" class="img-avatar" alt="avatar">
+                        <img :src="getImage(user.profile.image)" v-if="user.id !== getAuth.id"
+                             v-for="user in chat.users" class="img-avatar" alt="avatar">
                     </div>
                     <div class="about">
-                        <div class="name" v-text="chat.name == null ? getNames(chat.users,getAuth) : chat.name"></div>
+                        <div class="name" v-text="getChats.name == null ? getNames(chat.users,getAuth) : getChats.name"></div>
                         <!--                            <div class="status"> <i class="fa fa-circle online"></i> online </div>-->
                     </div>
                 </li>
             </ul>
         </div>
-        <div class="chat-messge non-message w-100 flex-column justify-content-center align-items-center" v-if="selected_id === 0">
-            <i class="far fa-comment-dots icon" style="font-size: 40px"></i>
-            <h4 class="font-weight-bold">Your messages</h4>
-            <span>Send private messages to your friend or group</span>
-            <button class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-keyboard="false"
-                    data-target="#modal-new">Send message</button>
-        </div>
-        <ChatMessage :chat="chat" :user="getAuth" :class="{open : (chat.id === selected_id)}" @close-message="closeMessage" v-if="chat.id === selected_id" v-for="chat in getChats"
-                     :key="chat.id"></ChatMessage>
     </div>
 
 </template>
@@ -40,7 +31,7 @@ import NewButton from "./NewButton";
 import {getImage, getNames} from "../../functiton";
 import ChatMessage from "./ChatMessage";
 import $ from 'jquery';
-import {mapGetters} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
     components: {NewButton, ChatMessage},
@@ -52,33 +43,23 @@ export default {
         }
     },
     created() {
-        this.$store.dispatch('chat/fetchChats');
-        Echo.private('user.' + this.getAuth.id)
-            .listen('NewChat', (e) => {
-                this.chatsData.unshift({
-                    'id': e.id,
-                    'name': e.name,
-                    'users': e.users,
+        this.fetchChats().then(() => {
+            Echo.private('user.' + this.getAuth.id)
+                .listen('NewChat', (e) => {
+                    this.addNewChat(e);
                 });
-            });
-
+        });
 
     },
     mounted() {
-      Bus.$on('NewChatRoom', (chat) => {
-          this.chatsData.unshift(chat);
-          this.selected_id = chat.id;
-      })
-
-
     },
     computed:{
         ...mapGetters('chat',['getChats']),
         ...mapGetters('user',['getAuth']),
     },
     methods: {
-        getImage,
-        getNames,
+        getImage, getNames,
+        ...mapActions('chat',['addNewChat','fetchChats']),
         closeMessage(){
             this.selected_id = 0;
         },

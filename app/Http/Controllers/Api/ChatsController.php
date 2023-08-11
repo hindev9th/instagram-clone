@@ -12,7 +12,7 @@ class ChatsController extends Controller
 
     public function index()
     {
-        return auth()->user()->chats()->with('users')->latest('created_at')->get();
+        return auth()->user()->chats()->with('users')->latest('created_at')->paginate(10);
     }
 
 
@@ -32,6 +32,11 @@ class ChatsController extends Controller
         return $chat->load('users');
     }
 
+    public function show($chatId)
+    {
+        return auth()->user()->chats->where('id',$chatId)->load('users')->first();
+    }
+
     /**
      * update name of chat room
      *
@@ -42,5 +47,10 @@ class ChatsController extends Controller
     public function update(Request $request,Chat $chat){
         $chat->update($request->all());
         return $chat;
+    }
+
+    public function destroy(Chat $chat)
+    {
+        return $chat->delete();
     }
 }

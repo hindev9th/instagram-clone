@@ -6377,45 +6377,45 @@ input.comment:focus {
   box-shadow: unset;
 }
 
-.card.chat-app .chat-message {
+.message-page .chat-message {
   width: 100%;
   padding: 0px;
   transition: 0.5s;
 }
 
-.card.chat-app .input-message {
+.message-page .input-message {
   padding: 0 20px;
 }
 
-.card.chat-app .input-message .input-group {
+.message-page .input-message .input-group {
   border-radius: 30px;
   border: 1px solid #dee2e6;
   overflow: hidden;
 }
 
-.card.chat-app .input-message .input-group input {
+.message-page .input-message .input-group input {
   border: none;
 }
 
-.card.chat-app .input-message .input-group input:focus {
+.message-page .input-message .input-group input:focus {
   box-shadow: none;
 }
 
-.card.chat-app .input-message .input-group button {
+.message-page .input-message .input-group button {
   background: #fff;
   border: none;
 }
 
-.card.chat-app .box-name {
+.message-page .box-name {
   display: flex;
 }
 
-.card.chat-app .box-name .avatars {
+.message-page .box-name .avatars {
   width: 45px;
   height: 45px;
 }
 
-.card.chat-app .box-name .chat-about {
+.message-page .box-name .chat-about {
   padding-left: 10px;
 }
 
@@ -6440,6 +6440,8 @@ input.comment:focus {
 }
 
 .people-list .chat-list li {
+  display: flex;
+  flex-wrap: nowrap;
   padding: 10px 20px;
   list-style: none;
   border-radius: 3px;
@@ -6518,6 +6520,8 @@ input.comment:focus {
 
 .chat-history .message-list {
   height: 100%;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 .chat-history ul {
@@ -6678,14 +6682,27 @@ li.clearfix {
 
 .box-main.chat-main {
   padding: 0;
+  max-width: 280px;
   position: fixed;
-  right: 0;
+  left: 66px;
   top: 0;
   height: 100%;
 }
 
 .box-main.chat-main .clearfix {
   height: 100%;
+}
+
+.message-page {
+  width: calc(100% - (66px + 280px));
+  margin-left: auto;
+  height: 100vh;
+}
+
+.non-message {
+  width: calc(100% - (66px + 280px));
+  margin-left: auto;
+  height: 100vh;
 }
 
 .close-message {
@@ -6708,11 +6725,11 @@ li.clearfix {
     margin-left: 0;
   }
 
-  .chat-app .chat-message {
+  .message-page .chat-message {
     margin-right: -100%;
   }
 
-  .chat-app .chat-message.open {
+  .message-page.chat-message.open {
     margin-right: -100%;
   }
 
