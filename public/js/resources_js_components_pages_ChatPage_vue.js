@@ -51,6 +51,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 //
 //
 //
+//
+//
 
 
 
@@ -66,14 +68,20 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     return {
       messages: [],
       chat_id: 0,
-      selected_id: 0
+      selected_id: 0,
+      total: 0,
+      page: 1
     };
   },
   created: function created() {
     var _this = this;
-    this.fetchChats().then(function () {
+    this.fetchChats(this.page).then(function () {
       Echo["private"]('user.' + _this.getAuth.id).listen('NewChat', function (e) {
-        _this.addNewChat(e);
+        if (_this.getChats.total === 0) {
+          _this.fetchChats();
+        } else {
+          _this.addNewChat(e);
+        }
       });
     });
   },
@@ -88,6 +96,17 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     },
     showMessage: function showMessage(chat) {
       this.selected_id = chat.id;
+    },
+    infiniteHandle: function infiniteHandle($state) {
+      var _this2 = this;
+      this.page++;
+      this.fetchChats(this.page).then(function () {
+        if (_this2.page >= _this2.getChats.last_page) {
+          $state.complete();
+        } else {
+          $state.loaded();
+        }
+      });
     }
   })
 });
@@ -267,9 +286,6 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 //
 //
 //
-//
-//
-//
 
 
 
@@ -287,7 +303,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       isLoading: true,
       typingName: '',
       isTyping: false,
-      isShowInfo: false
+      isShowInfo: false,
+      page: 1
     };
   },
   created: function created() {
@@ -303,7 +320,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         }, 1000);
       });
     });
-    this.fetchMessages(this.$route.params.id).then(function () {
+    this.fetchMessages({
+      chatId: this.$route.params.id,
+      page: this.page
+    }).then(function () {
       _this.isLoading = false;
     });
   },
@@ -328,14 +348,23 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     showAndHideInfo: function showAndHideInfo() {
       this.isShowInfo = !this.isShowInfo;
     },
-    autoScrollBottom: function autoScrollBottom() {
-      var element = document.getElementById("message-list");
-      element.scrollTop = element.scrollHeight;
+    infiniteHandle: function infiniteHandle($state) {
+      var _this3 = this;
+      setTimeout(function () {
+        _this3.page++;
+        _this3.fetchMessages({
+          chatId: _this3.$route.params.id,
+          page: _this3.page
+        }).then(function () {
+          if (_this3.page >= _this3.messages.last_page) {
+            $state.complete();
+          } else {
+            $state.loaded();
+          }
+        });
+      }, 3000);
     }
-  }),
-  updated: function updated() {
-    this.autoScrollBottom();
-  }
+  })
 });
 
 /***/ }),
@@ -380,6 +409,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _functiton__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../functiton */ "./resources/js/functiton.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 //
 //
 //
@@ -420,15 +456,51 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "InfoSlide",
-  props: ['user', 'chat'],
-  methods: {
+  props: ['chat'],
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)('user', {
+    auth: "getAuth"
+  })),
+  methods: _objectSpread(_objectSpread({
     getImage: _functiton__WEBPACK_IMPORTED_MODULE_0__.getImage,
     getNames: _functiton__WEBPACK_IMPORTED_MODULE_0__.getNames
-  }
+  }, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('chat', ['updateChat', 'leaveChat', 'deleteChat'])), {}, {
+    rename: function rename() {
+      var name = prompt("Input new name chat room!");
+      if (!(name == null || name === "")) {
+        this.chat.name = name;
+        this.updateChat(this.chat).then(function () {
+          (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)("Rename success!");
+        });
+      }
+    },
+    leaveRoom: function leaveRoom() {
+      var _this = this;
+      if (confirm("Are you sure leave this room ?")) {
+        this.leaveChat(this.chat).then(function () {
+          (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)("You left room!");
+          _this.$router.push({
+            name: 'chat'
+          });
+        });
+      }
+    },
+    deleteRoom: function deleteRoom() {
+      var _this2 = this;
+      if (confirm("Are you sure delete this room ?")) {
+        this.deleteChat(this.chat).then(function () {
+          (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)("You deleted room!");
+          _this2.$router.push({
+            name: 'chat'
+          });
+        });
+      }
+    }
+  })
 });
 
 /***/ }),
@@ -525,7 +597,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.message-list {\n    overflow-y: auto;\n    overflow-x: hidden;\n}\n.message-list::-webkit-scrollbar {\n    /*display: none;*/\n}\n#wave {\n    position:relative;\n    text-align:center;\n.dot {\n    display:inline-block;\n    width: 3px;\n    height: 3px;\n    border-radius:50%;\n    margin-right:3px;\n    background:#303131;\n    animation: wave 1.3s linear infinite;\n&:nth-child(2) {\n     animation-delay: -1.1s;\n}\n&:nth-child(3) {\n     animation-delay: -0.9s;\n}\n}\n}\n@keyframes wave {\n0%, 60%, 100% {\n        transform: initial;\n}\n30% {\n        transform: translateY(-10px);\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.message-list {\n}\n.message-list::-webkit-scrollbar {\n    /*display: none;*/\n}\n#wave {\n    position:relative;\n    text-align:center;\n.dot {\n    display:inline-block;\n    width: 3px;\n    height: 3px;\n    border-radius:50%;\n    margin-right:3px;\n    background:#303131;\n    animation: wave 1.3s linear infinite;\n&:nth-child(2) {\n     animation-delay: -1.1s;\n}\n&:nth-child(3) {\n     animation-delay: -0.9s;\n}\n}\n}\n@keyframes wave {\n0%, 60%, 100% {\n        transform: initial;\n}\n30% {\n        transform: translateY(-10px);\n}\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1200,10 +1272,12 @@ var render = function () {
                           class: [{ active: _vm.$route.params.id === chat.id }],
                           on: {
                             click: function ($event) {
-                              return _vm.$router.push({
-                                name: "message",
-                                params: { id: chat.id },
-                              })
+                              _vm.$router
+                                .push({
+                                  name: "message",
+                                  params: { id: chat.id },
+                                })
+                                .catch(function () {})
                             },
                           },
                         },
@@ -1230,9 +1304,9 @@ var render = function () {
                               staticClass: "name",
                               domProps: {
                                 textContent: _vm._s(
-                                  _vm.getChats.name == null
-                                    ? _vm.getNames(chat.users, _vm.getAuth)
-                                    : _vm.getChats.name
+                                  chat.name
+                                    ? chat.name
+                                    : _vm.getNames(chat.users, _vm.getAuth)
                                 ),
                               },
                             }),
@@ -1240,6 +1314,10 @@ var render = function () {
                         ]
                       )
                     : _vm._e()
+                }),
+                _vm._v(" "),
+                _c("infinite-loading", {
+                  on: { infinite: _vm.infiniteHandle },
                 }),
               ],
               2
@@ -1381,185 +1459,269 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "chat-message h-100" },
-    [
-      _c("div", { staticClass: "box-message" }, [
-        _c(
-          "div",
-          {
-            staticClass:
-              "chat-header border-bottom d-flex justify-content-between align-items-center",
-          },
-          [
+  return _vm.chat
+    ? _c(
+        "div",
+        { staticClass: "chat-message h-100" },
+        [
+          _c("div", { staticClass: "box-message" }, [
             _c(
               "div",
               {
-                staticClass: "close-message",
-                on: {
-                  click: function ($event) {
-                    return _vm.$emit("close-message")
-                  },
-                },
+                staticClass:
+                  "chat-header border-bottom d-flex justify-content-between align-items-center",
               },
               [
                 _c(
-                  "svg",
+                  "div",
                   {
-                    attrs: {
-                      xmlns: "http://www.w3.org/2000/svg",
-                      height: "2em",
-                      viewBox: "0 0 448 512",
+                    staticClass: "close-message",
+                    on: {
+                      click: function ($event) {
+                        return _vm.$router.push({ name: "chat" })
+                      },
                     },
                   },
                   [
-                    _c("path", {
-                      attrs: {
-                        d: "M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z",
+                    _c(
+                      "svg",
+                      {
+                        attrs: {
+                          xmlns: "http://www.w3.org/2000/svg",
+                          height: "2em",
+                          viewBox: "0 0 448 512",
+                        },
                       },
-                    }),
+                      [
+                        _c("path", {
+                          attrs: {
+                            d: "M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z",
+                          },
+                        }),
+                      ]
+                    ),
                   ]
                 ),
+                _vm._v(" "),
+                _c("div", { staticClass: "box-name" }, [
+                  _c(
+                    "div",
+                    { staticClass: "avatars rounded-circle" },
+                    _vm._l(_vm.chat.users, function (user) {
+                      return user.id !== _vm.auth.id
+                        ? _c("img", {
+                            staticClass: "img-avatar",
+                            attrs: {
+                              src: _vm.getImage(user.profile.image),
+                              alt: "avatar",
+                            },
+                          })
+                        : _vm._e()
+                    }),
+                    0
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "chat-about d-flex align-items-center" },
+                    [
+                      _c(
+                        "h4",
+                        { staticClass: "name m-b-0 m-0 font-weight-bold" },
+                        [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(
+                                _vm.chat.name
+                                  ? _vm.chat.name
+                                  : _vm.getNames(_vm.chat.users, _vm.auth)
+                              )
+                          ),
+                        ]
+                      ),
+                    ]
+                  ),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "hidden-sm text-right" }, [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "icon",
+                      attrs: { href: "javascript:void(0);" },
+                      on: { click: _vm.showAndHideInfo },
+                    },
+                    [_c("i", { staticClass: "fas fa-info-circle" })]
+                  ),
+                ]),
               ]
             ),
             _vm._v(" "),
-            _c("div", { staticClass: "box-name" }, [
-              _c(
-                "div",
-                { staticClass: "avatars rounded-circle" },
-                _vm._l(_vm.chat.users, function (user) {
-                  return user.id !== _vm.auth.id
-                    ? _c("img", {
-                        staticClass: "img-avatar",
-                        attrs: {
-                          src: _vm.getImage(user.profile.image),
-                          alt: "avatar",
-                        },
-                      })
-                    : _vm._e()
-                }),
-                0
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "chat-about d-flex align-items-center" },
-                [
-                  _c("h4", { staticClass: "name m-b-0 m-0 font-weight-bold" }, [
-                    _vm._v(
-                      "\n                        " +
-                        _vm._s(_vm.getNames(_vm.chat.users, _vm.auth))
-                    ),
-                  ]),
-                ]
-              ),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "hidden-sm text-right" }, [
-              _c(
-                "a",
-                {
-                  staticClass: "icon",
-                  attrs: { href: "javascript:void(0);" },
-                  on: { click: _vm.showAndHideInfo },
-                },
-                [_c("i", { staticClass: "fas fa-info-circle" })]
-              ),
-            ]),
-          ]
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "chat-history border-0 position-relative" }, [
-          _vm.isLoading
-            ? _c(
-                "div",
-                { staticClass: "loading position-absolute w-100 h-100" },
-                [_c("div", { staticClass: "spinner-border text-light" })]
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c(
-            "ul",
-            {
-              staticClass: "m-b-0 m-0 p-3 message-list",
-              attrs: { id: "message-list" },
-            },
-            [
-              _vm.isTyping
-                ? _c(
-                    "li",
-                    {
-                      staticClass: "typing d-flex justify-content-center mb-0",
-                    },
-                    [
-                      _vm._v(
-                        "\n                    " +
-                          _vm._s(_vm.typingName) +
-                          "\n                    typing\n                    "
-                      ),
-                      _vm._m(0),
-                    ]
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.messages.length === 0
-                ? _c(
-                    "li",
-                    {
-                      staticClass:
-                        "p-5 d-flex justify-content-center align-items-center",
-                    },
-                    [
-                      _c(
-                        "div",
+            _c(
+              "div",
+              { staticClass: "chat-history border-0 position-relative" },
+              [
+                _c(
+                  "ul",
+                  {
+                    staticClass: "m-b-0 m-0 p-3 message-list",
+                    attrs: { id: "message-list" },
+                  },
+                  [
+                    _vm.isTyping
+                      ? _c(
+                          "li",
+                          {
+                            staticClass:
+                              "typing d-flex justify-content-center mb-0",
+                          },
+                          [
+                            _vm._v(
+                              "\n                    " +
+                                _vm._s(_vm.typingName) +
+                                "\n                    typing\n                    "
+                            ),
+                            _vm._m(0),
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.messages.length === 0
+                      ? _c(
+                          "li",
+                          {
+                            staticClass:
+                              "p-5 d-flex justify-content-center align-items-center",
+                          },
+                          [
+                            _c(
+                              "div",
+                              {
+                                staticClass:
+                                  "box-name flex-column w-100 align-items-center",
+                              },
+                              [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "avatars rounded-circle",
+                                    staticStyle: {
+                                      "min-width": "100px",
+                                      "min-height": "100px",
+                                    },
+                                  },
+                                  _vm._l(_vm.chat.users, function (chatUser) {
+                                    return chatUser.id !== _vm.auth.id
+                                      ? _c("img", {
+                                          staticClass: "img-avatar",
+                                          attrs: {
+                                            src: _vm.getImage(
+                                              chatUser.profile.image
+                                            ),
+                                            alt: "avatar",
+                                          },
+                                        })
+                                      : _vm._e()
+                                  }),
+                                  0
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass:
+                                      "chat-about p-2 d-flex align-items-center",
+                                  },
+                                  [
+                                    _c(
+                                      "h4",
+                                      {
+                                        staticClass:
+                                          "name m-b-0 m-0 font-weight-bold",
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                                " +
+                                            _vm._s(
+                                              _vm.getNames(
+                                                _vm.chat.users,
+                                                _vm.auth
+                                              )
+                                            )
+                                        ),
+                                      ]
+                                    ),
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass: "btn btn-primary",
+                                    attrs: { href: "#input-message" },
+                                  },
+                                  [_vm._v("Start chat")]
+                                ),
+                              ]
+                            ),
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm._l(_vm.messages.data, function (message) {
+                      return _c(
+                        "li",
                         {
-                          staticClass:
-                            "box-name flex-column w-100 align-items-center",
+                          class: {
+                            "text-right": message.user_id === _vm.auth.id,
+                          },
                         },
                         [
                           _c(
                             "div",
                             {
-                              staticClass: "avatars rounded-circle",
-                              staticStyle: {
-                                "min-width": "100px",
-                                "min-height": "100px",
-                              },
+                              class:
+                                "message-data d-flex " +
+                                (message.user_id !== _vm.auth.id
+                                  ? ""
+                                  : "justify-content-end"),
                             },
-                            _vm._l(_vm.chat.users, function (chatUser) {
-                              return chatUser.id !== _vm.auth.id
+                            [
+                              message.user_id !== _vm.auth.id
                                 ? _c("img", {
-                                    staticClass: "img-avatar",
+                                    staticClass: "rounded-circle",
                                     attrs: {
-                                      src: _vm.getImage(chatUser.profile.image),
+                                      src: _vm.getImage(
+                                        message.user.profile.image
+                                      ),
                                       alt: "avatar",
                                     },
                                   })
-                                : _vm._e()
-                            }),
-                            0
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            {
-                              staticClass:
-                                "chat-about p-2 d-flex align-items-center",
-                            },
-                            [
+                                : _vm._e(),
+                              _vm._v(" "),
                               _c(
-                                "h4",
+                                "div",
                                 {
                                   staticClass:
-                                    "name m-b-0 m-0 font-weight-bold",
+                                    "message-name d-flex flex-column pl-2",
                                 },
                                 [
-                                  _vm._v(
-                                    "\n                                " +
-                                      _vm._s(
-                                        _vm.getNames(_vm.chat.users, _vm.auth)
-                                      )
+                                  message.user_id !== _vm.auth.id
+                                    ? _c("strong", [
+                                        _vm._v(_vm._s(message.user.name)),
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _c(
+                                    "span",
+                                    { staticClass: "message-data-time" },
+                                    [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.formatTime(message.created_at)
+                                        )
+                                      ),
+                                    ]
                                   ),
                                 ]
                               ),
@@ -1567,102 +1729,49 @@ var render = function () {
                           ),
                           _vm._v(" "),
                           _c(
-                            "a",
+                            "div",
                             {
-                              staticClass: "btn btn-primary",
-                              attrs: { href: "#input-message" },
+                              class:
+                                "message " +
+                                (message.user_id !== _vm.auth.id
+                                  ? "my-message"
+                                  : "other-message"),
                             },
-                            [_vm._v("Start chat")]
+                            [
+                              _vm._v(
+                                "\n                        " +
+                                  _vm._s(message.message) +
+                                  "\n                    "
+                              ),
+                            ]
                           ),
                         ]
-                      ),
-                    ]
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _vm._l(_vm.messages.data, function (message) {
-                return _c(
-                  "li",
-                  { class: { "text-right": message.user_id === _vm.auth.id } },
-                  [
-                    _c(
-                      "div",
-                      {
-                        class:
-                          "message-data d-flex " +
-                          (message.user_id !== _vm.auth.id
-                            ? ""
-                            : "justify-content-end"),
-                      },
-                      [
-                        message.user_id !== _vm.auth.id
-                          ? _c("img", {
-                              staticClass: "rounded-circle",
-                              attrs: {
-                                src: _vm.getImage(message.user.profile.image),
-                                alt: "avatar",
-                              },
-                            })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "message-name d-flex flex-column pl-2",
-                          },
-                          [
-                            message.user_id !== _vm.auth.id
-                              ? _c("strong", [
-                                  _vm._v(_vm._s(message.user.name)),
-                                ])
-                              : _vm._e(),
-                            _vm._v(" "),
-                            _c("span", { staticClass: "message-data-time" }, [
-                              _vm._v(
-                                _vm._s(_vm.formatTime(message.created_at))
-                              ),
-                            ]),
-                          ]
-                        ),
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        class:
-                          "message " +
-                          (message.user_id !== _vm.auth.id
-                            ? "my-message"
-                            : "other-message"),
-                      },
-                      [
-                        _vm._v(
-                          "\n                        " +
-                            _vm._s(message.message) +
-                            "\n                    "
-                        ),
-                      ]
-                    ),
-                  ]
-                )
-              }),
-            ],
-            2
-          ),
-        ]),
-      ]),
-      _vm._v(" "),
-      _c("ChatForm"),
-      _vm._v(" "),
-      _c("info-slide", {
-        class: { show: _vm.isShowInfo },
-        attrs: { user: _vm.auth, chat: _vm.chat },
-        on: { "close-info": _vm.showAndHideInfo },
-      }),
-    ],
-    1
-  )
+                      )
+                    }),
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _c("infinite-loading", {
+                  attrs: { direction: "top" },
+                  on: { infinite: _vm.infiniteHandle },
+                }),
+              ],
+              1
+            ),
+          ]),
+          _vm._v(" "),
+          _c("ChatForm"),
+          _vm._v(" "),
+          _c("info-slide", {
+            class: { show: _vm.isShowInfo },
+            attrs: { chat: _vm.chat },
+            on: { "close-info": _vm.showAndHideInfo },
+          }),
+        ],
+        1
+      )
+    : _vm._e()
 }
 var staticRenderFns = [
   function () {
@@ -1763,26 +1872,28 @@ var render = function () {
           [_vm._v("×")]
         ),
         _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "avatars rounded-circle" },
-          _vm._l(_vm.chat.users, function (chatUser) {
-            return _vm.user.id !== chatUser.id
-              ? _c("img", {
-                  staticClass: "img-avatar",
-                  attrs: { src: _vm.getImage(chatUser.profile.image), alt: "" },
-                })
-              : _vm._e()
-          }),
-          0
-        ),
+        _vm.auth
+          ? _c(
+              "div",
+              { staticClass: "avatars rounded-circle" },
+              _vm._l(_vm.chat.users, function (user) {
+                return _vm.auth.id !== user.id
+                  ? _c("img", {
+                      staticClass: "img-avatar",
+                      attrs: { src: _vm.getImage(user.profile.image), alt: "" },
+                    })
+                  : _vm._e()
+              }),
+              0
+            )
+          : _vm._e(),
         _vm._v(" "),
         _c("div", { staticClass: "box-name" }, [
           _c("strong", { staticClass: "name pt-2 pr-2" }, [
             _vm._v(
               _vm._s(
                 _vm.chat.name == null
-                  ? _vm.getNames(_vm.chat.users, _vm.user)
+                  ? _vm.getNames(_vm.chat.users, _vm.auth)
                   : _vm.chat.name
               )
             ),
@@ -1791,25 +1902,32 @@ var render = function () {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "body-info" }, [
-        _vm._m(0),
+        _c(
+          "div",
+          {
+            staticClass: "item hover-dark-20 cursor-pointer",
+            on: { click: _vm.rename },
+          },
+          [_c("span", [_vm._v("Change name")])]
+        ),
         _vm._v(" "),
         _c("div", { staticClass: "item" }, [
-          _vm._m(1),
+          _vm._m(0),
           _vm._v(" "),
           _c(
             "div",
             { staticClass: "users pt-2 pb-2" },
-            _vm._l(_vm.chat.users, function (chatUser) {
+            _vm._l(_vm.chat.users, function (user) {
               return _c("div", { staticClass: "user pt-2 pb-2 d-flex" }, [
                 _c("img", {
                   staticClass: "avatar",
-                  attrs: { src: _vm.getImage(chatUser.profile.image), alt: "" },
+                  attrs: { src: _vm.getImage(user.profile.image), alt: "" },
                 }),
                 _vm._v(" "),
                 _c("div", { staticClass: "name d-flex flex-column" }, [
-                  _c("strong", [_vm._v(_vm._s(chatUser.name))]),
+                  _c("strong", [_vm._v(_vm._s(user.name))]),
                   _vm._v(" "),
-                  _c("small", [_vm._v(_vm._s(chatUser.username))]),
+                  _c("small", [_vm._v(_vm._s(user.username))]),
                 ]),
               ])
             }),
@@ -1817,9 +1935,25 @@ var render = function () {
           ),
         ]),
         _vm._v(" "),
-        _vm._m(2),
+        _vm.chat.users.length > 2
+          ? _c(
+              "div",
+              {
+                staticClass: "item text-danger hover-dark-20 cursor-pointer",
+                on: { click: _vm.leaveRoom },
+              },
+              [_c("span", [_vm._v("Leave room")])]
+            )
+          : _vm._e(),
         _vm._v(" "),
-        _vm._m(3),
+        _c(
+          "div",
+          {
+            staticClass: "item text-danger hover-dark-20 cursor-pointer",
+            on: { click: _vm.deleteRoom },
+          },
+          [_c("span", [_vm._v("Delete room")])]
+        ),
       ]),
     ]
   )
@@ -1829,39 +1963,15 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "item hover-dark-20 cursor-pointer" }, [
-      _c("span", [_vm._v("Change name")]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "title d-flex justify-content-between" }, [
       _c("span", [_vm._v("Members")]),
       _vm._v(" "),
-      _c("span", [_vm._v("Add")]),
+      _c(
+        "span",
+        { staticClass: "cursor-pointer prevent-select text-primary" },
+        [_vm._v("Add")]
+      ),
     ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "item text-danger hover-dark-20 cursor-pointer" },
-      [_c("span", [_vm._v("Leave room")])]
-    )
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "item text-danger hover-dark-20 cursor-pointer" },
-      [_c("span", [_vm._v("Delete room")])]
-    )
   },
 ]
 render._withStripped = true

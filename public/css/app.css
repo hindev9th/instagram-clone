@@ -6516,10 +6516,13 @@ input.comment:focus {
 .chat-history {
   border-bottom: 2px solid #fff;
   height: calc(100% - 76px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 .chat-history .message-list {
-  height: 100%;
   display: flex;
   flex-direction: column-reverse;
 }
@@ -6712,6 +6715,19 @@ li.clearfix {
 @media only screen and (max-width: 767px) {
   .box-main.chat-main {
     height: calc(100% - 66px);
+    left: 0;
+    max-width: 100%;
+  }
+
+  .chat-main.message-page {
+    display: none;
+  }
+
+  .message-page {
+    height: calc(100vh - 66px);
+    margin-left: 0;
+    max-width: 100%;
+    width: 100%;
   }
 
   .chat-app .people-list {

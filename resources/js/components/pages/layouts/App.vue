@@ -58,7 +58,7 @@
         <ModalNewMessage></ModalNewMessage>
 
         <main>
-            <router-view :key="$route.fullPath"></router-view>
+            <router-view :key="$route.fullPath" :class="{'message-page' : $route.name === 'message'}"></router-view>
             <router-view :key="`${$route.fullPath}/message`" name="message"></router-view>
             <div class="chat-messge non-message flex-column justify-content-center align-items-center" v-if="$route.name === 'chat'">
                 <i class="far fa-comment-dots icon" style="font-size: 40px"></i>

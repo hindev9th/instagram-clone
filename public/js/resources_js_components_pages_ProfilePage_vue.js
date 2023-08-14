@@ -1651,6 +1651,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 //
 //
 //
+//
 
 
 
@@ -8355,6 +8356,7 @@ var render = function () {
                         _c(
                           "span",
                           {
+                            staticClass: "cursor-pointer",
                             attrs: {
                               "data-toggle": "modal",
                               "data-backdrop": "static",

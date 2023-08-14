@@ -83,7 +83,8 @@ Route::middleware('auth:api')->prefix('/')->group(function (){
         Route::get('/',[ChatsController::class,'index']);
         Route::post('/',[ChatsController::class,'store']);
         Route::get('/{chat}',[ChatsController::class,'show']);
-        Route::patch('/{chat}',[ChatsController::class,'update']);
+        Route::put('/{chat}',[ChatsController::class,'update']);
+        Route::patch('/{chat}',[ChatsController::class,'leave']);
         Route::delete('/{chat}',[ChatsController::class,'destroy']);
     });
 

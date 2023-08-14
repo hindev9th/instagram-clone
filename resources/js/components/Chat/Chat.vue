@@ -10,17 +10,19 @@
                     <span>Not messages found.</span>
                 </div>
                 <li :class="[{active : $route.params.id === chat.id}]"
-                    @click="$router.push({name: 'message', params : {id : chat.id}})"
+                    @click="$router.push({name: 'message', params : {id : chat.id}}).catch(()=>{})"
                     v-for="chat in getChats.data" v-if="getAuth && getAuth.profile">
                     <div class="avatars rounded-circle">
                         <img :src="getImage(user.profile.image)" v-if="user.id !== getAuth.id"
                              v-for="user in chat.users" class="img-avatar" alt="avatar">
                     </div>
                     <div class="about">
-                        <div class="name" v-text="getChats.name == null ? getNames(chat.users,getAuth) : getChats.name"></div>
+                        <div class="name" v-text="chat.name ? chat.name : getNames(chat.users,getAuth)"></div>
                         <!--                            <div class="status"> <i class="fa fa-circle online"></i> online </div>-->
                     </div>
                 </li>
+                <infinite-loading @infinite="infiniteHandle"></infinite-loading>
+
             </ul>
         </div>
     </div>
@@ -40,13 +42,19 @@ export default {
             messages: [],
             chat_id: 0,
             selected_id: 0,
+            total : 0,
+            page : 1,
         }
     },
     created() {
-        this.fetchChats().then(() => {
+        this.fetchChats(this.page).then(() => {
             Echo.private('user.' + this.getAuth.id)
                 .listen('NewChat', (e) => {
-                    this.addNewChat(e);
+                    if (this.getChats.total === 0){
+                        this.fetchChats();
+                    }else {
+                        this.addNewChat(e);
+                    }
                 });
         });
 
@@ -66,7 +74,16 @@ export default {
         showMessage(chat) {
             this.selected_id = chat.id;
         },
-
+        infiniteHandle($state){
+            this.page++;
+            this.fetchChats(this.page).then(()=>{
+                if (this.page >= this.getChats.last_page){
+                    $state.complete();
+                }else {
+                    $state.loaded();
+                }
+            })
+        }
 
     }
 }

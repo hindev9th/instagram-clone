@@ -57,7 +57,8 @@
                                   data-toggle="modal"
                                   data-backdrop="static"
                                   data-keyboard="false"
-                                  data-target="#modal-post-show">
+                                  data-target="#modal-post-show"
+                                  class="cursor-pointer">
                                 <img :src="`${baseUrl}/storage/${post.image}`" class="w-100" alt="">
                             </span>
                             <modal-post-show :post="post" v-if="post.id === indexShowPost" @close-modal="hidePost"></modal-post-show>

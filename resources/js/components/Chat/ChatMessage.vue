@@ -1,8 +1,8 @@
 <template>
-    <div class="chat-message h-100" v-if="">
+    <div class="chat-message h-100" v-if="chat">
         <div class="box-message">
             <div class="chat-header border-bottom d-flex justify-content-between align-items-center">
-                <div class="close-message" @click="$emit('close-message')">
+                <div class="close-message" @click="$router.push({name : 'chat'})">
                     <svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="0 0 448 512">
                         <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
                         <path
@@ -16,7 +16,7 @@
                     </div>
                     <div class="chat-about d-flex align-items-center">
                         <h4 class="name m-b-0 m-0 font-weight-bold">
-                            {{ getNames(chat.users, auth) }}</h4>
+                            {{ chat.name ? chat.name : getNames(chat.users, auth) }}</h4>
                     </div>
                 </div>
                 <div class="hidden-sm text-right">
@@ -24,9 +24,6 @@
                 </div>
             </div>
             <div class="chat-history border-0 position-relative">
-                <div class="loading position-absolute w-100 h-100" v-if="isLoading">
-                    <div class="spinner-border text-light"></div>
-                </div>
                 <ul class="m-b-0 m-0 p-3 message-list" id="message-list">
                     <li class="typing d-flex justify-content-center mb-0" v-if="isTyping">
                         {{typingName}}
@@ -64,13 +61,13 @@
                             {{ message.message }}
                         </div>
                     </li>
-
                 </ul>
+                <infinite-loading direction="top" @infinite="infiniteHandle"></infinite-loading>
 
             </div>
         </div>
         <ChatForm></ChatForm>
-        <info-slide :user="auth" :chat="chat" :class="{'show':isShowInfo}" @close-info="showAndHideInfo"></info-slide>
+        <info-slide :chat="chat" :class="{'show':isShowInfo}" @close-info="showAndHideInfo"></info-slide>
     </div>
 
 </template>
@@ -90,6 +87,7 @@ export default {
             typingName: '',
             isTyping : false,
             isShowInfo : false,
+            page : 1,
         }
     },
     created() {
@@ -107,7 +105,7 @@ export default {
                     }, 1000)
                 })
         })
-        this.fetchMessages(this.$route.params.id)
+        this.fetchMessages({chatId : this.$route.params.id, page : this.page})
             .then(() => {
                 this.isLoading = false;
             })
@@ -139,22 +137,27 @@ export default {
         showAndHideInfo(){
             this.isShowInfo = !this.isShowInfo;
         },
-        autoScrollBottom() {
-            var element = document.getElementById("message-list");
-            element.scrollTop = element.scrollHeight;
-        },
+        infiniteHandle($state) {
+            setTimeout(()=>{
+                this.page++;
+                this.fetchMessages({chatId: this.$route.params.id, page: this.page}).then(() => {
+                    if (this.page >= this.messages.last_page) {
+                        $state.complete();
+                    } else {
+                        $state.loaded();
+                    }
+                })
+            },3000)
+
+        }
 
 
-    },
-    updated() {
-        this.autoScrollBottom();
     },
 }
 </script>
 <style>
 .message-list {
-    overflow-y: auto;
-    overflow-x: hidden;
+
 }
 
 .message-list::-webkit-scrollbar {

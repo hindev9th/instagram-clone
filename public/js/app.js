@@ -1224,8 +1224,8 @@ vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_3_
 var chatStore = {
   namespaced: true,
   state: {
-    chats: [],
-    chat: {}
+    chats: null,
+    chat: null
   },
   mutations: {
     FETCH_CHATS: function FETCH_CHATS(state, chats) {
@@ -1234,7 +1234,12 @@ var chatStore = {
     FETCH_CHAT: function FETCH_CHAT(state, chat) {
       state.chat = chat;
     },
-    ADD_CHATS: function ADD_CHATS(state, chat) {
+    ADD_CHATS: function ADD_CHATS(state, chats) {
+      chats.data.forEach(function (e) {
+        return state.chats.data.push(e);
+      });
+    },
+    ADD_CHAT: function ADD_CHAT(state, chat) {
       state.chats.data.unshift(chat);
     }
   },
@@ -1247,18 +1252,23 @@ var chatStore = {
     }
   },
   actions: {
-    fetchChats: function fetchChats(_ref) {
+    fetchChats: function fetchChats(_ref, page) {
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var commit;
+        var commit, res;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
               commit = _ref.commit;
               _context.next = 3;
-              return _api__WEBPACK_IMPORTED_MODULE_1__["default"].get(_api_chatApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_CHATS).then(function (res) {
-                commit('FETCH_CHATS', res.data);
-              });
+              return _api__WEBPACK_IMPORTED_MODULE_1__["default"].get("".concat(_api_chatApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_CHATS, "?page=").concat(page));
             case 3:
+              res = _context.sent;
+              if (page === 1) {
+                commit('FETCH_CHATS', res.data);
+              } else {
+                commit('ADD_CHATS', res.data);
+              }
+            case 5:
             case "end":
               return _context.stop();
           }
@@ -1306,8 +1316,65 @@ var chatStore = {
     },
     addNewChat: function addNewChat(_ref4, chat) {
       var commit = _ref4.commit;
-      commit('ADD_CHATS', chat);
-      console.log(chat);
+      commit('ADD_CHAT', chat);
+    },
+    updateChat: function updateChat(_ref5, chat) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var commit, res;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) switch (_context4.prev = _context4.next) {
+            case 0:
+              commit = _ref5.commit;
+              _context4.next = 3;
+              return _api__WEBPACK_IMPORTED_MODULE_1__["default"].post("".concat(_api_chatApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_CHATS, "/").concat(chat.id), {
+                _method: 'PUT',
+                name: chat.name
+              });
+            case 3:
+              res = _context4.sent;
+              commit('FETCH_CHAT', chat);
+            case 5:
+            case "end":
+              return _context4.stop();
+          }
+        }, _callee4);
+      }))();
+    },
+    leaveChat: function leaveChat(_ref6, chat) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        var commit;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) switch (_context5.prev = _context5.next) {
+            case 0:
+              commit = _ref6.commit;
+              _context5.next = 3;
+              return _api__WEBPACK_IMPORTED_MODULE_1__["default"].post("".concat(_api_chatApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_CHATS, "/").concat(chat.id), {
+                _method: 'PATCH'
+              });
+            case 3:
+            case "end":
+              return _context5.stop();
+          }
+        }, _callee5);
+      }))();
+    },
+    deleteChat: function deleteChat(_ref7, chat) {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        var commit;
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) switch (_context6.prev = _context6.next) {
+            case 0:
+              commit = _ref7.commit;
+              _context6.next = 3;
+              return _api__WEBPACK_IMPORTED_MODULE_1__["default"].post("".concat(_api_chatApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_CHATS, "/").concat(chat.id), {
+                _method: 'DELETE'
+              });
+            case 3:
+            case "end":
+              return _context6.stop();
+          }
+        }, _callee6);
+      }))();
     }
   }
 };
@@ -1550,6 +1617,11 @@ var messageStore = {
     FETCH_MESSAGE: function FETCH_MESSAGE(state, message) {
       state.message = message;
     },
+    ADD_MESSAGES: function ADD_MESSAGES(state, messages) {
+      messages.data.forEach(function (e) {
+        return state.messages.data.push(e);
+      });
+    },
     ADD_MESSAGE: function ADD_MESSAGE(state, message) {
       state.messages.data.unshift(message);
     }
@@ -1563,31 +1635,37 @@ var messageStore = {
     }
   },
   actions: {
-    fetchMessages: function fetchMessages(_ref, chatId) {
+    fetchMessages: function fetchMessages(_ref, _ref2) {
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var commit;
+        var commit, chatId, page, res;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
               commit = _ref.commit;
-              _context.next = 3;
-              return _api__WEBPACK_IMPORTED_MODULE_1__["default"].get("".concat(_api_messageApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_MESSAGE, "/").concat(chatId)).then(function (res) {
+              chatId = _ref2.chatId, page = _ref2.page;
+              _context.next = 4;
+              return _api__WEBPACK_IMPORTED_MODULE_1__["default"].get("".concat(_api_messageApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_MESSAGE, "/").concat(chatId, "?page=").concat(page));
+            case 4:
+              res = _context.sent;
+              if (page === 1) {
                 commit('FETCH_MESSAGES', res.data);
-              });
-            case 3:
+              } else {
+                commit('ADD_MESSAGES', res.data);
+              }
+            case 6:
             case "end":
               return _context.stop();
           }
         }, _callee);
       }))();
     },
-    fetchMessage: function fetchMessage(_ref2) {
+    fetchMessage: function fetchMessage(_ref3) {
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
         var commit;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              commit = _ref2.commit;
+              commit = _ref3.commit;
               _context2.next = 3;
               return _api__WEBPACK_IMPORTED_MODULE_1__["default"].get(_api_messageApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_MESSAGE).then(function (res) {
                 commit('FETCH_MESSAGE', res.data);
@@ -1599,14 +1677,14 @@ var messageStore = {
         }, _callee2);
       }))();
     },
-    addNewMessageHandle: function addNewMessageHandle(_ref3, _ref4) {
+    addNewMessageHandle: function addNewMessageHandle(_ref4, _ref5) {
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
         var commit, chatId, message, res;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
-              commit = _ref3.commit;
-              chatId = _ref4.chatId, message = _ref4.message;
+              commit = _ref4.commit;
+              chatId = _ref5.chatId, message = _ref5.message;
               _context3.next = 4;
               return _api__WEBPACK_IMPORTED_MODULE_1__["default"].post("".concat(_api_messageApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_MESSAGE), {
                 chat_id: chatId,
@@ -1621,9 +1699,12 @@ var messageStore = {
         }, _callee3);
       }))();
     },
-    addNewMessage: function addNewMessage(_ref5, message) {
-      var commit = _ref5.commit;
+    addNewMessage: function addNewMessage(_ref6, message) {
+      var commit = _ref6.commit;
       commit('ADD_MESSAGE', message);
+    },
+    updateMessage: function updateMessage(_ref7, c) {
+      var commit = _ref7.commit;
     }
   }
 };
@@ -8496,7 +8577,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.modal-header {\n.close {\n    top: 24%;\n    right: 16px;\n    font-size: 30px;\n}\n}\n#search-new-message {\n    width: auto;\n    min-width: 200px;\n}\n#tag-users {\n.user {\n    cursor: pointer;\n    background: #00b9ef;\n    border-radius: 12px;\n    padding: 5px 20px 5px 10px;\n    position: relative;\n    -webkit-user-select: none; /* Safari */ /* IE 10 and IE 11 */\n    -moz-user-select: none;\n         user-select: none;\n\n/* Standard syntax */\n.tag-delete {\n    cursor: pointer;\n    position: absolute;\n    right: 5px;\n    color: #000;\n}\n}\n}\n.input-group{\n    border-radius: 12px;\n    overflow: hidden;\n.input-loading{\n    display : flex;\n    align-items: center;\n    justify-content: center;\n    padding: 0 5px;\n.icon-load{\n    width: 1rem;\n    height: 1rem;\n}\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.modal-header {\n.close {\r\n    top: 24%;\r\n    right: 16px;\r\n    font-size: 30px;\n}\n}\n#search-new-message {\r\n    width: auto;\r\n    min-width: 200px;\n}\n#tag-users {\n.user {\r\n    cursor: pointer;\r\n    background: #00b9ef;\r\n    border-radius: 12px;\r\n    padding: 5px 20px 5px 10px;\r\n    position: relative;\r\n    -webkit-user-select: none; /* Safari */ /* IE 10 and IE 11 */\r\n    -moz-user-select: none;\r\n         user-select: none;\r\n\r\n/* Standard syntax */\n.tag-delete {\r\n    cursor: pointer;\r\n    position: absolute;\r\n    right: 5px;\r\n    color: #000;\n}\n}\n}\n.input-group{\r\n    border-radius: 12px;\r\n    overflow: hidden;\n.input-loading{\r\n    display : flex;\r\n    align-items: center;\r\n    justify-content: center;\r\n    padding: 0 5px;\n.icon-load{\r\n    width: 1rem;\r\n    height: 1rem;\n}\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -47465,7 +47546,10 @@ var render = function () {
       _c(
         "main",
         [
-          _c("router-view", { key: _vm.$route.fullPath }),
+          _c("router-view", {
+            key: _vm.$route.fullPath,
+            class: { "message-page": _vm.$route.name === "message" },
+          }),
           _vm._v(" "),
           _c("router-view", {
             key: _vm.$route.fullPath + "/message",

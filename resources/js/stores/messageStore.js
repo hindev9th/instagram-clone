@@ -18,6 +18,9 @@ const messageStore = {
         FETCH_MESSAGE(state,message){
             state.message = message;
         },
+        ADD_MESSAGES(state,messages){
+            messages.data.forEach(e => state.messages.data.push(e));
+        },
         ADD_MESSAGE(state,message){
             state.messages.data.unshift(message);
         }
@@ -31,11 +34,13 @@ const messageStore = {
         }
     },
     actions : {
-        async fetchMessages({commit},chatId){
-            await $api.get(`${RESOURCE_MESSAGE}/${chatId}`)
-                .then(res => {
-                    commit('FETCH_MESSAGES',res.data);
-                })
+        async fetchMessages({commit}, {chatId,page}){
+            let res = await $api.get(`${RESOURCE_MESSAGE}/${chatId}?page=${page}`);
+            if (page === 1){
+                commit('FETCH_MESSAGES',res.data);
+            }else {
+                commit('ADD_MESSAGES',res.data)
+            }
         },
         async fetchMessage({commit}){
             await $api.get(RESOURCE_MESSAGE)
@@ -52,6 +57,9 @@ const messageStore = {
         },
         addNewMessage({commit},message){
             commit('ADD_MESSAGE',message)
+        },
+        updateMessage({commit},c){
+
         }
     }
 }

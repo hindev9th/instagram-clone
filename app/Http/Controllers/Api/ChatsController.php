@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Events\NewChat;
 use App\Models\Chat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ChatsController extends Controller
 {
@@ -47,6 +48,16 @@ class ChatsController extends Controller
     public function update(Request $request,Chat $chat){
         $chat->update($request->all());
         return $chat;
+    }
+
+    public function leave(Chat $chat)
+    {
+        return DB::table("chat_user")
+            ->where('chat_id', $chat->id)
+            ->where('user_id', auth()->id())
+            ->update([
+                "deleted_at" => DB::raw('Now()'),
+            ]);
     }
 
     public function destroy(Chat $chat)

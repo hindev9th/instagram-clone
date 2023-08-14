@@ -72,7 +72,7 @@ class User extends Authenticatable
 
     public function getIsFollowedAttribute()
     {
-//        return auth()->user()->following->contains($this->id);
+        return auth()->user()->following->contains($this->id);
     }
 
     /**
@@ -147,6 +147,6 @@ class User extends Authenticatable
      */
     public function chats()
     {
-        return $this->belongsToMany(Chat::class)->withTimestamps();
+        return $this->belongsToMany(Chat::class)->wherePivotNull("deleted_at")->withTimestamps();
     }
 }

@@ -8,8 +8,8 @@ Vue.use(Vuex);
 const chatStore = {
     namespaced : true,
     state : {
-        chats : [],
-        chat : {},
+        chats : null,
+        chat : null,
     },
     mutations : {
         FETCH_CHATS(state,chats){
@@ -18,7 +18,10 @@ const chatStore = {
         FETCH_CHAT(state,chat){
             state.chat = chat;
         },
-        ADD_CHATS(state,chat){
+        ADD_CHATS(state,chats){
+            chats.data.forEach(e => state.chats.data.push(e));
+        },
+        ADD_CHAT(state,chat){
             state.chats.data.unshift(chat);
         }
     },
@@ -31,11 +34,13 @@ const chatStore = {
         },
     },
     actions : {
-        async fetchChats({commit}){
-            await $api.get(RESOURCE_CHATS)
-                .then(res => {
-                    commit('FETCH_CHATS',res.data);
-                })
+        async fetchChats({commit},page){
+            let res =  await $api.get(`${RESOURCE_CHATS}?page=${page}`)
+            if (page === 1){
+                commit('FETCH_CHATS',res.data);
+            }else {
+                commit('ADD_CHATS',res.data)
+            }
         },
         async fetchChat({commit},id){
             let res = await $api.get(`${RESOURCE_CHATS}/${id}`)
@@ -45,9 +50,26 @@ const chatStore = {
             let res = await $api.post(`${RESOURCE_CHATS}`,{users : usersId});
         },
         addNewChat({commit},chat){
-            commit('ADD_CHATS',chat)
-            console.log(chat)
+            commit('ADD_CHAT',chat)
+        },
+        async updateChat({commit},chat){
+            let res = await $api.post(`${RESOURCE_CHATS}/${chat.id}`,{
+                _method : 'PUT',
+                name : chat.name
+            });
+            commit('FETCH_CHAT',chat);
+        },
+        async leaveChat({commit},chat){
+            await $api.post(`${RESOURCE_CHATS}/${chat.id}`,{
+                _method : 'PATCH',
+            });
+        },
+        async deleteChat({commit},chat){
+            await $api.post(`${RESOURCE_CHATS}/${chat.id}`,{
+                _method : 'DELETE',
+            });
         }
+
     }
 }
 
