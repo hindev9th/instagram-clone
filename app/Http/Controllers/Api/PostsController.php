@@ -75,7 +75,7 @@ class PostsController extends Controller
         $data = [
             'caption' => $request['caption'],
         ];
-        if ($request['image'] != null){
+        if ($request['image']){
             $image = $request['image']->store('/uploads','public');
             $data['image'] = $image;
         }

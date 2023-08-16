@@ -1891,10 +1891,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     auth: 'getAuth'
   })),
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapActions)('user', ['logOut'])), {}, {
-    getImage: _functiton__WEBPACK_IMPORTED_MODULE_2__.getImage,
-    logOutAccount: function logOutAccount() {
-      this.logOut().then(window.location.reload());
-    }
+    getImage: _functiton__WEBPACK_IMPORTED_MODULE_2__.getImage
   })
 });
 
@@ -2296,7 +2293,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.header-post[data-v-4b2047b2]{\n    justify-content: space-between;\n    align-items: center;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.header-post[data-v-4b2047b2]{\r\n    justify-content: space-between;\r\n    align-items: center;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -9435,7 +9432,7 @@ var render = function () {
                     "logout cursor-pointer prevent-select text-primary",
                   on: {
                     click: function ($event) {
-                      return _vm.logOutAccount()
+                      return _vm.logOut()
                     },
                   },
                 },

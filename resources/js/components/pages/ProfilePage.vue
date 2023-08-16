@@ -1,6 +1,6 @@
 <template>
     <div class="box-main">
-        <div class="container profile">
+        <div class="container profile" v-if="isLoading">
             <div class="box-info-user d-flex pb-5 border-bottom" v-if="getProfile.profile">
                 <div class="pr-4">
                     <img
@@ -15,11 +15,12 @@
                             <div class="d-flex">
                                 <h2 class="pr-3" v-text="getProfile.username"></h2>
 
-                                <a href="#"
+                                <router-link
                                    class="btn btn-primary"
                                    v-if="getProfile.id === getAuth.id"
+                                   :to="{name : 'account'}"
                                    style="height: fit-content;"
-                                   title="Edit profile">Edit profile</a>
+                                   title="Edit profile">Edit profile</router-link>
                                 <div v-else>
                                     <follow-button :username="getProfile.username" :follows="getProfile.isFollowed" class="btn btn-primary text-right"></follow-button>
                                     <router-link class="btn btn-primary ml-2" :to="{name : 'chat'}">
@@ -85,6 +86,7 @@ export default {
     name: "ProfilePage",
     data(){
         return{
+            isLoading : false,
             page : 1,
             indexShowPost : null,
             baseUrl : Laravel.baseUrl,
@@ -92,8 +94,9 @@ export default {
         }
     },
     created() {
-        this.fetchProfile(this.$route.params.username);
-        this.fetchPosts(this.$route.params.username);
+        this.fetchProfileAndPosts(this.$route.params.username).then(()=>{
+            this.isLoading = true;
+        }).catch(()=>{});
     },
     computed:{
         ...mapGetters('profile',['getProfile','getPosts']),
@@ -101,7 +104,7 @@ export default {
     },
     methods:{
         getImage,
-        ...mapActions('profile',['fetchProfile','fetchPosts',"fetchMorePosts"]),
+        ...mapActions('profile',['fetchProfileAndPosts',"fetchMorePosts"]),
         infiniteLoad($state){
             setTimeout(() => {
                 this.page++;

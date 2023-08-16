@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Request;
+
 class ProfilesController extends Controller
 {
 
@@ -41,24 +43,17 @@ class ProfilesController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update()
+    public function update(Request $request)
     {
         $user = auth()->user();
 
-        $data = \request()->validate([
-            'title' => 'required',
-            'description' => '',
-            'url' => 'url|nullable',
-            'image' => 'image|nullable',
-        ]);
-
-        if (\request('image')) {
+        $data = [
+            'title' => $request['title'],
+            'description' => $request['description'],
+        ];
+        if ($request['image']) {
             $imagePath = \request('image')->store('/uploads', 'public');
-
-            $data = array_merge(
-                $data,
-                ['image' => $imagePath]
-            );
+            $data['image'] = $imagePath;
         }
 
         $user->profile->update($data);

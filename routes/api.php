@@ -28,6 +28,8 @@ Route::middleware('auth:api')->prefix('/')->group(function (){
         Route::get('/',[UserController::class,'auth'])->name('user.auth');
         Route::get('/suggested',[UserController::class,'suggested'])->name('user.suggested');
         Route::get('/search/{search}',[UserController::class,'search']);
+        Route::patch('/',[UserController::class,'update']);
+        Route::put('/',[UserController::class,'changePassword']);
 
     });
 

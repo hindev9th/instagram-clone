@@ -23,7 +23,7 @@
                                        :style="{background : (url === '' ? '' : 'url(' + url + ') no-repeat')}"></label>
 
                                 <input id="image" accept='image/*' @change="onFileChange" :disabled="isLoading"
-                                       type="file" class="form-control-file" name="image"
+                                       type="file" class="form-control-file d-none" name="image"
                                        required autocomplete="image">
                             </div>
                             <div class="col-md-4 box-content">

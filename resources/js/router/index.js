@@ -13,5 +13,10 @@ const index = [
     ...chatRouter,
     ...profileRouter,
     ...messageRouter,
+    {
+        path : '*',
+        component : () => import('../components/pages/Error/E404Page'),
+        name : 'notfound',
+    },
 ];
 export default index;

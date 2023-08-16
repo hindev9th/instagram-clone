@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -85,16 +86,40 @@ class UserController extends Controller
         //
     }
 
+    public function changePassword(Request $request)
+    {
+        $user = auth()->user();
+        $request->validate([
+            'password' => 'required|string',
+            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        if (bcrypt($request['password']) === $user->password){
+            return ['status' => 'Current Password is Invalid'];
+        }
+
+        $user->update([
+            'password' => bcrypt($request['new_password'])
+        ]);
+        return ['status' => 'Change password success.'];
+    }
+
     /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $request->validate([
+           'username' =>  ['required', 'string', 'regex:/^[a-z0-9.]+$/', 'max:255', 'unique:users'],
+        ], [
+            'username.regex' => 'The input string can only contain lowercase letters, numbers, and dots.',
+        ]);
+
+        $user = $request->user();
+        return $user->update($request->all());
     }
 
     /**

@@ -31,8 +31,17 @@ const profileStore = {
         }
     },
     actions :{
+        async fetchProfileAndPosts({commit},username){
+            let [profile , posts] =
+            await Promise.all([
+                $api.get(`${RESOURCE_PROFILES}/${username}`),
+                $api.get(`${PROFILES_POSTS}/${username}`),
+            ])
+            commit('FETCH_PROFILE',profile.data);
+            commit('FETCH_POSTS',posts.data);
+        },
         async fetchProfile({commit},username){
-            let profile = await $api.get(`${RESOURCE_PROFILES}/${username}`)
+            let profile = await $api.get(`${RESOURCE_PROFILES}/${username}`);
             commit('FETCH_PROFILE',profile.data);
         },
         async fetchPosts({commit}, username){
@@ -43,6 +52,9 @@ const profileStore = {
             let posts =  await $api.get(`${PROFILES_POSTS}/${username}?page=${page}`)
             commit('ADD_POSTS',posts.data);
         },
+        async updateProfile({commit},profile){
+            await $api.post(RESOURCE_PROFILES,profile)
+        }
     }
 };
 

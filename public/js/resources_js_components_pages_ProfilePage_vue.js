@@ -1652,6 +1652,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 //
 //
 //
+//
 
 
 
@@ -1668,6 +1669,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
   name: "ProfilePage",
   data: function data() {
     return {
+      isLoading: false,
       page: 1,
       indexShowPost: null,
       baseUrl: Laravel.baseUrl,
@@ -1675,22 +1677,24 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     };
   },
   created: function created() {
-    this.fetchProfile(this.$route.params.username);
-    this.fetchPosts(this.$route.params.username);
+    var _this = this;
+    this.fetchProfileAndPosts(this.$route.params.username).then(function () {
+      _this.isLoading = true;
+    })["catch"](function () {});
   },
   computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_5__.mapGetters)('profile', ['getProfile', 'getPosts'])), (0,vuex__WEBPACK_IMPORTED_MODULE_5__.mapGetters)('user', ['getAuth'])),
   methods: _objectSpread(_objectSpread({
     getImage: _functiton__WEBPACK_IMPORTED_MODULE_0__.getImage
-  }, (0,vuex__WEBPACK_IMPORTED_MODULE_5__.mapActions)('profile', ['fetchProfile', 'fetchPosts', "fetchMorePosts"])), {}, {
+  }, (0,vuex__WEBPACK_IMPORTED_MODULE_5__.mapActions)('profile', ['fetchProfileAndPosts', "fetchMorePosts"])), {}, {
     infiniteLoad: function infiniteLoad($state) {
-      var _this = this;
+      var _this2 = this;
       setTimeout(function () {
-        _this.page++;
-        _this.fetchMorePosts({
-          'username': _this.$route.params.username,
-          'page': _this.page
+        _this2.page++;
+        _this2.fetchMorePosts({
+          'username': _this2.$route.params.username,
+          'page': _this2.page
         }).then(function () {
-          if (_this.page >= _this.getPosts.last_page) {
+          if (_this2.page >= _this2.getPosts.last_page) {
             $state.complete();
           } else {
             $state.loaded();
@@ -8202,204 +8206,216 @@ var render = function () {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "box-main" }, [
-    _c("div", { staticClass: "container profile" }, [
-      _vm.getProfile.profile
-        ? _c(
-            "div",
-            { staticClass: "box-info-user d-flex pb-5 border-bottom" },
-            [
-              _c("div", { staticClass: "pr-4" }, [
-                _c("img", {
-                  staticClass: "rounded-circle",
-                  attrs: {
-                    src: _vm.getImage(_vm.getProfile.profile.image),
-                    width: "200px",
-                    height: "200px",
-                  },
-                }),
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "pt-4 info" }, [
-                _c("div", { staticClass: "container" }, [
-                  _c("div", { staticClass: "row" }, [
-                    _c("div", { staticClass: "d-flex" }, [
-                      _c("h2", {
-                        staticClass: "pr-3",
-                        domProps: {
-                          textContent: _vm._s(_vm.getProfile.username),
-                        },
-                      }),
-                      _vm._v(" "),
-                      _vm.getProfile.id === _vm.getAuth.id
-                        ? _c(
-                            "a",
-                            {
-                              staticClass: "btn btn-primary",
-                              staticStyle: { height: "fit-content" },
-                              attrs: { href: "#", title: "Edit profile" },
-                            },
-                            [_vm._v("Edit profile")]
-                          )
-                        : _c(
-                            "div",
-                            [
-                              _c("follow-button", {
-                                staticClass: "btn btn-primary text-right",
-                                attrs: {
-                                  username: _vm.getProfile.username,
-                                  follows: _vm.getProfile.isFollowed,
-                                },
-                              }),
-                              _vm._v(" "),
-                              _c(
-                                "router-link",
-                                {
-                                  staticClass: "btn btn-primary ml-2",
-                                  attrs: { to: { name: "chat" } },
-                                },
-                                [
-                                  _vm._v(
-                                    "\n                                    Message\n                                "
-                                  ),
-                                ]
-                              ),
-                            ],
-                            1
-                          ),
-                    ]),
+    _vm.isLoading
+      ? _c("div", { staticClass: "container profile" }, [
+          _vm.getProfile.profile
+            ? _c(
+                "div",
+                { staticClass: "box-info-user d-flex pb-5 border-bottom" },
+                [
+                  _c("div", { staticClass: "pr-4" }, [
+                    _c("img", {
+                      staticClass: "rounded-circle",
+                      attrs: {
+                        src: _vm.getImage(_vm.getProfile.profile.image),
+                        width: "200px",
+                        height: "200px",
+                      },
+                    }),
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "row pb-3" }, [
-                    _c("div", { staticClass: "pr-5" }, [
-                      _c("strong", [
-                        _vm._v(_vm._s(_vm.getProfile.posts_count)),
-                      ]),
-                      _vm._v(" posts"),
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "pr-5 d-flex" },
-                      [
-                        _c("strong", [
-                          _vm._v(_vm._s(_vm.getProfile.followers_count)),
-                        ]),
-                        _vm._v("  \n                            "),
-                        _c("show-user-button", {
-                          attrs: {
-                            action:
-                              _vm.resource_follows +
-                              "/" +
-                              _vm.getProfile.username +
-                              "/followers",
-                            title: "followers",
-                            text: "followers",
-                          },
-                        }),
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "pr-5 d-flex" },
-                      [
-                        _c("strong", [
-                          _vm._v(_vm._s(_vm.getProfile.following_count)),
-                        ]),
-                        _vm._v("  \n                            "),
-                        _c("show-user-button", {
-                          attrs: {
-                            action:
-                              _vm.resource_follows +
-                              "/" +
-                              _vm.getProfile.username +
-                              "/following",
-                            title: "following",
-                            text: "following",
-                          },
-                        }),
-                      ],
-                      1
-                    ),
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row" }, [
-                    _c("strong", [
-                      _vm._v(_vm._s(_vm.getProfile.profile.title)),
-                    ]),
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row" }, [
-                    _vm._v(_vm._s(_vm.getProfile.profile.description)),
-                  ]),
-                ]),
-              ]),
-            ]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _c("div", { staticClass: "tab-content" }, [
-        _vm.getPosts
-          ? _c(
-              "div",
-              { staticClass: "tab-pane active", attrs: { id: "POSTS" } },
-              [
-                _c(
-                  "div",
-                  { staticClass: "row" },
-                  _vm._l(_vm.getPosts.data, function (post) {
-                    return _c(
-                      "div",
-                      { staticClass: "col-4 p-1" },
-                      [
+                  _c("div", { staticClass: "pt-4 info" }, [
+                    _c("div", { staticClass: "container" }, [
+                      _c("div", { staticClass: "row" }, [
                         _c(
-                          "span",
-                          {
-                            staticClass: "cursor-pointer",
-                            attrs: {
-                              "data-toggle": "modal",
-                              "data-backdrop": "static",
-                              "data-keyboard": "false",
-                              "data-target": "#modal-post-show",
-                            },
-                            on: {
-                              click: function ($event) {
-                                return _vm.showPost(post.id)
-                              },
-                            },
-                          },
+                          "div",
+                          { staticClass: "d-flex" },
                           [
-                            _c("img", {
-                              staticClass: "w-100",
-                              attrs: {
-                                src: _vm.baseUrl + "/storage/" + post.image,
-                                alt: "",
+                            _c("h2", {
+                              staticClass: "pr-3",
+                              domProps: {
+                                textContent: _vm._s(_vm.getProfile.username),
                               },
                             }),
-                          ]
+                            _vm._v(" "),
+                            _vm.getProfile.id === _vm.getAuth.id
+                              ? _c(
+                                  "router-link",
+                                  {
+                                    staticClass: "btn btn-primary",
+                                    staticStyle: { height: "fit-content" },
+                                    attrs: {
+                                      to: { name: "account" },
+                                      title: "Edit profile",
+                                    },
+                                  },
+                                  [_vm._v("Edit profile")]
+                                )
+                              : _c(
+                                  "div",
+                                  [
+                                    _c("follow-button", {
+                                      staticClass: "btn btn-primary text-right",
+                                      attrs: {
+                                        username: _vm.getProfile.username,
+                                        follows: _vm.getProfile.isFollowed,
+                                      },
+                                    }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "router-link",
+                                      {
+                                        staticClass: "btn btn-primary ml-2",
+                                        attrs: { to: { name: "chat" } },
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                                    Message\n                                "
+                                        ),
+                                      ]
+                                    ),
+                                  ],
+                                  1
+                                ),
+                          ],
+                          1
+                        ),
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "row pb-3" }, [
+                        _c("div", { staticClass: "pr-5" }, [
+                          _c("strong", [
+                            _vm._v(_vm._s(_vm.getProfile.posts_count)),
+                          ]),
+                          _vm._v(" posts"),
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "pr-5 d-flex" },
+                          [
+                            _c("strong", [
+                              _vm._v(_vm._s(_vm.getProfile.followers_count)),
+                            ]),
+                            _vm._v("  \n                            "),
+                            _c("show-user-button", {
+                              attrs: {
+                                action:
+                                  _vm.resource_follows +
+                                  "/" +
+                                  _vm.getProfile.username +
+                                  "/followers",
+                                title: "followers",
+                                text: "followers",
+                              },
+                            }),
+                          ],
+                          1
                         ),
                         _vm._v(" "),
-                        post.id === _vm.indexShowPost
-                          ? _c("modal-post-show", {
-                              attrs: { post: post },
-                              on: { "close-modal": _vm.hidePost },
-                            })
-                          : _vm._e(),
-                      ],
-                      1
-                    )
-                  }),
-                  0
-                ),
-                _vm._v(" "),
-                _c("infinite-loading", { on: { infinite: _vm.infiniteLoad } }),
-              ],
-              1
-            )
-          : _vm._e(),
-      ]),
-    ]),
+                        _c(
+                          "div",
+                          { staticClass: "pr-5 d-flex" },
+                          [
+                            _c("strong", [
+                              _vm._v(_vm._s(_vm.getProfile.following_count)),
+                            ]),
+                            _vm._v("  \n                            "),
+                            _c("show-user-button", {
+                              attrs: {
+                                action:
+                                  _vm.resource_follows +
+                                  "/" +
+                                  _vm.getProfile.username +
+                                  "/following",
+                                title: "following",
+                                text: "following",
+                              },
+                            }),
+                          ],
+                          1
+                        ),
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "row" }, [
+                        _c("strong", [
+                          _vm._v(_vm._s(_vm.getProfile.profile.title)),
+                        ]),
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "row" }, [
+                        _vm._v(_vm._s(_vm.getProfile.profile.description)),
+                      ]),
+                    ]),
+                  ]),
+                ]
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _c("div", { staticClass: "tab-content" }, [
+            _vm.getPosts
+              ? _c(
+                  "div",
+                  { staticClass: "tab-pane active", attrs: { id: "POSTS" } },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "row" },
+                      _vm._l(_vm.getPosts.data, function (post) {
+                        return _c(
+                          "div",
+                          { staticClass: "col-4 p-1" },
+                          [
+                            _c(
+                              "span",
+                              {
+                                staticClass: "cursor-pointer",
+                                attrs: {
+                                  "data-toggle": "modal",
+                                  "data-backdrop": "static",
+                                  "data-keyboard": "false",
+                                  "data-target": "#modal-post-show",
+                                },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.showPost(post.id)
+                                  },
+                                },
+                              },
+                              [
+                                _c("img", {
+                                  staticClass: "w-100",
+                                  attrs: {
+                                    src: _vm.baseUrl + "/storage/" + post.image,
+                                    alt: "",
+                                  },
+                                }),
+                              ]
+                            ),
+                            _vm._v(" "),
+                            post.id === _vm.indexShowPost
+                              ? _c("modal-post-show", {
+                                  attrs: { post: post },
+                                  on: { "close-modal": _vm.hidePost },
+                                })
+                              : _vm._e(),
+                          ],
+                          1
+                        )
+                      }),
+                      0
+                    ),
+                    _vm._v(" "),
+                    _c("infinite-loading", {
+                      on: { infinite: _vm.infiniteLoad },
+                    }),
+                  ],
+                  1
+                )
+              : _vm._e(),
+          ]),
+        ])
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []

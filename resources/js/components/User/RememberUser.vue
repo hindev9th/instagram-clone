@@ -18,7 +18,7 @@
                     <span class="name">{{ auth.name }}</span>
                 </div>
             </div>
-            <div class="logout cursor-pointer prevent-select text-primary" @click="logOutAccount()">
+            <div class="logout cursor-pointer prevent-select text-primary" @click="logOut()">
                 Logout
             </div>
         </div>
@@ -53,9 +53,6 @@ export default {
     methods:{
         ...mapActions('user',['logOut']),
         getImage,
-        logOutAccount(){
-            this.logOut().then(window.location.reload())
-        }
 
     }
 }

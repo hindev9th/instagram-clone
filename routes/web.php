@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +15,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 */
 
 Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::middleware('auth')->get('{any}',function (){
     return view('home');

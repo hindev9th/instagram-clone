@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import {AUTH_USER,USER_SUGGESTED} from "../api/userApi";
 import $api from "../api";
+import {RESOURCE_PROFILES} from "../api/profileApi";
 
 Vue.use(Vuex);
 
@@ -37,8 +38,16 @@ const userStore = {
             let users = await $api.get(USER_SUGGESTED)
             commit('FETCH_SUGGESTED',users.data);
         },
+        async updateUser({commit},user){
+            await $api.post(AUTH_USER,user)
+        },
+        async changePassword({},password){
+            return  await $api.post(AUTH_USER,password);
+        },
         async logOut({}){
-            await $api.post('/logout')
+            await $api.post('/logout').then(()=>{
+                location.reload();
+            })
         }
     }
 }
