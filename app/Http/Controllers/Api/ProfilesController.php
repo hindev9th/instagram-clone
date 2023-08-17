@@ -23,7 +23,7 @@ class ProfilesController extends Controller
 
     public function posts(User $user)
     {
-        return $user->posts()->paginate(9);
+        return $user->posts()->paginate(15);
     }
 
     /**

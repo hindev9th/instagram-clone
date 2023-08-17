@@ -19,11 +19,11 @@ class CommentsController extends Controller
         return $comment->replies()->withCount('likes','replies')->paginate(5);
     }
 
-    public function store(Request $request,Post $post)
+    public function store(Request $request)
     {
         $user = auth()->user();
         $data = array_merge($request->all(),['user_id' => $user->id]) ;
-        $comment = $post->comments()->create($data);
+        $comment = Comment::create($data);
         return $comment->load('user');
     }
 

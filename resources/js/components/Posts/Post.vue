@@ -38,14 +38,15 @@
                     </div>
                     <div class="row m-0 pt-2 pb-2">
                         <div class="w-100">
-                            <a :href="base_url + '/profile/' + post.user.username"
-                               class="text-decoration-none text-dark"><strong>{{ post.user.username }}</strong></a>
+                            <router-link class="text-decoration-none text-dark" :to="{name : 'profile', params: {username: post.user.username}}">
+                                <strong>{{ post.user.username }}</strong>
+                            </router-link>
                             <span v-html="extractTagsFromString(post.caption)"></span>
                         </div>
                     </div>
-                    <CommentButton :post="post"  :text="`View all ${formatNumber(commentsCount)} comments`" ></CommentButton>
+                    <CommentButton :post="post" :key="post.id"  :text="`View all ${formatNumber(commentsCount)} comments`" ></CommentButton>
                     <Comment :comment="comment" :key="index" v-for="(comment,index) in newComments"></Comment>
-                    <CommentForm :post="post"  class="border-bottom pb-3"></CommentForm>
+                    <CommentForm :post="post" class="border-bottom pb-3"></CommentForm>
                 </div>
             </div>
         </div>

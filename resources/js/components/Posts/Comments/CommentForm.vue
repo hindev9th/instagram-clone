@@ -61,19 +61,20 @@ export default {
         extractTagsFromString,
         addHandle(){
             let data = new FormData();
-            data.append('_token',this.auth_data.csrf_token);
+            data.append('post_id',this.post.id);
             data.append('comment',this.strComment);
-            if (this.replyComment != null){
-                data.append('parent_id',this.replyComment.parent_id != null ? this.replyComment.parent_id : this.replyComment.id );
+            if (this.replyComment){
+                data.append('parent_id',this.replyComment.parent_id ? this.replyComment.parent_id : this.replyComment.id );
             }
 
 
             this.isSending = true
-            this.addComment({postId : this.post.id,formData : data})
+            this.addComment( data)
                 .then(res =>{
+                    Bus.$emit(`new-comment-${this.post.id}`,res.data);
                     this.strComment = '';
                     this.isSending = false;
-                    if (this.replyComment != null){
+                    if (this.replyComment){
                         this.cancelReply();
                     }
                 })

@@ -202,7 +202,6 @@
 
 .chat-history .message:after {
     bottom: 100%;
-    left: 7%;
     border: solid transparent;
     content: " ";
     height: 0;
@@ -239,7 +238,7 @@
 
 .chat-history .other-message:after {
     border-bottom-color: #e8f1f3;
-    left: 73%;
+    right: 5px;
     transform: rotate(180deg);
     top: 100%;
 }

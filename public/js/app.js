@@ -1483,21 +1483,21 @@ var commentStore = {
         }, _callee);
       }))();
     },
-    addComment: function addComment(_ref3, _ref4) {
+    addComment: function addComment(_ref3, formData) {
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var commit, postId, formData, comment;
+        var commit, comment;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
               commit = _ref3.commit;
-              postId = _ref4.postId, formData = _ref4.formData;
-              _context2.next = 4;
-              return _api__WEBPACK_IMPORTED_MODULE_1__["default"].post("".concat(_api_commentApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_COMMENTS, "/").concat(postId), formData);
-            case 4:
+              _context2.next = 3;
+              return _api__WEBPACK_IMPORTED_MODULE_1__["default"].post("".concat(_api_commentApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_COMMENTS), formData);
+            case 3:
               comment = _context2.sent;
-              if (comment.data.parent_id == null) {
+              if (!comment.data.parent_id) {
                 commit('ADD_COMMENT', comment.data);
               }
+              return _context2.abrupt("return", comment);
             case 6:
             case "end":
               return _context2.stop();
@@ -1505,13 +1505,13 @@ var commentStore = {
         }, _callee2);
       }))();
     },
-    updateComment: function updateComment(_ref5, comment) {
+    updateComment: function updateComment(_ref4, comment) {
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
         var commit, response;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
-              commit = _ref5.commit;
+              commit = _ref4.commit;
               _context3.next = 3;
               return _api__WEBPACK_IMPORTED_MODULE_1__["default"].post("".concat(_api_commentApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_COMMENTS, "/").concat(comment.id), {
                 _method: 'PATCH',
@@ -1527,13 +1527,13 @@ var commentStore = {
         }, _callee3);
       }))();
     },
-    deleteComment: function deleteComment(_ref6, id) {
+    deleteComment: function deleteComment(_ref5, id) {
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
         var commit;
         return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) switch (_context4.prev = _context4.next) {
             case 0:
-              commit = _ref6.commit;
+              commit = _ref5.commit;
               _context4.next = 3;
               return _api__WEBPACK_IMPORTED_MODULE_1__["default"].post("".concat(_api_commentApi__WEBPACK_IMPORTED_MODULE_0__.RESOURCE_COMMENTS, "/").concat(id), {
                 _method: 'DELETE'

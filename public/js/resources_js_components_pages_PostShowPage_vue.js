@@ -668,19 +668,17 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     addHandle: function addHandle() {
       var _this2 = this;
       var data = new FormData();
-      data.append('_token', this.auth_data.csrf_token);
+      data.append('post_id', this.post.id);
       data.append('comment', this.strComment);
-      if (this.replyComment != null) {
-        data.append('parent_id', this.replyComment.parent_id != null ? this.replyComment.parent_id : this.replyComment.id);
+      if (this.replyComment) {
+        data.append('parent_id', this.replyComment.parent_id ? this.replyComment.parent_id : this.replyComment.id);
       }
       this.isSending = true;
-      this.addComment({
-        postId: this.post.id,
-        formData: data
-      }).then(function (res) {
+      this.addComment(data).then(function (res) {
+        Bus.$emit("new-comment-".concat(_this2.post.id), res.data);
         _this2.strComment = '';
         _this2.isSending = false;
-        if (_this2.replyComment != null) {
+        if (_this2.replyComment) {
           _this2.cancelReply();
         }
       })["catch"](function (e) {
@@ -760,17 +758,20 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
   data: function data() {
     return {
       comments: null,
-      isLoading: false,
+      isLoading: true,
       auth_data: window.Laravel,
       page: 1,
       isShowMore: false
     };
   },
   created: function created() {
+    var _this = this;
     this.fetchComments({
       postId: this.post.id,
       page: this.page
-    }).then(function (e) {});
+    }).then(function (e) {
+      _this.isLoading = false;
+    });
   },
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapGetters)('comment', ['getComments'])),
   methods: _objectSpread(_objectSpread({
@@ -778,13 +779,13 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     formatTime: _functiton__WEBPACK_IMPORTED_MODULE_0__.formatTime
   }, (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapActions)('comment', ['fetchComments'])), {}, {
     infiniteHandle: function infiniteHandle($state) {
-      var _this = this;
+      var _this2 = this;
       this.page++;
       this.fetchComments({
         postId: this.post.id,
         page: this.page
       }).then(function (e) {
-        if (_this.page >= _this.getComments.last_page) {
+        if (_this2.page >= _this2.getComments.last_page) {
           $state.complete();
         } else {
           $state.loaded();
@@ -6602,7 +6603,7 @@ var render = function () {
             ),
           ]),
           _vm._v(" "),
-          _vm.getComments
+          _vm.getComments && !_vm.isLoading
             ? _c(
                 "div",
                 [

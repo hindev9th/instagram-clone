@@ -66,7 +66,7 @@
 
                         </div>
                     </div>
-                    <infinite-loading @infinite="infiniteLoad"></infinite-loading>
+                    <infinite-loading @infinite="infiniteLoad" v-if="getPosts.last_page > page"></infinite-loading>
                 </div>
             </div>
         </div>

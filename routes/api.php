@@ -61,7 +61,7 @@ Route::middleware('auth:api')->prefix('/')->group(function (){
     Route::prefix('/comments')->group(function (){
         Route::get('/{post}',[CommentsController::class,'index']);
         Route::get('/{comment}/replies',[CommentsController::class,'loadReplies']);
-        Route::post('/{post}',[CommentsController::class,'store']);
+        Route::post('/',[CommentsController::class,'store']);
         Route::patch('/{comment}',[CommentsController::class,'update']);
         Route::delete('/{comment}',[CommentsController::class,'destroy']);
 

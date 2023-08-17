@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="getComments">
+        <div v-if="getComments && !isLoading">
             <Comment :comment="comment" v-for="comment in getComments.data"  :key="comment.id"></Comment>
             <infinite-loading @infinite="infiniteHandle"></infinite-loading>
         </div>
@@ -36,7 +36,7 @@ export default {
     data(){
         return{
             comments : null,
-            isLoading : false,
+            isLoading : true,
             auth_data : window.Laravel,
             page : 1,
             isShowMore: false,
@@ -44,7 +44,7 @@ export default {
     },
     created() {
         this.fetchComments({postId : this.post.id,page: this.page}).then(e => {
-
+            this.isLoading = false;
         });
     },
     computed:{

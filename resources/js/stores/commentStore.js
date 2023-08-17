@@ -52,11 +52,12 @@ const commentStore = {
             if (page === 1) commit('FETCH_COMMENTS',comments.data);
             if (page > 1) commit('ADD_COMMENTS',comments.data);
         },
-        async addComment({commit}, {postId,formData}){
-            let comment =  await $api.post(`${RESOURCE_COMMENTS}/${postId}`,formData);
-            if (comment.data.parent_id == null){
+        async addComment({commit}, formData){
+            let comment =  await $api.post(`${RESOURCE_COMMENTS}`,formData);
+            if (!comment.data.parent_id){
                 commit('ADD_COMMENT',comment.data);
             }
+            return comment;
         },
         async updateComment({commit}, comment) {
             let response = await $api.post(`${RESOURCE_COMMENTS}/${comment.id}`,
