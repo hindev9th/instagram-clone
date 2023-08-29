@@ -20,7 +20,7 @@
 
 <script>
 import User from "../User";
-import $api from "../../../api";
+import $api from "../../../api/apiClient";
 import {USER_SEARCH} from "../../../api/userApi";
 export default {
     components : {User},
@@ -31,25 +31,32 @@ export default {
             isLoading : false,
             text_search : '',
             auth_data : window.Laravel,
+            timer : undefined,
         }
     },
     methods:{
         clearText(){
             this.text_search = '';
+            this.users = null;
         },
-        async searchUsers() {
-            if (this.text_search.length > 2) {
-                this.isLoading = true;
-                await $api.get(`${USER_SEARCH}/${this.text_search}`)
-                    .then(response => {
-                        this.users = response.data;
-                        this.isLoading = false;
-                    })
-                    .catch(e => {
-                        this.isLoading = false;
-                    })
-            }
+        searchUsers() {
+            clearTimeout(this.timer);
+            this.timer = setTimeout(async () => {
+                if (!this.text_search) {
+                    this.clearText();
+                } else {
+                    this.isLoading = true;
+                    await $api.get(`${USER_SEARCH}/${this.text_search}`)
+                        .then(response => {
+                            this.users = response.data;
+                            this.isLoading = false;
+                        })
+                        .catch(e => {
+                            this.isLoading = false;
+                        })
+                }
 
+            }, 1000)
         },
     }
 }

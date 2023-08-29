@@ -45,7 +45,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       }
     };
   },
-  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)('user', {
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)('auth', {
     auth: 'getAuth'
   })),
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)('message', ['addNewMessageHandle'])), {}, {
@@ -221,7 +221,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       _this2.messages.push(message);
     });
   },
-  computed: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapGetters)('user', {
+  computed: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapGetters)('auth', {
     auth: 'getAuth'
   })), (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapGetters)('chat', {
     chat: 'getChat'
@@ -321,7 +321,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "InfoSlide",
   props: ['chat'],
-  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)('user', {
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)('auth', {
     auth: "getAuth"
   })),
   methods: _objectSpread(_objectSpread({
@@ -433,7 +433,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.message-list {\n}\n.message-list::-webkit-scrollbar {\r\n    /*display: none;*/\n}\n#wave {\r\n    position:relative;\r\n    text-align:center;\n.dot {\r\n    display:inline-block;\r\n    width: 3px;\r\n    height: 3px;\r\n    border-radius:50%;\r\n    margin-right:3px;\r\n    background:#303131;\r\n    animation: wave 1.3s linear infinite;\n&:nth-child(2) {\r\n     animation-delay: -1.1s;\n}\n&:nth-child(3) {\r\n     animation-delay: -0.9s;\n}\n}\n}\n@keyframes wave {\n0%, 60%, 100% {\r\n        transform: initial;\n}\n30% {\r\n        transform: translateY(-10px);\n}\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.message-list {\n}\n.message-list::-webkit-scrollbar {\n    /*display: none;*/\n}\n#wave {\n    position:relative;\n    text-align:center;\n.dot {\n    display:inline-block;\n    width: 3px;\n    height: 3px;\n    border-radius:50%;\n    margin-right:3px;\n    background:#303131;\n    animation: wave 1.3s linear infinite;\n&:nth-child(2) {\n     animation-delay: -1.1s;\n}\n&:nth-child(3) {\n     animation-delay: -0.9s;\n}\n}\n}\n@keyframes wave {\n0%, 60%, 100% {\n        transform: initial;\n}\n30% {\n        transform: translateY(-10px);\n}\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1390,14 +1390,16 @@ var render = function () {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "body-info" }, [
-        _c(
-          "div",
-          {
-            staticClass: "item hover-dark-20 cursor-pointer",
-            on: { click: _vm.rename },
-          },
-          [_c("span", [_vm._v("Change name")])]
-        ),
+        _vm.chat.users.length > 2
+          ? _c(
+              "div",
+              {
+                staticClass: "item hover-dark-20 cursor-pointer",
+                on: { click: _vm.rename },
+              },
+              [_c("span", [_vm._v("Change name")])]
+            )
+          : _vm._e(),
         _vm._v(" "),
         _c("div", { staticClass: "item" }, [
           _vm._m(0),

@@ -87,7 +87,7 @@ export default {
         this.isFollowed = user.isFollowed ;
     },
     computed:{
-        ...mapGetters('user',['getAuth']),
+        ...mapGetters('auth',['getAuth']),
     },
     methods: {
         showNotify,

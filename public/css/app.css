@@ -6115,6 +6115,53 @@ readers do not read off random characters that represent icons */
   font-weight: 400;
 }
 
+.box-login {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.info-user {
+  position: absolute;
+  display: none;
+  top: 40px;
+  background: #fff;
+  width: 400px;
+  min-height: 200px;
+  border-radius: 12px;
+  z-index: 1;
+}
+.info-user .box-info .header {
+  display: flex;
+  padding: 15px;
+}
+.info-user .box-info .header .name {
+  display: flex;
+  flex-direction: column;
+}
+.info-user .box-info .posts {
+  display: flex;
+}
+.info-user .box-info .posts div {
+  padding: 0;
+}
+.info-user .box-info .posts div:first-of-type {
+  padding-right: 5px;
+}
+.info-user .box-info .posts div:last-of-type {
+  padding-left: 5px;
+}
+
+.user {
+  position: relative;
+}
+
+.user .info:hover .info-user {
+  display: block;
+}
+
 input.comment:focus {
   box-shadow: none;
 }
@@ -6190,6 +6237,7 @@ input.comment:focus {
   display: flex;
   width: 100%;
   overflow-y: auto;
+  overflow-x: auto;
 }
 .post-home .remember.small .suggested-users .user {
   min-width: 130px;
@@ -6198,6 +6246,9 @@ input.comment:focus {
   flex-direction: column;
   border: 1px solid #dee2e6;
   border-radius: 10px;
+}
+.post-home .remember.small .suggested-users .user .info-user {
+  display: none;
 }
 .post-home .remember.small .suggested-users .user:not(:first-of-type) {
   margin-left: 10px;

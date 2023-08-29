@@ -21,16 +21,22 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('/login',[\App\Http\Controllers\Api\AuthController::class,'login']);
+Route::post('/register',[\App\Http\Controllers\Api\AuthController::class,'register']);
+
+
 Route::middleware('auth:api')->prefix('/')->group(function (){
+    Route::prefix('/auth')->group(function (){
+        Route::get('/',[\App\Http\Controllers\Api\AuthController::class,'index']);
+        Route::patch('/',[\App\Http\Controllers\Api\AuthController::class,'update']);
+        Route::put('/',[\App\Http\Controllers\Api\AuthController::class,'changePassword']);
+    });
 
     // User
     Route::prefix('/user')->group(function (){
-        Route::get('/',[UserController::class,'auth'])->name('user.auth');
         Route::get('/suggested',[UserController::class,'suggested'])->name('user.suggested');
         Route::get('/search/{search}',[UserController::class,'search']);
-        Route::patch('/',[UserController::class,'update']);
-        Route::put('/',[UserController::class,'changePassword']);
-
+        Route::get('/{user:username}',[UserController::class,'show'])->name('user.show');
     });
 
     Route::prefix('/profiles')->group(function (){
@@ -84,6 +90,7 @@ Route::middleware('auth:api')->prefix('/')->group(function (){
     Route::prefix('/chats')->group(function (){
         Route::get('/',[ChatsController::class,'index']);
         Route::post('/',[ChatsController::class,'store']);
+        Route::post('/c',[ChatsController::class,'showSingle']);
         Route::get('/{chat}',[ChatsController::class,'show']);
         Route::put('/{chat}',[ChatsController::class,'update']);
         Route::patch('/{chat}',[ChatsController::class,'leave']);

@@ -63,7 +63,7 @@ export default {
     },
     computed:{
         ...mapGetters('chat',['getChats']),
-        ...mapGetters('user',['getAuth']),
+        ...mapGetters('auth',['getAuth']),
     },
     methods: {
         getImage, getNames,

@@ -20,15 +20,14 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    @auth
+
     <script type="text/javascript">
         window.Laravel = {!! json_encode([
             'baseUrl' => url('/'),
             'csrf_token' => csrf_token(),
-            'api_token' => auth()->user()->api_token,
         ]) !!}
     </script>
-    @endauth
+
 </head>
 <body>
 <div id="app">

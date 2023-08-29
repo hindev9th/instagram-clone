@@ -23,9 +23,9 @@
                                    title="Edit profile">Edit profile</router-link>
                                 <div v-else>
                                     <follow-button :username="getProfile.username" :follows="getProfile.isFollowed" class="btn btn-primary text-right"></follow-button>
-                                    <router-link class="btn btn-primary ml-2" :to="{name : 'chat'}">
+                                    <button class="btn btn-primary ml-2" @click="handleRedirectChat">
                                         Message
-                                    </router-link>
+                                    </button>
                                 </div>
                             </div>
 
@@ -100,11 +100,21 @@ export default {
     },
     computed:{
         ...mapGetters('profile',['getProfile','getPosts']),
-        ...mapGetters('user',['getAuth']),
+        ...mapGetters('auth',['getAuth']),
     },
     methods:{
         getImage,
         ...mapActions('profile',['fetchProfileAndPosts',"fetchMorePosts"]),
+        ...mapActions('chat',['getChatId']),
+        handleRedirectChat(){
+            this.getChatId([this.getProfile.id]).then(id => {
+                if(id){
+                    this.$router.push({name : 'message',params : {id : id}}).catch(()=>{});
+                }else {
+                    this.$router.push({name : 'chat'}).catch(()=>{});
+                }
+            })
+        },
         infiniteLoad($state){
             setTimeout(() => {
                 this.page++;

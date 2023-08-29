@@ -120,7 +120,7 @@ export default {
 
     },
     computed : {
-        ...mapGetters('user',{
+        ...mapGetters('auth',{
             auth : 'getAuth',
         }),
         ...mapGetters('chat',{

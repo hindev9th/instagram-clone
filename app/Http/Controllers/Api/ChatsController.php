@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Events\NewChat;
 use App\Models\Chat;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -31,6 +32,14 @@ class ChatsController extends Controller
         broadcast(new NewChat($chat))->toOthers();
 
         return $chat->load('users');
+    }
+
+    public function showSingle(Request $request)
+    {
+        $userIds = $request['ids'];
+        $userIds[] = 21;
+        $chat = Chat::getRoomByUser($userIds)->first();
+        return ['id' => $chat->id ?? null];
     }
 
     public function show($chatId)

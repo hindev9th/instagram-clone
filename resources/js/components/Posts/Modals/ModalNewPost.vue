@@ -67,7 +67,7 @@ export default {
         }
     },
     computed:{
-        ...mapGetters('user',['getAuth']),
+        ...mapGetters('auth',['getAuth']),
     },
     methods: {
         getImage,showNotify,

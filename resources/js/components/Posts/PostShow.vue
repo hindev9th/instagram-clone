@@ -101,7 +101,7 @@ export default {
         })
     },
     computed:{
-      ...mapGetters('user',['getAuth']),
+      ...mapGetters('auth',['getAuth']),
       ...mapGetters('post',['getPost']),
     },
     methods:{

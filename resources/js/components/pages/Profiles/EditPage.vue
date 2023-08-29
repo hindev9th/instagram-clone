@@ -3,7 +3,7 @@
         <div class="container">
             <h1 class="text-center pb-5">Accounts Center</h1>
             <h4>Profile</h4>
-            <div class="Profile w-100 pb-5" v-if="auth.profile">
+            <div class="Profile w-100 pb-5" v-if="auth && auth.profile">
 
                 <form @submit.prevent="updateProfileHandle">
                     <div class="text-center pb-3">
@@ -18,7 +18,7 @@
                         <label for="description" >Description</label>
                         <input type="text" id="description" class="form-control" v-model="auth.profile.description"/>
                     </div>
-                    <button class="btn btn-primary">Save</button>
+                    <button class="btn btn-primary" :disabled="isLoading">Save</button>
                 </form>
             </div>
             <h4>Personal details</h4>
@@ -38,7 +38,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" style="fill: green" v-if="auth.email_verified_at" height="1em" viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
                     </div>
 
-                    <button class="btn btn-primary">Save</button>
+                    <button class="btn btn-primary" :disabled="isLoading">Save</button>
                 </form>
             </div>
             <h4>Password</h4>
@@ -56,8 +56,12 @@
                         <label for="new_password_confirmation">Password confirmation</label>
                         <input type="password" class="form-control" id="new_password_confirmation" v-model="new_password_confirmation">
                     </div>
-                    <button class="btn btn-primary">Save</button>
+                    <button class="btn btn-primary" :disabled="isLoading">Save</button>
                 </form>
+            </div>
+            <div class="row">
+                <div class="cursor-pointer prevent-select w-100 p-2 m-3 text-danger font-weight-bold border hover-dark-20 rounded-lg d-flex justify-content-center"
+                     @click="logOut().then(()=>{$router.go(0)})">Logout</div>
             </div>
         </div>
     </div>
@@ -76,16 +80,17 @@ export default {
             password : null,
             new_password : null,
             new_password_confirmation : null,
+            isLoading : false,
         }
     },
     computed:{
-        ...mapGetters('user',{
+        ...mapGetters('auth',{
             auth : 'getAuth',
         })
     },
     methods:{
         getImage,
-        ...mapActions('user',['updateUser','changePassword']),
+        ...mapActions('auth',['updateUser','changePassword','logOut']),
         ...mapActions('profile',['updateProfile']),
         onFileChange(e) {
             const file = e.target.files[0];
@@ -101,14 +106,15 @@ export default {
             user.set('_method','PATCH');
             user.set('name',this.auth.name);
             user.set('username',this.auth.username);
-
+            this.isLoading = true;
             this.updateUser(user).then(()=>{
+                this.isLoading = false;
                 showNotify('Update Personal details success!');
             }).catch(error => {
+                this.isLoading = false;
                 if (error.response.status === 422) {
                     showNotify(error.response.data.errors.username[0]);
                 }
-                console.log(error)
             })
         },
         updateProfileHandle(){
@@ -119,12 +125,14 @@ export default {
             if (this.file){
                 profile.set('image',this.file);
             }
-
+            this.isLoading = true;
             this.updateProfile(profile)
                 .then(() => {
+                    this.isLoading = false;
                     showNotify('Update profile success!');
                 })
                 .catch(error => {
+                    this.isLoading = false;
                     console.log(error)
                 })
         },
@@ -134,15 +142,17 @@ export default {
             data.set('password',this.password);
             data.set('new_password',this.new_password);
             data.set('new_password_confirmation',this.new_password_confirmation);
+
+            this.isLoading = true;
             this.changePassword(data).then(res =>{
                 console.log(res)
-
+                this.isLoading = false;
                 showNotify(res.data.status);
             }).catch(error => {
+                this.isLoading = false;
                 if (error.response.status === 422) {
                     showNotify(error.response.data.errors.new_password[0]);
                 }
-                console.log(error)
             })
         }
     }

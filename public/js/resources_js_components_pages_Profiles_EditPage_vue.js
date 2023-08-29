@@ -84,6 +84,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -95,15 +99,16 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       file: null,
       password: null,
       new_password: null,
-      new_password_confirmation: null
+      new_password_confirmation: null,
+      isLoading: false
     };
   },
-  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)('user', {
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)('auth', {
     auth: 'getAuth'
   })),
   methods: _objectSpread(_objectSpread(_objectSpread({
     getImage: _functiton__WEBPACK_IMPORTED_MODULE_0__.getImage
-  }, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('user', ['updateUser', 'changePassword'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('profile', ['updateProfile'])), {}, {
+  }, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('auth', ['updateUser', 'changePassword', 'logOut'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('profile', ['updateProfile'])), {}, {
     onFileChange: function onFileChange(e) {
       var file = e.target.files[0];
       this.imagePreview = URL.createObjectURL(file);
@@ -113,20 +118,24 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       location.href = window.Laravel.baseUrl + '/email/verify';
     },
     updateAccount: function updateAccount() {
+      var _this = this;
       var user = new FormData();
       user.set('_method', 'PATCH');
       user.set('name', this.auth.name);
       user.set('username', this.auth.username);
+      this.isLoading = true;
       this.updateUser(user).then(function () {
+        _this.isLoading = false;
         (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)('Update Personal details success!');
       })["catch"](function (error) {
+        _this.isLoading = false;
         if (error.response.status === 422) {
           (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)(error.response.data.errors.username[0]);
         }
-        console.log(error);
       });
     },
     updateProfileHandle: function updateProfileHandle() {
+      var _this2 = this;
       var profile = new FormData();
       profile.set('_method', 'PATCH');
       profile.set('title', this.auth.profile.title);
@@ -134,26 +143,32 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       if (this.file) {
         profile.set('image', this.file);
       }
+      this.isLoading = true;
       this.updateProfile(profile).then(function () {
+        _this2.isLoading = false;
         (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)('Update profile success!');
       })["catch"](function (error) {
+        _this2.isLoading = false;
         console.log(error);
       });
     },
     changePasswordHandle: function changePasswordHandle() {
+      var _this3 = this;
       var data = new FormData();
       data.set('_method', 'PUT');
       data.set('password', this.password);
       data.set('new_password', this.new_password);
       data.set('new_password_confirmation', this.new_password_confirmation);
+      this.isLoading = true;
       this.changePassword(data).then(function (res) {
         console.log(res);
+        _this3.isLoading = false;
         (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)(res.data.status);
       })["catch"](function (error) {
+        _this3.isLoading = false;
         if (error.response.status === 422) {
           (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)(error.response.data.errors.new_password[0]);
         }
-        console.log(error);
       });
     }
   })
@@ -253,7 +268,7 @@ var render = function () {
       _vm._v(" "),
       _c("h4", [_vm._v("Profile")]),
       _vm._v(" "),
-      _vm.auth.profile
+      _vm.auth && _vm.auth.profile
         ? _c("div", { staticClass: "Profile w-100 pb-5" }, [
             _c(
               "form",
@@ -347,9 +362,14 @@ var render = function () {
                   }),
                 ]),
                 _vm._v(" "),
-                _c("button", { staticClass: "btn btn-primary" }, [
-                  _vm._v("Save"),
-                ]),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { disabled: _vm.isLoading },
+                  },
+                  [_vm._v("Save")]
+                ),
               ]
             ),
           ])
@@ -481,9 +501,14 @@ var render = function () {
                   ]
                 ),
                 _vm._v(" "),
-                _c("button", { staticClass: "btn btn-primary" }, [
-                  _vm._v("Save"),
-                ]),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { disabled: _vm.isLoading },
+                  },
+                  [_vm._v("Save")]
+                ),
               ]
             ),
           ])
@@ -586,8 +611,33 @@ var render = function () {
               }),
             ]),
             _vm._v(" "),
-            _c("button", { staticClass: "btn btn-primary" }, [_vm._v("Save")]),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary",
+                attrs: { disabled: _vm.isLoading },
+              },
+              [_vm._v("Save")]
+            ),
           ]
+        ),
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c(
+          "div",
+          {
+            staticClass:
+              "cursor-pointer prevent-select w-100 p-2 m-3 text-danger font-weight-bold border hover-dark-20 rounded-lg d-flex justify-content-center",
+            on: {
+              click: function ($event) {
+                _vm.logOut().then(function () {
+                  _vm.$router.go(0)
+                })
+              },
+            },
+          },
+          [_vm._v("Logout")]
         ),
       ]),
     ]),

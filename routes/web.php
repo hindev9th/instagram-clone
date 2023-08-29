@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Auth::routes();
-Auth::routes(['verify' => true]);
+//Auth::routes();
+//Auth::routes(['verify' => true]);
 
-Route::middleware('auth')->get('{any}',function (){
+Route::get('{any}',function (){
     return view('home');
 })->where('any','[\/\w\.-]*');
 

@@ -9,16 +9,10 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function auth()
-    {
-        $userId =  auth()->id();
-        return User::where('id',$userId)->withCount('following')->first();
-    }
-
     /**
-     * Display a listing of the resource.
+     * Display a listing of suggested users
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
     public function suggested()
     {
@@ -30,6 +24,12 @@ class UserController extends Controller
             ->paginate(10);
     }
 
+    /**
+     * Search users by name or username or email
+     *
+     * @param $search
+     * @return mixed
+     */
     public function search($search)
     {
         $user = auth()->user();
@@ -44,92 +44,17 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return User
      */
-    public function create()
+    public function show(User $user)
     {
-        //
+        $user = $user->loadCount('posts','following')->load(['posts' => function ($query){
+            $query->latest()->limit(3);
+        }]);
+        $user->followers_count = $user->profile->followers->count();
+        return $user;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    public function changePassword(Request $request)
-    {
-        $user = auth()->user();
-        $request->validate([
-            'password' => 'required|string',
-            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        if (bcrypt($request['password']) === $user->password){
-            return ['status' => 'Current Password is Invalid'];
-        }
-
-        $user->update([
-            'password' => bcrypt($request['new_password'])
-        ]);
-        return ['status' => 'Change password success.'];
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request)
-    {
-        $request->validate([
-           'username' =>  ['required', 'string', 'regex:/^[a-z0-9.]+$/', 'max:255', 'unique:users'],
-        ], [
-            'username.regex' => 'The input string can only contain lowercase letters, numbers, and dots.',
-        ]);
-
-        $user = $request->user();
-        return $user->update($request->all());
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

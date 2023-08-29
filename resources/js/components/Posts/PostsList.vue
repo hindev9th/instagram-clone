@@ -53,7 +53,7 @@ export default {
         });
     },
     computed:{
-        ...mapGetters('user',['getAuth']),
+        ...mapGetters('auth',['getAuth']),
         ...mapGetters('post',{
           posts : 'getPosts',
           postsSug : 'getPostsSug',

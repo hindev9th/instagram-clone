@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import {RESOURCE_CHATS} from "../api/chatApi";
-import $api from "../api";
+import $api from "../api/apiClient";
 
 Vue.use(Vuex);
 
@@ -51,6 +51,12 @@ const chatStore = {
         },
         addNewChat({commit},chat){
             commit('ADD_CHAT',chat)
+        },
+        async getChatId({},userIds){
+            let res = await $api.post(`${RESOURCE_CHATS}/c`,{
+                ids : userIds
+            });
+            return res.data.id
         },
         async updateChat({commit},chat){
             let res = await $api.post(`${RESOURCE_CHATS}/${chat.id}`,{

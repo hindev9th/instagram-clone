@@ -28,7 +28,7 @@
 import {getImage,formatTime} from "../../../functiton";
 import Comment from './Comment.vue';
 import {mapActions, mapGetters} from "vuex";
-import $api from "../../../api";
+import $api from "../../../api/apiClient";
 export default {
     components: {Comment},
     name: "Comments",

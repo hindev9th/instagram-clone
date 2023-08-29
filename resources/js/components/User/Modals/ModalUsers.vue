@@ -25,7 +25,7 @@
 
 <script>
 import User from "../User";
-import $api from "../../../api";
+import $api from "../../../api/apiClient";
 export default {
     components: {User},
     name: "ModalUsers",

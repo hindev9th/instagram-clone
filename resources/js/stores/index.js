@@ -5,6 +5,7 @@ import chatStore from "./chatStore";
 import profileStore from "./profileStore";
 import commentStore from "./commentStore";
 import messageStore from "./messageStore";
+import authStore from "./authStore";
 
 const index = new Vuex.Store({
     modules: {
@@ -14,6 +15,7 @@ const index = new Vuex.Store({
         profile : profileStore,
         comment : commentStore,
         message : messageStore,
+        auth : authStore,
     }
 });
 

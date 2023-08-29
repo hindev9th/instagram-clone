@@ -2,7 +2,7 @@
     <span class="focus-none cursor-pointer prevent-select" @click="followUser" v-text="buttonText" style="height: fit-content"></span>
 </template>
 <script>
-    import $api from "../api";
+    import $api from "../api/apiClient";
     import {RESOURCE_FOLLOWS} from "../api/followApi";
 
     export default {

@@ -1,6 +1,6 @@
 <template>
     <div class="box-app">
-        <div class="menu-app" :class="[{small : $route.name === 'chat' || $route.name === 'message'}]">
+        <div class="menu-app" :class="[{small : $route.name === 'chat' || $route.name === 'message'}]" v-if="getAuth">
             <SearchSlide></SearchSlide>
             <ul class="list-unstyled w-100">
                 <router-link
@@ -83,13 +83,15 @@ export default {
     components:{ModalNewPost,ModalNewMessage,SearchButton,SearchSlide},
     name: "App",
     created() {
-        this.fetchAuth();
+        if (window.localStorage.getItem('tk')){
+            this.fetchAuth();
+        }
     },
     computed:{
-        ...mapGetters('user',['getAuth']),
+        ...mapGetters('auth',['getAuth']),
     },
     methods:{
-        ...mapActions('user',['fetchAuth']),
+        ...mapActions('auth',['fetchAuth']),
         getImage,
 
     },

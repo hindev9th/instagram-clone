@@ -67,7 +67,7 @@
 <script>
 import {getImage} from "../../../functiton";
 import {showNotify} from "../../../functiton";
-import $api from "../../../api";
+import $api from "../../../api/apiClient";
 import {USER_SEARCH} from "../../../api/userApi";
 import {mapActions} from "vuex";
 export default {
@@ -81,44 +81,66 @@ export default {
             isLoading: false,
             users: [],
             auth_data : window.Laravel,
+            timer : undefined
         }
     },
     methods: {
         showNotify,getImage,
-        ...mapActions('chat',['addNewChatHandle']),
+        ...mapActions('chat',['addNewChatHandle','getChatId']),
+
         clearModal() {
             this.selected = []
             this.selected_id = []
             this.users = [];
             this.search = '';
         },
+        closeModal(){
+            this.selected = []
+            this.selected_id = []
+            this.users = [];
+            this.search = '';
+            this.isLoading = false;
+            $('#modal-new').modal('hide');
+        },
         searchUsers() {
-            if (this.search.length > 2) {
-                this.isSearching = true;
-                $api.get(`${USER_SEARCH}/${this.search}`)
-                    .then(response => {
-                        this.users = response.data;
-                        this.isSearching = false;
-                    })
-            }
+            clearTimeout(this.timer);
+            this.timer = setTimeout(async () => {
+                if (!this.search) {
+                    this.clearText();
+                } else {
+                    this.isSearching = true;
+                    await $api.get(`${USER_SEARCH}/${this.search}`)
+                        .then(response => {
+                            this.users = response.data;
+                            this.isSearching = false;
+                        })
+                        .catch(e => {
+                            this.isSearching = false;
+                        })
+                }
 
+            }, 1000)
         },
         createChatRoom() {
             this.isLoading = true;
-            this.addNewChatHandle(this.selected_id)
-                .then(() => {
-                $('#modal-new').modal('hide');
-                this.selected = []
-                this.selected_id = []
-                this.users = [];
-                this.search = '';
-                this.isLoading = false;
-                showNotify('Create chat room success.');
-            }).catch(e => {
-                this.isLoading = false;
-                console.log(e)
-                showNotify('Error! Cannot create chat room.');
+            this.getChatId(this.selected_id).then(id => {
+                if (id) {
+                    this.$router.push({name: 'message', params: {id: id}}).catch(() => {
+                    });
+                    this.closeModal();
+                } else {
+                    this.addNewChatHandle(this.selected_id)
+                        .then(() => {
+                            this.closeModal();
+                            showNotify('Create chat room success.');
+                        }).catch(e => {
+                        this.isLoading = false;
+                        console.log(e)
+                        showNotify('Error! Cannot create chat room.');
+                    })
+                }
             })
+
         },
         addTagUser(user) {
             if (!this.selected.find(e => e.id === user.id)) {
@@ -135,8 +157,9 @@ export default {
         },
         clearText(){
             this.search = '';
+            this.users = [];
         }
-    }
+    },
 }
 </script>
 

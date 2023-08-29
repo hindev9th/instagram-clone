@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { RESOURCE_POSTS,POSTS_SUGGESTED,POSTS_OLD } from "../api/postApi";
-import $api from "../api";
+import $api from "../api/apiClient";
 
 Vue.use(Vuex);
 

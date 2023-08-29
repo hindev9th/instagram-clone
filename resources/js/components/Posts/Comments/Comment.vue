@@ -73,7 +73,7 @@ import LikeCommentButton from "./Buttons/LikeCommentButton";
 import EditCommentForm from "./EditCommentForm";
 import MentionLink from "../../helpers/MentionLink";
 import {mapActions, mapGetters} from "vuex";
-import $api from "../../../api";
+import $api from "../../../api/apiClient";
 import {RESOURCE_COMMENTS} from "../../../api/commentApi";
 import {RESOURCE_LIKES} from "../../../api/likeApi";
 export default {
@@ -95,7 +95,7 @@ export default {
         }
     },
     computed:{
-      ...mapGetters('user',['getAuth']),
+      ...mapGetters('auth',['getAuth']),
     },
     mounted() {
       Bus.$on('reply-comment', reply => {

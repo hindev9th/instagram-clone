@@ -18,7 +18,7 @@
                     <span class="name">{{ auth.name }}</span>
                 </div>
             </div>
-            <div class="logout cursor-pointer prevent-select text-primary" @click="logOut()">
+            <div class="logout cursor-pointer prevent-select text-primary" @click="logOut().then(()=>{$router.go(0)})">
                 Logout
             </div>
         </div>
@@ -46,12 +46,12 @@ export default {
         }
     },
     computed:{
-        ...mapGetters('user', {
+        ...mapGetters('auth', {
             auth: 'getAuth',
         }),
     },
     methods:{
-        ...mapActions('user',['logOut']),
+        ...mapActions('auth',['logOut']),
         getImage,
 
     }

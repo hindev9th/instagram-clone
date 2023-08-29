@@ -10,10 +10,10 @@
             </div>
         </div>
         <div class="body-info">
-            <div class="item hover-dark-20 cursor-pointer" @click="rename">
+            <div class="item hover-dark-20 cursor-pointer" @click="rename" v-if="chat.users.length > 2">
                 <span>Change name</span>
             </div>
-            <div class="item">
+            <div class="item" >
                 <div class="title d-flex justify-content-between">
                     <span>Members</span>
                     <span class="cursor-pointer prevent-select text-primary">Add</span>
@@ -45,7 +45,7 @@ export default {
     name: "InfoSlide",
     props: ['chat'],
     computed : {
-        ...mapGetters('user',{
+        ...mapGetters('auth',{
             auth : "getAuth",
         })
     },

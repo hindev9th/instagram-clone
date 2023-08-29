@@ -5,7 +5,10 @@ const messageRouter = [
             default: () => import('../components/pages/ChatPage'),
             message: () => import('../components/pages/MessagePage'),
         },
-        name: 'message'
+        name: 'message',
+        meta : {
+            requiresAuth: true
+        },
     }
 ]
 

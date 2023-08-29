@@ -1,6 +1,6 @@
 <template>
-    <div class="user d-flex mt-2 mb-3 align-items-center justify-content-between">
-        <div class="info d-flex">
+    <div class="user d-flex mt-2 mb-3 align-items-center justify-content-between" @mouseover="showInfo">
+        <div class="info d-flex" >
             <div class="avatar">
                 <router-link :to="{name : 'profile' , params : {username : user.username}}">
                     <img :src="getImage(user.profile.image)" alt="">
@@ -12,6 +12,7 @@
                 </router-link>
                 <span class="text-black-50" style="font-size: 10px">{{ user.name }}</span>
             </div>
+            <user-hover :username="user.username" v-if="isShowInfo" ></user-hover>
         </div>
         <follow-button :username="user.username"
                        :follows="user.isFollowed"
@@ -24,22 +25,28 @@
 import FollowButton from "../FollowButton";
 import {getImage} from "../../functiton";
 import {mapGetters} from "vuex";
+import UserHover from "./Hover/UserHover";
 export default {
-    components : {FollowButton},
+    components : {UserHover, FollowButton},
     name: "User",
     props: ['user'],
     data(){
         return{
-            auth_data : window.Laravel,
+            isShowInfo : false,
         }
     },
     computed:{
-        ...mapGetters('user',{
+        ...mapGetters('auth',{
             auth : 'getAuth',
         })
     },
     methods:{
         getImage,
+        showInfo(){
+            setTimeout(()=>{
+               this.isShowInfo = true;
+            },1000);
+        }
     }
 }
 </script>

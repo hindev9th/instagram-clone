@@ -31,14 +31,26 @@ const router = new VueRouter({
     }
 })
 router.beforeEach((to, from, next) => {
-    let modalBackground = document.querySelector('.modal-backdrop')
-    let body = document.querySelector('body');
-    if (modalBackground) {
-        body.classList.remove('modal-open');
-        modalBackground.remove()
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        // this route requires auth, check if logged in
+        // if not, redirect to login page.
+        if (!window.localStorage.getItem('tk')){
+            next({name : 'login'});
+        } else {
+            next() // go to wherever I'm going
+        }
+    } else {
+        let modalBackground = document.querySelector('.modal-backdrop')
+        let body = document.querySelector('body');
+        if (modalBackground) {
+            body.classList.remove('modal-open');
+            modalBackground.remove()
+        }
+        // do other stuff
+        next()
     }
-    // do other stuff
-    next()
+
+
 })
 
 /**

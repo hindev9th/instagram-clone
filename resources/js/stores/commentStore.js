@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import {RESOURCE_COMMENTS} from "../api/commentApi";
-import $api from "../api";
+import $api from "../api/apiClient";
 
 Vue.use(Vuex);
 

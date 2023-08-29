@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import $api from "../../../api";
+import $api from "../../../api/apiClient";
 import {RESOURCE_LIKES} from "../../../api/likeApi";
 
 export default {
