@@ -48,10 +48,10 @@ export default {
     },
     created() {
         this.fetchChats(this.page).then(() => {
-            Echo.private('user.' + this.getAuth.id)
+            Echo.private(`user.${this.getAuth.id}`)
                 .listen('NewChat', (e) => {
                     if (this.getChats.total === 0){
-                        this.fetchChats();
+                        this.fetchChats(this.page);
                     }else {
                         this.addNewChat(e);
                     }

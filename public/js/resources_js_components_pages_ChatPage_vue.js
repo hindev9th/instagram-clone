@@ -76,9 +76,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
   created: function created() {
     var _this = this;
     this.fetchChats(this.page).then(function () {
-      Echo["private"]('user.' + _this.getAuth.id).listen('NewChat', function (e) {
+      Echo["private"]("user.".concat(_this.getAuth.id)).listen('NewChat', function (e) {
         if (_this.getChats.total === 0) {
-          _this.fetchChats();
+          _this.fetchChats(_this.page);
         } else {
           _this.addNewChat(e);
         }

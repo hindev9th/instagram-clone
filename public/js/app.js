@@ -1152,7 +1152,13 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
   key: "688a408e4d561a3d870f",
   cluster: "ap1",
-  forceTLS: true
+  forceTLS: true,
+  auth: {
+    headers: {
+      'Authorization': "Bearer ".concat(localStorage.getItem('tk')),
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  }
 });
 
 /***/ }),
@@ -48145,6 +48151,10 @@ var render = function () {
               class: [
                 {
                   small:
+                    _vm.$route.name === "chat" || _vm.$route.name === "message",
+                },
+                {
+                  message:
                     _vm.$route.name === "chat" || _vm.$route.name === "message",
                 },
               ],

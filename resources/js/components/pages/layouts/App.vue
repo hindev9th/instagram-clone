@@ -1,6 +1,6 @@
 <template>
     <div class="box-app">
-        <div class="menu-app" :class="[{small : $route.name === 'chat' || $route.name === 'message'}]" v-if="getAuth">
+        <div class="menu-app" :class="[{small : $route.name === 'chat' || $route.name === 'message'},{message : $route.name === 'chat' || $route.name === 'message'}]" v-if="getAuth">
             <SearchSlide></SearchSlide>
             <ul class="list-unstyled w-100">
                 <router-link
