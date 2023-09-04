@@ -37,7 +37,8 @@ class ChatsController extends Controller
     public function showSingle(Request $request)
     {
         $userIds = $request['ids'];
-        $userIds[] = 21;
+        $userIds[] = auth()->id();
+
         $chat = Chat::getRoomByUser($userIds)->first();
         return ['id' => $chat->id ?? null];
     }
