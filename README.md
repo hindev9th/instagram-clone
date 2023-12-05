@@ -1,7 +1,7 @@
 #App setup
 ****
 `````
-git clone https://github.com/nguyenhien0809/Study-laravel-7.git
+git clone [https://github.com/nguyenhien0809/Study-laravel-7.git](https://github.com/hindev9th/instagram-clone.git)
 
 composer install
 
