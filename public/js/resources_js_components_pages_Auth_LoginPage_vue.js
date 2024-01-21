@@ -72,31 +72,34 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     };
   },
   created: function created() {
+    var _this = this;
     if (window.localStorage.getItem('tk')) {
-      this.$router.push({
-        name: 'home'
+      this.fetchAuth().then(function (res) {
+        _this.$router.push({
+          name: 'home'
+        });
       });
     }
   },
-  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('auth', ['login', 'fetchAuth'])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)('auth', ['getAuth'])), (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('auth', ['login', 'fetchAuth'])), {}, {
     handleLogin: function handleLogin() {
-      var _this = this;
+      var _this2 = this;
       var data = new FormData();
       data.set('email', this.email);
       data.set('password', this.password);
       this.isLoading = true;
       this.login(data).then(function (res) {
         if (res.data.status === 200) {
-          _this.isLoading = false;
+          _this2.isLoading = false;
           window.localStorage.setItem('tk', res.data.token);
-          _this.fetchAuth().then(function (res) {
-            _this.$router.push({
+          _this2.fetchAuth().then(function (res) {
+            _this2.$router.push({
               name: 'home'
             });
           });
         }
         if (res.data.status === 401) {
-          _this.isLoading = false;
+          _this2.isLoading = false;
           (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)("Invalid email or password information. Please try again later");
         }
       });

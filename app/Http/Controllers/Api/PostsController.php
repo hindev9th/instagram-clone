@@ -15,7 +15,7 @@ class PostsController extends Controller
         $user = auth()->user();
         $userId = auth()->user()->following()->pluck('profiles.user_id')->push($user->id);
 
-        $posts = Post::whereDate('created_at','>=',Carbon::now()->subDays(1))->whereIn('user_id',$userId)
+        $posts = Post::whereIn('user_id',$userId)
             ->withCount('comments','likes')
             ->latest()
             ->paginate(5);

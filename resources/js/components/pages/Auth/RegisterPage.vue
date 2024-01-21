@@ -74,7 +74,9 @@ export default {
     },
     created() {
         if (window.localStorage.getItem('tk'))  {
-            this.$router.push({name : 'home'});
+            this.fetchAuth().then(res => {
+                this.$router.push({name : 'home'});
+            });
         }
     },
     methods :{

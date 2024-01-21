@@ -93,15 +93,18 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     };
   },
   created: function created() {
+    var _this = this;
     if (window.localStorage.getItem('tk')) {
-      this.$router.push({
-        name: 'home'
+      this.fetchAuth().then(function (res) {
+        _this.$router.push({
+          name: 'home'
+        });
       });
     }
   },
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)('auth', ['register', 'fetchAuth'])), {}, {
     handleRegister: function handleRegister() {
-      var _this = this;
+      var _this2 = this;
       var data = new FormData();
       data.set('name', this.name);
       data.set('username', this.username);
@@ -110,15 +113,15 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       data.set('password_confirmation', this.password_confirmation);
       this.isLoading = true;
       this.register(data).then(function (res) {
-        _this.isLoading = false;
+        _this2.isLoading = false;
         window.localStorage.setItem('tk', res.data.token);
-        _this.fetchAuth().then(function (res) {
-          _this.$router.push({
+        _this2.fetchAuth().then(function (res) {
+          _this2.$router.push({
             name: 'home'
           });
         });
       })["catch"](function (e) {
-        _this.isLoading = false;
+        _this2.isLoading = false;
         if (e.response.data.errors.name) {
           (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)('Your name : ' + e.response.data.errors.name[0]);
         }

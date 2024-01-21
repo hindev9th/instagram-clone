@@ -1075,7 +1075,13 @@ router.beforeEach(function (to, from, next) {
         name: 'login'
       });
     } else {
-      next(); // go to wherever I'm going
+      _stores_index__WEBPACK_IMPORTED_MODULE_2__["default"].dispatch('auth/fetchAuth').then(function (r) {
+        return next();
+      })["catch"](function (e) {
+        return next({
+          name: 'login'
+        });
+      });
     }
   } else {
     // do other stuff
@@ -1151,8 +1157,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: "688a408e4d561a3d870f",
-  cluster: "ap1",
+  key: "",
+  cluster: "mt1",
   forceTLS: true,
   auth: {
     headers: {

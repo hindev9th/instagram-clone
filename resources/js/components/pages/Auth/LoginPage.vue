@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import {showNotify} from "../../../functiton";
 
 export default {
@@ -53,10 +53,13 @@ export default {
     },
     created() {
         if (window.localStorage.getItem('tk'))  {
-            this.$router.push({name : 'home'});
+            this.fetchAuth().then(res => {
+                this.$router.push({name : 'home'});
+            });
         }
     },
     methods :{
+        ...mapGetters('auth',['getAuth']),
         ...mapActions('auth',['login','fetchAuth']),
         handleLogin(){
             let data = new FormData();

@@ -16,7 +16,7 @@ window.Vue = require('vue');
 window.Bus = new Vue();
 
 Vue.use(VueRouter);
-Vue.use(InfiniteLoading,{
+Vue.use(InfiniteLoading, {
     props: {
         spinner: 'waveDots',
         /* other props need to configure */
@@ -25,9 +25,9 @@ Vue.use(InfiniteLoading,{
 
 const router = new VueRouter({
     routes,
-    mode : 'history',
-    scrollBehavior (to, from, savedPosition) {
-        return { x: 0 ,y : 0}
+    mode: 'history',
+    scrollBehavior(to, from, savedPosition) {
+        return {x: 0, y: 0}
     }
 })
 router.beforeEach((to, from, next) => {
@@ -39,13 +39,13 @@ router.beforeEach((to, from, next) => {
             body.classList.remove('modal-open');
             modalBackground.remove()
         }
-        
+
         // this route requires auth, check if logged in
         // if not, redirect to login page.
-        if (!window.localStorage.getItem('tk')){
-            next({name : 'login'});
+        if (!window.localStorage.getItem('tk')) {
+            next({name: 'login'});
         } else {
-            next() // go to wherever I'm going
+            store.dispatch('auth/fetchAuth').then(r => next()).catch(e => next({name: 'login'}));
         }
     } else {
         // do other stuff
@@ -77,5 +77,5 @@ Vue.component('app-component', require('./components/pages/layouts/App').default
 const app = new Vue({
     el: '#app',
     router,
-    store : store,
+    store: store,
 });
