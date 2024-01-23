@@ -8,7 +8,10 @@ Vue.use(Vuex);
 const chatStore = {
     namespaced : true,
     state : {
-        chats : null,
+        chats : {
+            data : [],
+            total : 0
+        },
         chat : null,
     },
     mutations : {
@@ -19,10 +22,18 @@ const chatStore = {
             state.chat = chat;
         },
         ADD_CHATS(state,chats){
-            chats.data.forEach(e => state.chats.data.push(e));
+            chats.data.forEach(e => state.chats.data.splice(0,0,e));
         },
         ADD_CHAT(state,chat){
             state.chats.data.unshift(chat);
+        },
+        REMOVE_CHAT(state,chat){
+            for (let i = 0; i < state.chats.data.length; i++){
+                if (state.chats.data[i].id === chat.id){
+                    state.chats.data.splice(i,1);
+                    break;
+                }
+            }
         }
     },
     getters :{
@@ -48,6 +59,7 @@ const chatStore = {
         },
         async addNewChatHandle({commit},usersId){
             let res = await $api.post(`${RESOURCE_CHATS}`,{users : usersId});
+            return res.data;
         },
         addNewChat({commit},chat){
             commit('ADD_CHAT',chat)
@@ -74,6 +86,9 @@ const chatStore = {
             await $api.post(`${RESOURCE_CHATS}/${chat.id}`,{
                 _method : 'DELETE',
             });
+        },
+        removeChat({commit},chat){
+            commit('REMOVE_CHAT',chat);
         }
 
     }

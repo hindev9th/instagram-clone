@@ -130,7 +130,7 @@ export default {
                     this.closeModal();
                 } else {
                     this.addNewChatHandle(this.selected_id)
-                        .then(() => {
+                        .then((res) => {
                             this.closeModal();
                             showNotify('Create chat room success.');
                         }).catch(e => {

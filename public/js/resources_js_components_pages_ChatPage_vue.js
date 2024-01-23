@@ -77,20 +77,17 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     var _this = this;
     this.fetchChats(this.page).then(function () {
       Echo["private"]("user.".concat(_this.getAuth.id)).listen('NewChat', function (e) {
-        if (_this.getChats.total === 0) {
-          _this.fetchChats(_this.page);
-        } else {
-          _this.addNewChat(e);
-        }
+        _this.addNewChat(e);
+      }).listen("DeleteChatRoom", function (chat) {
+        _this.removeChat(chat);
       });
     });
   },
-  mounted: function mounted() {},
   computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapGetters)('chat', ['getChats'])), (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapGetters)('auth', ['getAuth'])),
   methods: _objectSpread(_objectSpread({
     getImage: _functiton__WEBPACK_IMPORTED_MODULE_1__.getImage,
     getNames: _functiton__WEBPACK_IMPORTED_MODULE_1__.getNames
-  }, (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapActions)('chat', ['addNewChat', 'fetchChats'])), {}, {
+  }, (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapActions)('chat', ['addNewChat', 'fetchChats', 'removeChat'])), {}, {
     closeMessage: function closeMessage() {
       this.selected_id = 0;
     },
@@ -551,7 +548,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.chat {\n    height: calc(100% - 100px);\n}\n.chat-list {\n    height: calc(100% - 87px);\n    overflow-y: auto;\n.about {\n    width: calc(100% - 20px);\n.name {\n    white-space: nowrap;\n    max-width: 100%;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n}\n}\n.non-message{\n    display: flex;\n}\n@media (max-width: 767px) {\n.non-message{\n        display: none;\n}\n}\n@media (min-width: 768px) {\n.chat-main {\n        width: calc(100% - 66px);\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.chat {\n    height: calc(100% - 100px);\n}\n.chat-list {\n    height: calc(100% - 87px);\n    overflow-y: auto;\n.about {\n        width: calc(100% - 20px);\n.name {\n            white-space: nowrap;\n            max-width: 100%;\n            overflow: hidden;\n            text-overflow: ellipsis;\n}\n}\n}\n.non-message {\n    display: flex;\n}\n@media (max-width: 767px) {\n.non-message {\n        display: none;\n}\n}\n@media (min-width: 768px) {\n.chat-main {\n        width: calc(100% - 66px);\n}\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1228,44 +1225,44 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.getChats
-    ? _c("div", { staticClass: "card chat-app" }, [
+  return _c("div", { staticClass: "card chat-app" }, [
+    _c(
+      "div",
+      {
+        class:
+          "people-list h-100 border-right " +
+          (_vm.selected_id === 0 ? "open" : ""),
+        attrs: { id: "plist" },
+      },
+      [
         _c(
           "div",
           {
-            class:
-              "people-list h-100 border-right " +
-              (_vm.selected_id === 0 ? "open" : ""),
-            attrs: { id: "plist" },
+            staticClass: "input-group d-flex justify-content-between",
+            staticStyle: { padding: "20px" },
           },
-          [
-            _c(
+          [_c("h3", [_vm._v("Messages")]), _vm._v(" "), _c("NewButton")],
+          1
+        ),
+        _vm._v(" "),
+        !_vm.getChats
+          ? _c(
               "div",
               {
-                staticClass: "input-group d-flex justify-content-between",
-                staticStyle: { padding: "20px" },
+                staticClass:
+                  "d-flex justify-content-center align-items-center w-100 h-100",
               },
-              [_c("h3", [_vm._v("Messages")]), _vm._v(" "), _c("NewButton")],
-              1
-            ),
-            _vm._v(" "),
-            _c(
+              [_c("span", [_vm._v("Not messages found.")])]
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.getChats
+          ? _c(
               "ul",
               { staticClass: "list-unstyled chat-list mt-2 mb-0" },
               [
-                _vm.getChats.total === 0
-                  ? _c(
-                      "div",
-                      {
-                        staticClass:
-                          "d-flex justify-content-center align-items-center w-100 h-100",
-                      },
-                      [_c("span", [_vm._v("Not messages found.")])]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
                 _vm._l(_vm.getChats.data, function (chat) {
-                  return _vm.getAuth && _vm.getAuth.profile
+                  return _vm.getChats.data && _vm.getAuth && _vm.getAuth.profile
                     ? _c(
                         "li",
                         {
@@ -1321,11 +1318,11 @@ var render = function () {
                 }),
               ],
               2
-            ),
-          ]
-        ),
-      ])
-    : _vm._e()
+            )
+          : _vm._e(),
+      ]
+    ),
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

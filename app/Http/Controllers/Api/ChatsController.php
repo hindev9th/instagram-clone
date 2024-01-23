@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\DeleteChatRoom;
 use App\Http\Controllers\Controller;
 use App\Events\NewChat;
 use App\Models\Chat;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\DB;
 
 class ChatsController extends Controller
@@ -31,7 +33,13 @@ class ChatsController extends Controller
 
         broadcast(new NewChat($chat))->toOthers();
 
-        return $chat->load('users');
+        return [
+            'id' => $chat->id,
+            'name' => $chat->name,
+            'created_at' => $chat->created_at,
+            'updated_at' => $chat->updated_at,
+            'users' => $chat->users,
+        ];
     }
 
     public function showSingle(Request $request)
@@ -72,6 +80,7 @@ class ChatsController extends Controller
 
     public function destroy(Chat $chat)
     {
+        broadcast(new DeleteChatRoom($chat))->toOthers();
         return $chat->delete();
     }
 }

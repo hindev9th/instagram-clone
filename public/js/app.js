@@ -172,7 +172,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           })["catch"](function () {});
           _this2.closeModal();
         } else {
-          _this2.addNewChatHandle(_this2.selected_id).then(function () {
+          _this2.addNewChatHandle(_this2.selected_id).then(function (res) {
             _this2.closeModal();
             (0,_functiton__WEBPACK_IMPORTED_MODULE_0__.showNotify)('Create chat room success.');
           })["catch"](function (e) {
@@ -1157,8 +1157,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: "",
-  cluster: "mt1",
+  key: "688a408e4d561a3d870f",
+  cluster: "ap1",
   forceTLS: true,
   auth: {
     headers: {
@@ -1657,7 +1657,10 @@ vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_3_
 var chatStore = {
   namespaced: true,
   state: {
-    chats: null,
+    chats: {
+      data: [],
+      total: 0
+    },
     chat: null
   },
   mutations: {
@@ -1669,11 +1672,19 @@ var chatStore = {
     },
     ADD_CHATS: function ADD_CHATS(state, chats) {
       chats.data.forEach(function (e) {
-        return state.chats.data.push(e);
+        return state.chats.data.splice(0, 0, e);
       });
     },
     ADD_CHAT: function ADD_CHAT(state, chat) {
       state.chats.data.unshift(chat);
+    },
+    REMOVE_CHAT: function REMOVE_CHAT(state, chat) {
+      for (var i = 0; i < state.chats.data.length; i++) {
+        if (state.chats.data[i].id === chat.id) {
+          state.chats.data.splice(i, 1);
+          break;
+        }
+      }
     }
   },
   getters: {
@@ -1740,7 +1751,8 @@ var chatStore = {
               });
             case 3:
               res = _context3.sent;
-            case 4:
+              return _context3.abrupt("return", res.data);
+            case 5:
             case "end":
               return _context3.stop();
           }
@@ -1829,6 +1841,10 @@ var chatStore = {
           }
         }, _callee7);
       }))();
+    },
+    removeChat: function removeChat(_ref9, chat) {
+      var commit = _ref9.commit;
+      commit('REMOVE_CHAT', chat);
     }
   }
 };
